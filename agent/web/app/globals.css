@@ -591,6 +591,30 @@ code, pre {
 .skill-pill .dot.warn { background: var(--status-warn); }
 .skill-pill .dot.err { background: var(--status-err); }
 .skill-pill .dot.gray { background: var(--fg-faint); }
+.skill-pill .dot.pending { background: var(--status-info); }
+.skill-pill.is-pending {
+  border-color: var(--primary);
+  background: rgba(0, 102, 204, 0.06);
+  animation: eec-pulse-ring 1.4s ease-in-out infinite;
+}
+
+/* shared inline pulse for inspector tags / check marks */
+.eec-pulse-soft { animation: eec-pulse-soft 1.4s ease-in-out infinite; }
+@keyframes eec-pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes eec-pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.35); }
+  50%      { box-shadow: 0 0 0 4px rgba(0, 102, 204, 0); }
+}
+
+/* tool-log status tag colors */
+.tool-card-head .tag.tag-run { background: var(--status-info); }
+.tool-card-head .tag.tag-ok  { background: var(--status-ok); }
+.tool-card-head .tag.tag-err { background: var(--status-err); }
+.tool-card.is-running { border-color: var(--status-info); }
+.task-node.s-in_progress.is-running { border-left-color: var(--status-info); }
 
 /* ─── Modal ──────────────────────────────────────────────────────────── */
 
