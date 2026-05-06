@@ -14,19 +14,66 @@ import {
   type RunEvent,
 } from '@/lib/agent';
 
-function colorFor(state: SkillState | undefined): string {
-  if (!state || !state.exists) return '#3a4452';
-  if (!state.valid) return '#c93b3b';
-  if (state.synthetic) return '#d8a93a';
-  return '#3aae50';
+// id → 用户可读的流程中文名
+const DISPLAY_NAME: Record<string, string> = {
+  '01': '调研',
+  '02': '选品',
+  '03': '品牌识别',
+  '04': '素材工厂',
+  '05': '建站',
+  '06': '追踪',
+  '07a': '技术 SEO',
+  '07b': '内容营销',
+  '08': '投流',
+  '09': '优化',
+  '03b': '法务包',
+  '04b': '社交证明',
+  '05b': '商家中台',
+  '11b': '客服',
+  '13': '数据模型',
+};
+
+function displayName(skill: SkillSummary): string {
+  return DISPLAY_NAME[skill.id] ?? skill.slug;
 }
 
-function PipelineNode({ data, selected }: NodeProps<{ skill: SkillSummary; state?: SkillState; onClick: () => void }>) {
-  const { skill, state, onClick } = data;
-  const bg = colorFor(state);
+type NodeStatus = 'pending' | 'valid' | 'synthetic' | 'invalid' | 'missing';
+
+function statusFor(state: SkillState | undefined, pending: boolean): NodeStatus {
+  if (pending) return 'pending';
+  if (!state || !state.exists) return 'missing';
+  if (!state.valid) return 'invalid';
+  if (state.synthetic) return 'synthetic';
+  return 'valid';
+}
+
+const STATUS_COLOR: Record<NodeStatus, string> = {
+  pending: '#3a8ee0',
+  valid: '#3aae50',
+  synthetic: '#d8a93a',
+  invalid: '#c93b3b',
+  missing: '#3a4452',
+};
+
+const STATUS_LABEL: Record<NodeStatus, string> = {
+  pending: '进行中',
+  valid: '完成',
+  synthetic: 'stub',
+  invalid: '校验失败',
+  missing: '未运行',
+};
+
+function PipelineNode({
+  data,
+  selected,
+}: NodeProps<{ skill: SkillSummary; state?: SkillState; pending: boolean; onClick: () => void }>) {
+  const { skill, state, pending, onClick } = data;
+  const status = statusFor(state, pending);
+  const bg = STATUS_COLOR[status];
   return (
     <div
       onClick={onClick}
+      className={pending ? 'pipeline-node pipeline-node-pending' : 'pipeline-node'}
       style={{
         background: bg,
         color: '#0b0d10',
@@ -40,8 +87,8 @@ function PipelineNode({ data, selected }: NodeProps<{ skill: SkillSummary; state
       }}
     >
       <Handle type="target" position={Position.Left} style={{ background: '#1e2630' }} />
-      <div style={{ fontSize: 11, opacity: 0.8 }}>#{skill.id} · {skill.tier}</div>
-      <div style={{ fontWeight: 700, marginTop: 2 }}>{skill.slug}</div>
+      <div style={{ fontWeight: 700, fontSize: 14 }}>{displayName(skill)}</div>
+      <div style={{ fontSize: 10, opacity: 0.75, marginTop: 3 }}>{STATUS_LABEL[status]}</div>
       <Handle type="source" position={Position.Right} style={{ background: '#1e2630' }} />
     </div>
   );
@@ -51,7 +98,12 @@ const nodeTypes = { skill: PipelineNode };
 
 const MAIN_ORDER = ['01', '02', '03', '04', '05', '06', '07a', '07b', '08', '09'];
 
-function layoutNodes(skills: SkillSummary[], states: Map<string, SkillState>, onClick: (id: string) => void): Node[] {
+function layoutNodes(
+  skills: SkillSummary[],
+  states: Map<string, SkillState>,
+  pendingSet: Set<string>,
+  onClick: (id: string) => void,
+): Node[] {
   const xMain = 280;
   const yMain = 220;
   const sideOffset = 180;
@@ -77,7 +129,12 @@ function layoutNodes(skills: SkillSummary[], states: Map<string, SkillState>, on
       id: s.id,
       type: 'skill',
       position: { x, y },
-      data: { skill: s, state: states.get(s.id), onClick: () => onClick(s.id) },
+      data: {
+        skill: s,
+        state: states.get(s.id),
+        pending: pendingSet.has(s.id),
+        onClick: () => onClick(s.id),
+      },
     });
   }
   return nodes;
@@ -103,6 +160,7 @@ export default function PipelinePage() {
   const [skills, setSkills] = useState<SkillSummary[]>([]);
   const [states, setStates] = useState<Map<string, SkillState>>(new Map());
   const [selected, setSelected] = useState<string | null>(null);
+  const [pendingSet, setPendingSet] = useState<Set<string>>(new Set());
 
   const reload = useCallback(async () => {
     const [sk, st] = await Promise.all([fetchSkills(), fetchWorkspaceState()]);
@@ -116,7 +174,19 @@ export default function PipelinePage() {
 
   const handleNodeClick = useCallback((id: string) => setSelected(id), []);
 
-  const nodes = useMemo(() => layoutNodes(skills, states, handleNodeClick), [skills, states, handleNodeClick]);
+  const markPending = useCallback((id: string, on: boolean) => {
+    setPendingSet((curr) => {
+      const next = new Set(curr);
+      if (on) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }, []);
+
+  const nodes = useMemo(
+    () => layoutNodes(skills, states, pendingSet, handleNodeClick),
+    [skills, states, pendingSet, handleNodeClick],
+  );
   const edges = useMemo(() => makeEdges(skills), [skills]);
 
   const selectedSkill = selected ? skills.find((s) => s.id === selected) ?? null : null;
@@ -125,7 +195,7 @@ export default function PipelinePage() {
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <div style={{ position: 'fixed', top: 12, left: 16, zIndex: 10, color: '#cdd5dd', fontSize: 13 }}>
-        EEC Pipeline · {skills.length} skills · click any node to run
+        EEC Pipeline · {skills.length} 个流程 · 点击任意节点运行
       </div>
       <ReactFlow
         nodes={nodes}
@@ -140,20 +210,23 @@ export default function PipelinePage() {
       </ReactFlow>
 
       <div className="legend">
-        <div><span className="dot" style={{ background: '#3aae50' }} /> valid</div>
-        <div><span className="dot" style={{ background: '#d8a93a' }} /> synthetic</div>
-        <div><span className="dot" style={{ background: '#c93b3b' }} /> invalid</div>
-        <div><span className="dot" style={{ background: '#3a4452' }} /> missing</div>
+        <div><span className="dot pulse" style={{ background: STATUS_COLOR.pending }} /> 进行中</div>
+        <div><span className="dot" style={{ background: STATUS_COLOR.valid }} /> 完成</div>
+        <div><span className="dot" style={{ background: STATUS_COLOR.synthetic }} /> stub</div>
+        <div><span className="dot" style={{ background: STATUS_COLOR.invalid }} /> 校验失败</div>
+        <div><span className="dot" style={{ background: STATUS_COLOR.missing }} /> 未运行</div>
       </div>
 
       {selectedSkill && (
         <SkillDrawer
           skill={selectedSkill}
           state={selectedState}
-          onClose={() => setSelected(null)}
-          onAfterRun={() => {
+          onStart={() => markPending(selectedSkill.id, true)}
+          onFinish={() => {
+            markPending(selectedSkill.id, false);
             void reload();
           }}
+          onClose={() => setSelected(null)}
         />
       )}
     </div>
@@ -164,12 +237,14 @@ function SkillDrawer({
   skill,
   state,
   onClose,
-  onAfterRun,
+  onStart,
+  onFinish,
 }: {
   skill: SkillSummary;
   state: SkillState | undefined;
   onClose: () => void;
-  onAfterRun: () => void;
+  onStart: () => void;
+  onFinish: () => void;
 }) {
   const [brief, setBrief] = useState('');
   const [autoStub, setAutoStub] = useState(true);
@@ -186,6 +261,7 @@ function SkillDrawer({
   const onRun = async () => {
     setRunning(true);
     setEvents([]);
+    onStart();
     try {
       await streamRun(
         skill.id,
@@ -198,14 +274,14 @@ function SkillDrawer({
       setEvents((prev) => [...prev, { type: 'error', payload: { message: (e as Error).message } }]);
     } finally {
       setRunning(false);
-      onAfterRun();
+      onFinish();
     }
   };
 
   return (
     <div className="drawer">
       <button className="close" onClick={onClose}>×</button>
-      <h2>#{skill.id} {skill.slug}</h2>
+      <h2>{displayName(skill)}</h2>
       <div className="meta">{skill.full_name} · {skill.tier} · {skill.module_count} modules</div>
       <div style={{ fontSize: 13, color: '#cdd5dd' }}>{skill.description}</div>
 
