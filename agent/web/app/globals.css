@@ -712,6 +712,103 @@ code, pre {
 .events .e-done { color: var(--status-ok); font-weight: 600; }
 .events .e-result { color: var(--status-ok); }
 
+/* ─── API Integrations ───────────────────────────────────────────────── */
+
+.integration-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.integration-card:hover { box-shadow: var(--shadow-md); }
+.integration-card.is-connected { border-color: rgba(16, 185, 129, 0.5); }
+
+.integration-card-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.integration-card-title {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 600; font-size: 14px;
+}
+.integration-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--fg-faint);
+}
+.integration-dot.on { background: var(--status-ok); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18); }
+.integration-dot.off { background: var(--fg-faint); }
+
+.integration-priority {
+  font-size: 10.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.integration-priority.p-required {
+  background: rgba(239, 68, 68, 0.1); color: #b91c1c;
+}
+.integration-priority.p-recommended {
+  background: rgba(0, 102, 204, 0.1); color: var(--primary);
+}
+.integration-priority.p-optional {
+  background: var(--bg-code); color: var(--fg-muted);
+}
+
+.integration-meta {
+  font-size: 11px; color: var(--fg-muted);
+}
+.integration-category {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  padding: 1px 6px; border-radius: 4px;
+}
+
+.integration-desc {
+  margin: 0; font-size: 13px; color: var(--fg-secondary); line-height: 1.5;
+}
+
+.integration-skills { display: flex; flex-wrap: wrap; gap: 4px; }
+.integration-skill-tag {
+  font-size: 11px;
+  background: var(--bg-active);
+  color: var(--primary);
+  border: 1px solid rgba(0, 102, 204, 0.18);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.integration-env {
+  border-top: 1px dashed var(--border);
+  padding-top: 8px;
+}
+.integration-env-label {
+  font-size: 10.5px; color: var(--fg-faint);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+.integration-env-vars { display: flex; flex-wrap: wrap; gap: 4px; }
+.integration-env-var {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--fg-secondary);
+}
+.integration-env-var.set { background: rgba(16, 185, 129, 0.08); color: #047857; border-color: rgba(16, 185, 129, 0.25); }
+.integration-env-var.missing { color: var(--fg-muted); }
+.integration-env-state { font-weight: 600; opacity: 0.7; }
+
+.integration-docs {
+  align-self: flex-start;
+  font-size: 12px;
+  color: var(--primary);
+  margin-top: 2px;
+}
+
 /* ─── Build Plan ─────────────────────────────────────────────────────── */
 
 .shell-buildplan { grid-template-columns: 280px 1fr; }

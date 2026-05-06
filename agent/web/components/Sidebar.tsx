@@ -224,6 +224,10 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
           <span className="icon">◆</span>
           <span>Memory</span>
         </div>
+        <Link href="/integrations" className="footer-link" style={{ color: 'inherit' }}>
+          <span className="icon">⌬</span>
+          <span>API 接口</span>
+        </Link>
       </div>
 
       {showBrandModal && (

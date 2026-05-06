@@ -19,6 +19,7 @@ import { mountChatRoutes } from './chat.ts';
 import { mountSpecRoutes } from './spec.ts';
 import { mountDistillRoutes } from './distill.ts';
 import { mountAssetRoutes } from './assets.ts';
+import { mountIntegrationsRoutes } from './integrations.ts';
 
 // derive repo root from this file's location: agent/server/src/api/server.ts → ../../../..
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -324,6 +325,10 @@ mountDistillRoutes(app, { repo, llm });
 // ─── asset library (skill 04 output editor + uploads) ───────────────────
 
 mountAssetRoutes(app, { repo, registry, validator });
+
+// ─── api integrations catalog (env-var detected) ────────────────────────
+
+mountIntegrationsRoutes(app);
 
 // ─── build plan / site spec ──────────────────────────────────────────────
 

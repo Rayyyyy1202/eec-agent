@@ -109,6 +109,28 @@ export interface MemoryRow {
   updated_at: string;
 }
 
+// ─── API integrations ───────────────────────────────────────────────────
+
+export type IntegrationPriority = 'required' | 'recommended' | 'optional';
+
+export interface IntegrationStatus {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  used_by_skills: string[];
+  env_vars: string[];
+  docs_url?: string;
+  priority: IntegrationPriority;
+  connected: boolean;
+  detected_env_vars: string[];
+}
+
+export interface IntegrationsResponse {
+  summary: { total: number; connected: number };
+  integrations: IntegrationStatus[];
+}
+
 // ─── Approvals ──────────────────────────────────────────────────────────
 
 export type ApprovalDecision = 'approved' | 'modified_rerun' | 'rejected';
@@ -307,6 +329,10 @@ async function getJSON<T>(path: string, init?: RequestInit): Promise<T> {
 // skills
 export const fetchSkills = (): Promise<SkillSummary[]> =>
   getJSON<{ skills: SkillSummary[] }>(`/skills`).then((j) => j.skills);
+
+// integrations
+export const fetchIntegrations = (): Promise<IntegrationsResponse> =>
+  getJSON<IntegrationsResponse>(`/integrations`);
 
 export const fetchWorkspaceState = (brandId?: string): Promise<SkillState[]> => {
   const url = brandId ? `/brands/${brandId}/workspace/state` : `/workspace/state`;
