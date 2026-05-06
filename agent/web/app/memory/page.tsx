@@ -1,0 +1,128 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Sidebar from '../../components/Sidebar';
+import {
+  type Brand,
+  type MemoryRow,
+  deleteMemory,
+  fetchBrands,
+  fetchMemories,
+  saveMemory,
+} from '../../lib/agent';
+
+export default function MemoryPage() {
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [activeBrandId, setActiveBrandId] = useState<string | null>(null);
+  const [memories, setMemories] = useState<MemoryRow[]>([]);
+  const [query, setQuery] = useState('');
+  const [showAdd, setShowAdd] = useState(false);
+  const [newKey, setNewKey] = useState('');
+  const [newContent, setNewContent] = useState('');
+  const [refreshTick, setRefreshTick] = useState(0);
+
+  useEffect(() => {
+    fetchBrands().then(({ brands: bs, default_brand_id }) => {
+      setBrands(bs);
+      setActiveBrandId(default_brand_id ?? bs[0]?.id ?? null);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!activeBrandId) return;
+    fetchMemories(activeBrandId, query.trim() || undefined).then(setMemories);
+  }, [activeBrandId, query, refreshTick]);
+
+  const submitMemory = async () => {
+    if (!activeBrandId || !newKey.trim() || !newContent.trim()) return;
+    await saveMemory(activeBrandId, newKey.trim(), newContent.trim());
+    setNewKey('');
+    setNewContent('');
+    setShowAdd(false);
+    setRefreshTick((t) => t + 1);
+  };
+
+  const remove = async (id: string) => {
+    if (!window.confirm('Delete this memory?')) return;
+    await deleteMemory(id);
+    setRefreshTick((t) => t + 1);
+  };
+
+  return (
+    <>
+      <Sidebar />
+      <main className="main">
+        <div className="main-header">
+          <div className="main-title">Memory</div>
+          <select
+            value={activeBrandId ?? ''}
+            onChange={(e) => setActiveBrandId(e.target.value)}
+            style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border)' }}
+          >
+            {brands.map((b) => (
+              <option key={b.id} value={b.id}>{b.name}</option>
+            ))}
+          </select>
+          <button className="btn-primary" onClick={() => setShowAdd(true)}>+ New memory</button>
+        </div>
+        <div className="main-body" style={{ padding: 24, maxWidth: 820, margin: '0 auto', width: '100%' }}>
+          <input
+            type="text"
+            placeholder="Search keys or content…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: 10,
+              border: '1px solid var(--border-strong)',
+              borderRadius: 'var(--radius-md)',
+              marginBottom: 16,
+              background: 'var(--bg-card)',
+            }}
+          />
+          {memories.length === 0 && (
+            <div style={{ color: 'var(--fg-muted)', fontSize: 14 }}>No memories for this brand yet.</div>
+          )}
+          {memories.map((m) => (
+            <div
+              key={m.id}
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-md)',
+                padding: 14,
+                marginBottom: 10,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <code style={{ background: 'var(--bg-code)', padding: '2px 6px', borderRadius: 4 }}>{m.key}</code>
+                <span style={{ flex: 1 }} />
+                <span style={{ fontSize: 11, color: 'var(--fg-muted)' }}>
+                  {new Date(m.updated_at).toLocaleString()}
+                </span>
+                <button className="icon-btn" onClick={() => remove(m.id)} title="Delete">×</button>
+              </div>
+              <div style={{ marginTop: 8, whiteSpace: 'pre-wrap', fontSize: 13 }}>{m.content}</div>
+            </div>
+          ))}
+        </div>
+
+        {showAdd && (
+          <div className="modal-backdrop" onClick={() => setShowAdd(false)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+              <h2>New memory</h2>
+              <label>Key</label>
+              <input value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="brand_brief" autoFocus />
+              <label>Content</label>
+              <textarea value={newContent} onChange={(e) => setNewContent(e.target.value)} rows={5} />
+              <div className="modal-actions">
+                <button className="btn-ghost" onClick={() => setShowAdd(false)}>Cancel</button>
+                <button className="btn-primary" onClick={submitMemory}>Save</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </>
+  );
+}

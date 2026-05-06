@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/02-product-selection",
+  "title": "eec-02-product-selection output",
+  "type": "object",
+  "required": ["skus", "primary_sku_id", "pricing_strategy", "meta"],
+  "properties": {
+    "skus": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "name", "email_friendly_name", "category",
+          "description_short", "description_long", "key_features", "usp",
+          "target_audience_ids",
+          "cost", "moq", "lead_time_days", "supplier_id", "supplier_country",
+          "retail_price", "subscription_eligible",
+          "shipping_class", "weight_g", "dim_cm",
+          "return_policy_days", "restricted_geo", "low_stock_threshold",
+          "image_briefs"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+          "name": { "type": "string" },
+          "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "email_friendly_name": {
+            "type": "string",
+            "description": "phase2_hook: short product name for email subject lines (≤30 chars). Required by eec-10-email-crm."
+          },
+          "category": { "type": "string" },
+          "subcategory": { "type": "string" },
+          "description_short": { "type": "string", "maxLength": 200 },
+          "description_long": { "type": "string" },
+          "key_features": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "usp": { "type": "string", "description": "Unique selling proposition vs competitors observed in 01-research" },
+          "target_audience_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^audience_[0-9]{3}$" },
+            "description": "Refs eec-01-research.audience_profiles[].id (many-to-many: one SKU may serve multiple audience profiles)"
+          },
+          "cost": {
+            "$ref": "_common#/$defs/Money",
+            "description": "phase2_hook: landed cost (supplier price + freight to warehouse). Required by eec-11-fulfillment for margin/replenishment math."
+          },
+          "moq": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "phase2_hook: supplier minimum order quantity. Required by eec-11-fulfillment for replenishment planning."
+          },
+          "lead_time_days": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "phase2_hook: supplier lead time from PO to receipt. Required by eec-11-fulfillment."
+          },
+          "supplier_id": {
+            "type": "string",
+            "description": "phase2_hook: stable supplier reference. Use 'TBD' if unknown but never omit. Required by eec-11-fulfillment."
+          },
+          "supplier_country": {
+            "type": "string",
+            "description": "phase2_hook: ISO-3166 alpha-2 country code. Required by eec-11-fulfillment for shipping math."
+          },
+          "retail_price": { "$ref": "_common#/$defs/Money" },
+          "compare_at_price": { "$ref": "_common#/$defs/Money" },
+          "margin_pct": { "type": "number", "description": "(retail_price - cost) / retail_price × 100" },
+          "subscription_eligible": {
+            "type": "boolean",
+            "description": "phase2_hook: whether SKU supports recurring subscription. Required by eec-10-email-crm for lifecycle flows."
+          },
+          "shipping_class": { "type": "string", "enum": ["standard", "fragile", "oversized", "hazmat", "letter"] },
+          "weight_g": { "type": "number", "minimum": 0 },
+          "dim_cm": {
+            "type": "object",
+            "required": ["l", "w", "h"],
+            "properties": {
+              "l": { "type": "number", "minimum": 0 },
+              "w": { "type": "number", "minimum": 0 },
+              "h": { "type": "number", "minimum": 0 }
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["sku", "attrs"],
+              "properties": {
+                "sku": { "type": "string" },
+                "attrs": { "type": "object", "additionalProperties": { "type": "string" } },
+                "stock_initial": { "type": "integer", "minimum": 0 }
+              }
+            }
+          },
+          "image_briefs": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Briefs handed off to eec-04-creative-factory",
+            "items": {
+              "type": "object",
+              "required": ["purpose", "description"],
+              "properties": {
+                "purpose": { "type": "string", "enum": ["hero", "lifestyle", "detail", "size_compare", "pack_shot", "ugc_style"] },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "return_policy_days": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "phase2_hook (H12): days customer can return this SKU. Required by eec-11-fulfillment for returns workflow + customer-facing FAQ. Placeholder default: 30."
+          },
+          "restricted_geo": {
+            "type": "array",
+            "items": { "type": "string", "description": "ISO-3166 alpha-2 country code" },
+            "description": "phase2_hook (H13): countries this SKU CANNOT ship to (regulatory / battery / hazmat / brand). Required by eec-11-fulfillment for shipping eligibility AND eec-08-paid-ads for geo exclusion. Empty array = ship everywhere."
+          },
+          "low_stock_threshold": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "phase2_hook (H14): inventory level at which replenishment alerts fire. Required by eec-11-fulfillment for replenishment planning. Placeholder default: 10."
+          },
+          "launch_status": {
+            "type": "string",
+            "enum": ["pre_order", "live", "archived"],
+            "default": "live",
+            "description": "Pre-launch lifecycle state. 05 renders <ComingSoonTemplate> when pre_order (waitlist signup, no add-to-cart, noindex preserved). archived = gone — PDP returns 410-equivalent UX (kept indexable for SEO redirects)."
+          },
+          "launch_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Optional. Required when launch_status=pre_order to drive the countdown copy on <ComingSoonTemplate>."
+          },
+          "certifications": {
+            "type": "array",
+            "description": "Certifications applicable to THIS sku (cross-link to 03.certifications[].name). 05 renders these as trust badges on the PDP and as a per-row column on /compare.",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string", "description": "Must match a name in 03-brand-identity.certifications[]" },
+                "scope_note": { "type": "string", "description": "Optional clarifier, e.g. 'dock charger only'" }
+              }
+            }
+          },
+          "tech_explainers": {
+            "type": "array",
+            "description": "Per-SKU technical deep-dives rendered in the PDP 'Tech' tab. 2-5 typical. Body is markdown.",
+            "items": {
+              "type": "object",
+              "required": ["id", "title", "body_md"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^tech_[0-9]{3}$" },
+                "title": { "type": "string", "maxLength": 80 },
+                "body_md": { "type": "string", "maxLength": 1200, "description": "Plain markdown — kept short so PDP stays scannable" },
+                "illustrative_asset_id": { "type": "string", "description": "Optional ref into eec/04-creative-factory.assets[]" }
+              }
+            }
+          },
+          "spec_table": {
+            "type": "array",
+            "description": "Structured spec table rendered in PDP 'Specs' tab and on /compare matrix. Grouped for readability. Strictly more useful than key_features for comparison shoppers.",
+            "items": {
+              "type": "object",
+              "required": ["group", "label", "value"],
+              "properties": {
+                "group": { "type": "string", "description": "e.g. 'Suction', 'Battery', 'Mapping', 'Mop'" },
+                "label": { "type": "string" },
+                "value": { "type": "string" },
+                "unit": { "type": "string", "description": "Optional unit suffix, e.g. 'Pa', 'mAh', 'mm'" },
+                "compare_key": { "type": "string", "description": "Stable key used to align rows across SKUs on /compare. Two SKUs sharing compare_key end up on the same row." }
+              }
+            }
+          },
+          "setup_steps": {
+            "type": "array",
+            "description": "Per-SKU setup instructions rendered as a HowTo on the PDP and emitted as schema.org/HowTo JSON-LD for rich-result eligibility. 3-7 steps typical.",
+            "items": {
+              "type": "object",
+              "required": ["step_number", "title", "instruction"],
+              "properties": {
+                "step_number": { "type": "integer", "minimum": 1 },
+                "title": { "type": "string", "maxLength": 80 },
+                "instruction": { "type": "string", "maxLength": 400 },
+                "estimated_seconds": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "primary_sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+    "bundle_suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "sku_ids"],
+        "properties": {
+          "name": { "type": "string" },
+          "sku_ids": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+          "discount_pct": { "type": "number" },
+          "rationale": { "type": "string" }
+        }
+      }
+    },
+    "pricing_strategy": {
+      "type": "object",
+      "required": ["mode", "rationale"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["penetration", "premium", "tiered", "value_based", "competitive"] },
+        "anchor": { "type": "string", "description": "Anchor reference: a competitor brand or a benchmark price" },
+        "rationale": { "type": "string" }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

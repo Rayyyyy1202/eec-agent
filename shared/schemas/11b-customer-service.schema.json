@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/11b-customer-service",
+  "title": "eec-11b-customer-service output",
+  "description": "Customer-service infrastructure: contact methods, live-chat provider config, video tutorials, manuals (per SKU), parts finder, escalation policy. Sibling of 11 (fulfillment); decoupled so CS depth ships before commerce backend lands. References 02 SKU + 03 cs_tone. Consumed by 05 to render /contact + /help/* sub-routes + consent-gated chat widget in layout.",
+  "type": "object",
+  "required": [
+    "contact_methods",
+    "live_chat_provider",
+    "video_tutorials",
+    "manuals",
+    "parts_finder",
+    "escalation_policy",
+    "contact_form_config",
+    "meta"
+  ],
+  "properties": {
+    "contact_methods": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "channel", "value", "hours_window", "sla_minutes"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^contact_[0-9]{3}$" },
+          "channel": { "type": "string", "enum": ["email", "phone", "live_chat", "web_form", "social_dm"] },
+          "value": { "type": "string", "description": "Email address, phone number (E.164), or URL — depending on channel" },
+          "hours_window": { "type": "string", "description": "Human-readable, e.g. 'Mon-Fri 9am-6pm PT'" },
+          "sla_minutes": { "type": "integer", "minimum": 1, "description": "Target first-response time in minutes" },
+          "languages": { "type": "array", "items": { "type": "string" }, "description": "ISO 639-1 codes" },
+          "label": { "type": "string", "maxLength": 60 }
+        }
+      }
+    },
+    "live_chat_provider": {
+      "type": "object",
+      "required": ["mode", "stub_until"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["intercom", "zendesk", "crisp", "drift", "tidio", "none"] },
+        "stub_until": { "type": "string", "description": "'never' if mode==none, else env var name that gates loading" },
+        "consent_category": { "type": "string", "enum": ["functional", "marketing"], "default": "functional" },
+        "widget_app_id_env_var": { "type": "string" },
+        "writeback_target_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Files in 05 repo this provider may write to when activated"
+        }
+      }
+    },
+    "video_tutorials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "youtube_id", "duration_seconds"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^video_[0-9]{3}$" },
+          "title": { "type": "string", "maxLength": 120 },
+          "youtube_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{11}$" },
+          "duration_seconds": { "type": "integer", "minimum": 1 },
+          "related_sku_ids": { "type": "array", "items": { "type": "string", "pattern": "^sku_[0-9]{3}$" } },
+          "transcript_summary": { "type": "string", "maxLength": 600 },
+          "topic": { "type": "string", "enum": ["setup", "troubleshooting", "maintenance", "feature_walkthrough"] }
+        }
+      }
+    },
+    "manuals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sku_id", "pdf_url", "language"],
+        "properties": {
+          "sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+          "pdf_url": { "type": "string", "description": "Relative path under public/ or absolute URL" },
+          "language": { "type": "string", "description": "ISO 639-1" },
+          "version": { "type": "string" },
+          "file_size_kb": { "type": "integer", "minimum": 1 },
+          "page_count": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "parts_finder": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["parent_sku_id", "replacement_sku_id", "fitment_note"],
+        "properties": {
+          "parent_sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+          "replacement_sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+          "fitment_note": { "type": "string", "maxLength": 200 },
+          "replacement_interval_days": { "type": "integer", "minimum": 1 },
+          "part_type": { "type": "string", "enum": ["filter", "brush", "mop_pad", "battery", "wheel", "dustbin", "kit"] }
+        }
+      }
+    },
+    "escalation_policy": {
+      "type": "object",
+      "required": ["cs_tone_ref", "rules"],
+      "properties": {
+        "cs_tone_ref": { "type": "string", "description": "Pointer into 03 e.g. 'eec/03-brand-identity/output.json#/cs_tone'" },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["trigger", "action", "sla_minutes"],
+            "properties": {
+              "trigger": { "type": "string", "maxLength": 200 },
+              "action": { "type": "string", "maxLength": 200 },
+              "sla_minutes": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "contact_form_config": {
+      "type": "object",
+      "required": ["route_path", "fields", "post_endpoint", "stub_until"],
+      "properties": {
+        "route_path": { "type": "string", "pattern": "^/contact$" },
+        "post_endpoint": { "type": "string" },
+        "stub_until": { "type": "string", "description": "'never' for permanent stub, else env var that gates real POST" },
+        "success_redirect": { "type": "string" },
+        "fields": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "type", "required"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string", "maxLength": 60 },
+              "type": { "type": "string", "enum": ["text", "email", "tel", "select", "textarea"] },
+              "required": { "type": "boolean" },
+              "options": { "type": "array", "items": { "type": "string" }, "description": "For type=select" },
+              "placeholder": { "type": "string", "maxLength": 80 },
+              "max_length": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

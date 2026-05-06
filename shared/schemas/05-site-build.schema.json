@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/05-site-build",
+  "title": "eec-05-site-build output",
+  "type": "object",
+  "required": [
+    "site_url", "tech_stack", "routes", "checkout_flow",
+    "seo_meta", "analytics_endpoints", "repo_path", "env_vars_required",
+    "accessibility_baseline", "meta"
+  ],
+  "properties": {
+    "site_url": { "type": "string", "format": "uri", "description": "Preview / staging URL — production may not yet be live" },
+    "production_url": { "type": "string", "format": "uri" },
+    "tech_stack": {
+      "type": "object",
+      "required": ["frontend", "hosting"],
+      "properties": {
+        "frontend": { "type": "string", "description": "e.g. 'Next.js 15', 'Astro 4', 'PrestaShop 8'" },
+        "backend": { "type": "string", "description": "e.g. 'Medusa.js 2', 'none (static)', 'Shopify Storefront API'" },
+        "cms": { "type": "string" },
+        "hosting": { "type": "string" },
+        "payment_processor": { "type": "string" },
+        "search": { "type": "string" }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "seo_intent"],
+        "properties": {
+          "path": { "type": "string", "description": "URL path, e.g. /, /products/[slug], /collections/[slug]" },
+          "component": { "type": "string", "description": "Component or template handle" },
+          "sku_ids": { "type": "array", "items": { "type": "string" } },
+          "copy_block_ids": { "type": "array", "items": { "type": "string" } },
+          "asset_ids": { "type": "array", "items": { "type": "string" } },
+          "seo_intent": { "type": "string", "description": "What this page is meant to rank/convert for" }
+        }
+      }
+    },
+    "cms_handles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["handle", "type"],
+        "properties": {
+          "handle": { "type": "string" },
+          "type": { "type": "string", "enum": ["product", "page", "post", "collection", "policy"] },
+          "sku_id": { "type": "string" }
+        }
+      }
+    },
+    "checkout_flow": {
+      "type": "object",
+      "required": ["type", "payment_methods"],
+      "properties": {
+        "type": { "type": "string", "enum": ["single_page", "multi_step", "embedded", "hosted"] },
+        "payment_methods": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "e.g. card, apple_pay, paypal, klarna, alipay"
+        },
+        "shipping_zones": { "type": "array", "items": { "type": "string" } },
+        "guest_checkout": { "type": "boolean" },
+        "abandonment_recovery_hook_present": { "type": "boolean", "description": "Whether checkout abandonment fires a tracking event consumable by Phase 2 email/CRM" }
+      }
+    },
+    "seo_meta": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["route", "title", "description"],
+        "properties": {
+          "route": { "type": "string" },
+          "title": { "type": "string", "maxLength": 60 },
+          "description": { "type": "string", "maxLength": 160 },
+          "og_image": { "type": "string" },
+          "canonical": { "type": "string" },
+          "schema_org_type": { "type": "string", "description": "e.g. Product, Organization, FAQPage" }
+        }
+      }
+    },
+    "analytics_endpoints": {
+      "type": "object",
+      "required": ["gtm_container_placeholder", "consent_layer_slot", "rebuild_protocol"],
+      "description": "Reserved injection points for eec-06-tracking — site-build emits the slots, tracking fills them, then a rebuild step completes the loop.",
+      "properties": {
+        "gtm_container_placeholder": {
+          "type": "string",
+          "description": "Template variable name OR env var name where GTM container ID gets injected, e.g. '${GTM_CONTAINER_ID}' or 'NEXT_PUBLIC_GTM_ID'"
+        },
+        "consent_layer_slot": { "type": "string", "description": "Template slot for the consent banner script" },
+        "data_layer_global": { "type": "string", "default": "dataLayer" },
+        "rebuild_protocol": {
+          "type": "object",
+          "required": ["rebuild_command", "writeback_target_files"],
+          "description": "Closes the loop with eec-06-tracking: how 06 should write back the GTM ID and how the site is then rebuilt.",
+          "properties": {
+            "rebuild_command": {
+              "type": "string",
+              "description": "Shell command run after 06 writes the GTM ID, e.g. 'npm run build && npm run deploy:preview'"
+            },
+            "writeback_target_files": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1,
+              "description": "Files (relative to repo_path) that 06 is allowed to modify, e.g. ['.env.production', 'src/lib/gtm.ts']"
+            },
+            "post_rebuild_validation": {
+              "type": "string",
+              "description": "Command to verify GTM is loading, e.g. 'curl -s $SITE_URL | grep -q GTM-'"
+            }
+          }
+        }
+      }
+    },
+    "repo_path": { "type": "string", "description": "Relative path to the generated repo, usually ./eec/05-site-build/repo/" },
+    "env_vars_required": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+          "purpose": { "type": "string" },
+          "scope": { "type": "string", "enum": ["build", "runtime", "both"] },
+          "secret": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "accessibility_baseline": {
+      "type": "object",
+      "required": ["wcag_level"],
+      "properties": {
+        "axe_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "wcag_level": { "type": "string", "enum": ["A", "AA", "AAA"] },
+        "known_issues": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/_common",
+  "title": "EEC Skills — Shared Type Definitions",
+  "$defs": {
+    "Confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "Source": {
+      "type": "object",
+      "required": ["url", "accessed_at", "type"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "accessed_at": { "type": "string", "format": "date" },
+        "type": { "type": "string", "enum": ["web", "trends", "social", "competitor", "gov", "tool", "internal"] },
+        "title": { "type": "string" }
+      }
+    },
+    "SourcedClaim": {
+      "type": "object",
+      "required": ["sources", "confidence"],
+      "properties": {
+        "sources": { "type": "array", "items": { "$ref": "#/$defs/Source" }, "minItems": 1 },
+        "confidence": { "$ref": "#/$defs/Confidence" },
+        "verification_path": { "type": "string" }
+      }
+    },
+    "Money": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "number" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      }
+    },
+    "LanguageCode": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+      "description": "BCP-47 language tag, e.g. en, en-US, zh, zh-CN"
+    },
+    "Meta": {
+      "type": "object",
+      "required": ["generated_at", "skill_version", "schema_version"],
+      "properties": {
+        "generated_at": { "type": "string", "format": "date-time" },
+        "skill_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "source_count": { "type": "integer", "minimum": 0 },
+        "execution_time_s": { "type": "number" },
+        "user_input_summary": { "type": "string" }
+      }
+    },
+    "AudienceProfile": {
+      "type": "object",
+      "required": ["id", "name", "demographics", "psychographics"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^audience_[0-9]{3}$" },
+        "name": { "type": "string" },
+        "size_estimate_band": { "type": "string", "enum": ["niche", "small", "medium", "large", "mass"] },
+        "demographics": {
+          "type": "object",
+          "properties": {
+            "age_band": { "type": "string", "description": "e.g. 25-34" },
+            "gender_skew": { "type": "string", "enum": ["male", "female", "balanced", "other"] },
+            "income_band": { "type": "string", "enum": ["low", "lower_mid", "mid", "upper_mid", "high", "luxury"] },
+            "geo": { "type": "array", "items": { "type": "string" }, "description": "ISO-3166 country codes" }
+          }
+        },
+        "psychographics": {
+          "type": "object",
+          "properties": {
+            "interests": { "type": "array", "items": { "type": "string" } },
+            "values": { "type": "array", "items": { "type": "string" } },
+            "lifestyle": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "channels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Where this audience is reachable: e.g. instagram, tiktok, reddit, youtube"
+        },
+        "moments": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Buying moments / triggers"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/03-brand-identity",
+  "title": "eec-03-brand-identity output",
+  "type": "object",
+  "required": ["brand_name", "brand_handle", "tagline", "tone", "visual_system", "email_brand_kit", "cs_tone", "welcome_offer", "brand_book_path", "meta"],
+  "properties": {
+    "brand_name": { "type": "string" },
+    "brand_handle": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{2,30}$",
+      "description": "Social-media-safe handle, no spaces, lowercase"
+    },
+    "tagline": { "type": "string", "maxLength": 80 },
+    "mission": { "type": "string" },
+    "story_short": { "type": "string", "maxLength": 500 },
+    "tone": {
+      "type": "object",
+      "required": ["voice_descriptors", "do_phrases", "dont_phrases"],
+      "properties": {
+        "voice_descriptors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3,
+          "description": "3–5 adjectives describing voice"
+        },
+        "persona_archetype": {
+          "type": "string",
+          "description": "e.g. The Sage, The Hero, The Lover (Mark & Pearson 12 archetypes)"
+        },
+        "do_phrases": { "type": "array", "items": { "type": "string" } },
+        "dont_phrases": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "visual_system": {
+      "type": "object",
+      "required": ["palette", "typography", "logo_brief"],
+      "properties": {
+        "palette": {
+          "type": "object",
+          "required": ["primary", "secondary", "neutrals"],
+          "properties": {
+            "primary": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "secondary": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "accent": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+            "neutrals": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+              "minItems": 2
+            },
+            "rationale": { "type": "string" }
+          }
+        },
+        "typography": {
+          "type": "object",
+          "required": ["display_font", "body_font"],
+          "properties": {
+            "display_font": { "type": "string" },
+            "body_font": { "type": "string" },
+            "pairing_rationale": { "type": "string" },
+            "google_fonts_url": { "type": "string", "format": "uri" }
+          }
+        },
+        "logo_brief": {
+          "type": "object",
+          "required": ["mark_concept", "wordmark_treatment"],
+          "properties": {
+            "mark_concept": { "type": "string" },
+            "wordmark_treatment": { "type": "string" },
+            "motif": { "type": "string" },
+            "construction_principles": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "imagery_style": {
+          "type": "object",
+          "properties": {
+            "photography_direction": { "type": "string" },
+            "lighting": { "type": "string" },
+            "color_grading": { "type": "string" },
+            "subject_framing": { "type": "string" }
+          }
+        },
+        "motion_style": {
+          "type": "object",
+          "properties": {
+            "ease": { "type": "string", "description": "e.g. cubic-bezier(0.4, 0, 0.2, 1)" },
+            "duration_band_ms": { "type": "string", "description": "e.g. 200-400" }
+          }
+        }
+      }
+    },
+    "email_brand_kit": {
+      "type": "object",
+      "required": ["header_color", "footer_layout", "tone_for_email", "preferred_subject_line_pattern"],
+      "description": "phase2_hook: required in entirety by eec-10-email-crm",
+      "properties": {
+        "header_color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "footer_layout": { "type": "string" },
+        "signature_block": { "type": "string" },
+        "tone_for_email": { "type": "string" },
+        "preferred_subject_line_pattern": { "type": "string" }
+      }
+    },
+    "cs_tone": {
+      "type": "object",
+      "required": ["voice_descriptors", "do_phrases", "dont_phrases", "escalation_threshold"],
+      "description": "phase2_hook (H19): customer-service voice — distinct from marketing tone (typically more empathetic, less salesy). Required by eec-11-fulfillment for CS auto-replies / templates.",
+      "properties": {
+        "voice_descriptors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3,
+          "description": "3-5 adjectives, e.g. 'empathetic', 'concise', 'solution-focused'"
+        },
+        "do_phrases": { "type": "array", "items": { "type": "string" } },
+        "dont_phrases": { "type": "array", "items": { "type": "string" } },
+        "escalation_threshold": {
+          "type": "string",
+          "description": "When to escalate to human, e.g. 'refund > $100 OR negative sentiment 2+ messages'"
+        },
+        "default_signoff": { "type": "string" }
+      }
+    },
+    "welcome_offer": {
+      "type": "object",
+      "required": ["enabled", "type"],
+      "description": "phase2_hook (H20): welcome-series anchor incentive used by eec-10-email-crm. Set enabled=false to opt out.",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "type": { "type": "string", "enum": ["percent_off", "dollar_off", "free_shipping", "gift_with_purchase", "early_access", "none"] },
+        "value": { "type": "number", "description": "Percent (10 = 10%) or dollar amount; ignored if type is free_shipping/gift_with_purchase/early_access/none" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$", "description": "Required when type=dollar_off" },
+        "one_time_use": { "type": "boolean", "default": true },
+        "expires_after_days": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "founders": {
+      "type": "array",
+      "description": "People to render on /team. Empty array allowed (single-founder unverified, or anonymous brand) — but the field MUST exist so 05 can reason about whether to mount /team.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "role", "bio"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^founder_[0-9]{3}$" },
+          "name": { "type": "string" },
+          "role": { "type": "string", "description": "e.g. 'Co-founder & CEO', 'Head of Engineering'" },
+          "bio": { "type": "string", "maxLength": 600 },
+          "photo_asset_id": { "type": "string", "description": "ref into 04.assets[]; if absent 05 falls back to initials avatar" },
+          "linkedin_url": { "type": "string", "format": "uri" },
+          "quote": { "type": "string", "description": "Optional pull-quote rendered alongside the bio" }
+        }
+      }
+    },
+    "values": {
+      "type": "array",
+      "description": "Brand values rendered on /about and /team. 3-6 typical.",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "body"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^value_[0-9]{3}$" },
+          "title": { "type": "string", "maxLength": 60 },
+          "body": { "type": "string", "maxLength": 300 }
+        }
+      }
+    },
+    "sustainability_statement": {
+      "type": "object",
+      "description": "Renders /sustainability. Omit entirely if the brand has nothing real to claim — DO NOT fabricate.",
+      "required": ["pillars"],
+      "properties": {
+        "summary": { "type": "string", "maxLength": 400 },
+        "pillars": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["title", "body"],
+            "properties": {
+              "title": { "type": "string", "maxLength": 80 },
+              "body": { "type": "string", "maxLength": 400 },
+              "metric": { "type": "string", "description": "Optional measurable claim, e.g. '60% recycled aluminum housing'" }
+            }
+          }
+        },
+        "certifications_referenced": {
+          "type": "array",
+          "items": { "type": "string", "description": "Names of relevant certifications, must also appear in certifications[] for cross-link" }
+        },
+        "report_url": { "type": "string", "format": "uri", "description": "Public sustainability report PDF URL" }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "description": "Trust badges shown on PDP + /sustainability + footer. Per-product applicability lives in 02.skus[].certifications[] (Phase 3).",
+      "items": {
+        "type": "object",
+        "required": ["name", "issued_by"],
+        "properties": {
+          "name": { "type": "string", "description": "e.g. 'FCC Part 15', 'CE', 'Energy Star'" },
+          "issued_by": { "type": "string", "description": "Body that issues it, e.g. 'US Federal Communications Commission'" },
+          "badge_asset_id": { "type": "string", "description": "ref into 04.assets[]" },
+          "url": { "type": "string", "format": "uri", "description": "Verification page on the issuer's site" },
+          "scope": { "type": "string", "description": "What it covers, e.g. 'all products', 'sku_001 only'" }
+        }
+      }
+    },
+    "press_mentions": {
+      "type": "array",
+      "description": "Rendered as /press list + footer trust bar.",
+      "items": {
+        "type": "object",
+        "required": ["outlet", "headline", "url", "published_at"],
+        "properties": {
+          "outlet": { "type": "string", "description": "e.g. 'Wirecutter', 'The Verge'" },
+          "headline": { "type": "string", "maxLength": 200 },
+          "url": { "type": "string", "format": "uri" },
+          "published_at": { "type": "string", "format": "date" },
+          "logo_asset_id": { "type": "string", "description": "ref into 04.assets[] for outlet logo" },
+          "pull_quote": { "type": "string", "maxLength": 300 }
+        }
+      }
+    },
+    "awards": {
+      "type": "array",
+      "description": "Industry awards rendered on /about + /press.",
+      "items": {
+        "type": "object",
+        "required": ["name", "year", "body"],
+        "properties": {
+          "name": { "type": "string" },
+          "year": { "type": "integer", "minimum": 1990, "maximum": 2100 },
+          "body": { "type": "string", "description": "Awarding organization" },
+          "category": { "type": "string", "description": "e.g. 'Best Robot Vacuum 2025'" },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "description": "Founding-to-now milestones rendered on /about. 5-12 entries typical.",
+      "items": {
+        "type": "object",
+        "required": ["year", "milestone"],
+        "properties": {
+          "year": { "type": "integer", "minimum": 1990, "maximum": 2100 },
+          "milestone": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "brand_book_path": {
+      "type": "string",
+      "description": "Path to generated brand book markdown — usually ./eec/03-brand-identity/brand-book.md"
+    },
+    "category_taxonomy": {
+      "type": "array",
+      "description": "Allowed product category slugs for this brand. 02 (product selection) hard-validates every SKU's category against this list. Slugs are lowercase snake_case (e.g. 'dog_collar', 'robot_vacuum'). Pull from 01.niche + 01.adjacent_niches and any explicitly approved expansions. Use [] to opt out (02 then accepts any string).",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      },
+      "uniqueItems": true
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

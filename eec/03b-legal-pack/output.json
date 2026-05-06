@@ -1,0 +1,206 @@
+{
+  "cookie_policy": {
+    "effective_date": "2026-04-22",
+    "controller_contact_email": "privacy@roborock.us",
+    "categories": [
+      {
+        "id": "strictly_necessary",
+        "label": "Strictly necessary",
+        "purpose": "Required for the site to function: maintaining your shopping cart, keeping you signed in, and protecting against cross-site request forgery. These cannot be disabled.",
+        "default_state": "granted",
+        "examples": ["session_id", "csrf_token", "cart_v1"],
+        "retention_days": 30
+      },
+      {
+        "id": "functional",
+        "label": "Functional",
+        "purpose": "Remember your preferences across visits — currency, language, saved wishlist, last-viewed product. Disabling these still lets you shop, but the site forgets your preferences each visit.",
+        "default_state": "granted",
+        "examples": ["roborock_wishlist_v2", "currency_pref"],
+        "retention_days": 365
+      },
+      {
+        "id": "analytics",
+        "label": "Analytics",
+        "purpose": "Help us understand which pages and products people use, so we can fix what is broken and build what is missing. We use Google Analytics 4 with IP anonymization. No raw IP is stored.",
+        "default_state": "denied",
+        "examples": ["_ga", "_ga_*", "_gid"],
+        "retention_days": 730
+      },
+      {
+        "id": "marketing",
+        "label": "Marketing",
+        "purpose": "Show you Roborock ads on Meta, TikTok, and Google after you have visited our site. We share hashed (SHA-256) email and phone with these networks for matching — never the raw values.",
+        "default_state": "denied",
+        "examples": ["_fbp", "_ttp", "_gcl_au"],
+        "retention_days": 365
+      },
+      {
+        "id": "personalization",
+        "label": "Personalization",
+        "purpose": "Tailor the homepage hero and product recommendations to what you have looked at. Disabling these means you see the default catalog ordering.",
+        "default_state": "denied",
+        "examples": ["reco_seed", "ab_variant"],
+        "retention_days": 90
+      }
+    ],
+    "body_md": "# Cookie Policy\n\n**Effective: 2026-04-22.**\n\nThis Cookie Policy explains how Roborock Inc. (\"Roborock\", \"we\", \"us\") uses cookies and similar tracking technologies on roborock.us. It complements our [Privacy Notice](/pages/privacy).\n\n## What is a cookie?\n\nA cookie is a small text file your browser stores when you visit a website. It lets the site remember things about you — that you are signed in, that your cart has 2 items, that your preferred language is English.\n\n## How we use cookies\n\nWe group cookies into 5 categories. **Strictly necessary** and **functional** cookies are on by default — without them the site cannot function or forgets your preferences each visit. **Analytics**, **marketing**, and **personalization** cookies are **off by default** and only turn on if you opt in via the cookie banner that appears on your first visit.\n\nYou can change your choices any time using the **Cookie Settings** link in the footer of every page.\n\n## Third parties we share with\n\nWhen you opt in to analytics or marketing cookies, the following third parties may receive data:\n\n| Provider | Purpose | Privacy policy |\n|---|---|---|\n| Google (Analytics + Ads) | Site analytics + advertising attribution | https://policies.google.com/privacy |\n| Meta (Facebook + Instagram) | Advertising attribution + retargeting | https://www.facebook.com/policy.php |\n| TikTok | Advertising attribution + retargeting | https://www.tiktok.com/legal/privacy-policy |\n| Stripe | Payment processing (always on, strictly necessary) | https://stripe.com/privacy |\n\nFor marketing cookies, any email address or phone number we share is hashed with SHA-256 before transmission. The networks cannot reverse the hash to recover your raw email or phone.\n\n## Retention\n\nEach category lists a retention period above. After that period, the cookie expires automatically. You can also clear cookies any time via your browser settings.\n\n## Contact\n\nQuestions? Email **privacy@roborock.us** and we respond within 7 business days."
+  },
+  "accessibility_statement": {
+    "wcag_level": "AA",
+    "wcag_version": "2.2",
+    "axe_score": {
+      "pass": 142,
+      "violations": 3,
+      "measured_at": "2026-04-15"
+    },
+    "conformance_status": "partial",
+    "known_issues": [
+      {
+        "description": "Cookie consent banner color contrast on hover state falls below 4.5:1 against the brand-secondary background — affects WCAG 1.4.3.",
+        "remediation_eta": "2026-05-30"
+      },
+      {
+        "description": "Product gallery thumbnails lack visible focus indicator when tabbed in Safari 17 — affects WCAG 2.4.7.",
+        "remediation_eta": "2026-05-15"
+      },
+      {
+        "description": "Footer newsletter form input does not announce error state to NVDA screen reader on submit failure — affects WCAG 4.1.3.",
+        "remediation_eta": "2026-06-15"
+      }
+    ],
+    "contact_email": "accessibility@roborock.us",
+    "body_md": "# Accessibility Statement\n\nRoborock is committed to making roborock.us usable by everyone, including people with disabilities. We aim to conform to the **Web Content Accessibility Guidelines (WCAG) 2.2 at Level AA**.\n\n## Current status: partial conformance\n\nLast tested **2026-04-15** using axe-core automated scanning, manual keyboard navigation, and spot checks with NVDA (Windows) and VoiceOver (macOS).\n\n- ✅ 142 automated checks pass\n- ⚠️ 3 violations identified (listed below with remediation dates)\n\n## Known issues and fix dates\n\n1. **Cookie banner contrast on hover** — color contrast falls below 4.5:1 in the hover state. Fix scheduled by **2026-05-30**.\n2. **Gallery focus indicator in Safari** — the visible focus ring disappears for product thumbnail buttons when tabbed in Safari 17. Fix scheduled by **2026-05-15**.\n3. **Newsletter form error announcement** — NVDA does not announce \"invalid email\" when the footer form is submitted with a malformed address. Fix scheduled by **2026-06-15**.\n\n## How we test\n\n- Automated: `axe-core` runs in CI on every pull request affecting components.\n- Manual: keyboard-only navigation across all 21 routes monthly.\n- Assistive tech: NVDA + VoiceOver spot-checks on cart, checkout, and PDP routes quarterly.\n\n## Need help right now?\n\nIf you encounter a barrier and need assistance completing a purchase, return, or warranty claim, email **accessibility@roborock.us** or call our support line. We respond within **5 business days** and can take orders by phone or email if the site is not working for you.\n\n## Alternative formats\n\nProduct manuals are available in large-print PDF and audio narration on request. Email accessibility@roborock.us with the SKU and your preferred format.\n\n## Standards reference\n\nThis statement is prepared in accordance with the W3C Accessibility Conformance Reporting (WCAG-EM) and the U.S. Department of Justice's interpretive guidance on web accessibility under the Americans with Disabilities Act (ADA)."
+  },
+  "ccpa_disclosure": {
+    "effective_date": "2026-04-22",
+    "do_not_sell_link": {
+      "route_path": "/pages/ccpa-do-not-sell",
+      "header_label": "Do Not Sell My Info",
+      "footer_label": "Do Not Sell My Info"
+    },
+    "categories_collected": [
+      "Identifiers (name, email, shipping address, IP address)",
+      "Commercial information (order history, products viewed)",
+      "Internet or other electronic network activity (browsing on roborock.us, search terms)",
+      "Geolocation data (approximate location derived from IP, for shipping estimates)",
+      "Inferences (product affinity, household type — derived from purchase + browse data)"
+    ],
+    "third_parties_shared": [
+      { "name": "Google", "purpose": "Analytics (GA4) and advertising (Google Ads). Email/phone hashed with SHA-256." },
+      { "name": "Meta", "purpose": "Advertising attribution and retargeting on Facebook + Instagram. Email/phone hashed." },
+      { "name": "TikTok", "purpose": "Advertising attribution and retargeting on TikTok. Email/phone hashed." },
+      { "name": "Stripe", "purpose": "Payment processing. Receives card data (which we never store) plus name + billing address." },
+      { "name": "Shippo", "purpose": "Carrier rate quoting and label generation. Receives name, shipping address, package dimensions." }
+    ],
+    "request_form_email": "privacy@roborock.us",
+    "body_md": "# California Consumer Privacy Act (CCPA / CPRA) Disclosure\n\n**Effective: 2026-04-22.**\n\nThis section applies to California residents. It supplements our general [Privacy Notice](/pages/privacy).\n\n## What we collect (last 12 months)\n\n- **Identifiers**: name, email, shipping/billing address, IP address.\n- **Commercial information**: order history, items viewed, items added to cart.\n- **Internet activity**: pages visited, search terms, time on site.\n- **Geolocation**: approximate location derived from IP (for shipping estimates) — never precise GPS unless you opt in.\n- **Inferences**: product affinity scores, household-type categorization (e.g., \"pet household\"), derived from purchase and browse data.\n\nWe do **not** collect: biometric data, sensory information (audio/video recordings), professional or employment data, education records, or sensitive personal information categories defined by CPRA (precise geolocation, racial/ethnic origin, religious beliefs, etc.).\n\n## Sources\n\n- Directly from you: when you place an order, sign up for the newsletter, or contact support.\n- Automatically: from your browser when you visit the site (cookies, page-view logs).\n- From third parties: from advertising platforms reporting which ad you clicked.\n\n## Why we collect it\n\n- Fulfill your orders\n- Provide customer support\n- Send transactional emails (order confirmations, shipping updates)\n- Improve the site and product\n- Run advertising campaigns and measure effectiveness\n\n## Third parties we share with\n\nSee the table on this page for the full list. We share hashed (SHA-256) email and phone with advertising networks — never the raw values.\n\n## Your CCPA / CPRA rights\n\nYou have the right to:\n\n1. **Know** what personal information we have about you.\n2. **Delete** personal information we have collected (with limited exceptions for legal compliance and fraud prevention).\n3. **Correct** inaccurate personal information.\n4. **Opt out** of the \"sale\" or \"sharing\" of your personal information for cross-context behavioral advertising.\n5. **Limit** the use of sensitive personal information (we do not collect sensitive PI in the CPRA sense).\n6. **Non-discrimination** — we will not deny you service, charge a different price, or provide a lower quality of service if you exercise these rights.\n\n## How to exercise your rights\n\n- **Opt out of \"sale\" / \"sharing\"**: use [Do Not Sell My Info](/pages/ccpa-do-not-sell) or click the same link in the page header on every page.\n- **Know / delete / correct**: email **privacy@roborock.us** with subject line \"CCPA Request\" and the email address associated with your account. We respond within **45 days** (extendable by 45 days with notice).\n\n## Verification\n\nTo prevent fraud, we may ask you to verify your identity by confirming the email on file plus one recent order number, or by signing in to your account.\n\n## Authorized agents\n\nYou may designate an authorized agent to make a request on your behalf. The agent must provide written permission signed by you, plus government-issued ID. We may verify directly with you before fulfilling.\n\n## Contact\n\n**privacy@roborock.us** — replies within 45 days for CCPA requests, 7 business days for general questions."
+  },
+  "prop65_warning": {
+    "applies_to_sku_ids": ["sku_001", "sku_002"],
+    "chemical_list": [
+      {
+        "chemical": "Bisphenol A (BPA)",
+        "exposure_route": "skin contact via charging adapter housing"
+      },
+      {
+        "chemical": "Di(2-ethylhexyl) phthalate (DEHP)",
+        "exposure_route": "skin contact via charging cable insulation"
+      }
+    ],
+    "body_md": "# California Proposition 65 Warning\n\n## ⚠️ WARNING\n\n> This product can expose you to chemicals including **Bisphenol A (BPA)** and **Di(2-ethylhexyl) phthalate (DEHP)**, which are known to the State of California to cause cancer and birth defects or other reproductive harm. For more information go to **[www.P65Warnings.ca.gov](https://www.p65warnings.ca.gov)**.\n\n## What this means\n\nCalifornia's Proposition 65 (the Safe Drinking Water and Toxic Enforcement Act of 1986) requires businesses that sell products in California to warn customers about exposure to any of approximately 900 chemicals on the state's list. Many of these chemicals are present in everyday products at levels well below what poses a health risk, but the warning is still required by California law.\n\n## Specifically in our products\n\n- **BPA**: present in trace amounts in the polycarbonate plastic of the charging dock housing on **sku_001 (S-Series Pro)** and **sku_002 (E-Series Essential)**. Exposure route is incidental skin contact when handling the dock. Estimated exposure is **below the No Significant Risk Level (NSRL)** for cancer and below the Maximum Allowable Daily Level (MADL) for reproductive harm under typical use.\n- **DEHP**: present in the flexible PVC insulation of the AC charging cable on the same SKUs. Exposure route is skin contact when plugging in / unplugging the cable. Estimated exposure is **below the NSRL and MADL** under typical use (a few seconds per day of contact).\n\n## What is *not* affected\n\n- **sku_003 (Replenish Kit)** does not contain any Prop 65 listed chemicals at reportable levels — no warning required.\n- The robot bodies themselves (the plastic shells, brushes, and filters) do not contain Prop 65 listed chemicals at reportable levels.\n\n## How to reduce exposure\n\n- Wash hands after handling the charging dock or cable, particularly before eating.\n- Avoid prolonged skin contact with the charging cable (e.g., do not wrap it around bare skin for long periods).\n- Keep the charging assembly out of reach of small children and pets, who may be more susceptible to exposure.\n\n## More information\n\n- California OEHHA: https://www.p65warnings.ca.gov/products/consumer-products\n- BPA fact sheet: https://www.p65warnings.ca.gov/fact-sheets/bisphenol-bpa\n- DEHP fact sheet: https://www.p65warnings.ca.gov/fact-sheets/di-2-ethylhexylphthalate-dehp\n\nThis warning is reviewed annually. Last review: 2026-04-22."
+  },
+  "warranty_terms": {
+    "per_sku": [
+      {
+        "sku_id": "sku_001",
+        "duration_months": 24,
+        "covers": [
+          "Manufacturing defects in materials and workmanship",
+          "Motor and drive train failure under normal use",
+          "Lidar sensor and navigation camera failure",
+          "Battery capacity below 70% of rated capacity within warranty period",
+          "Charging dock electronic failure"
+        ],
+        "excludes": [
+          "Accidental physical damage (drops, impacts, liquid spills)",
+          "Damage from operating outside designed surfaces (wet floors, outdoor use, stairs)",
+          "Consumables (brushes, filters, mop pads, dustbin liners)",
+          "Damage from non-OEM parts or unauthorized service",
+          "Cosmetic wear (scratches, scuffs) that does not affect function",
+          "Lidar / camera lens damage from misuse (e.g., spraying with cleaner)",
+          "Normal wear and tear"
+        ],
+        "transferable": false
+      },
+      {
+        "sku_id": "sku_002",
+        "duration_months": 24,
+        "covers": [
+          "Manufacturing defects in materials and workmanship",
+          "Motor and drive train failure under normal use",
+          "Battery capacity below 70% of rated capacity within warranty period",
+          "Charging dock electronic failure"
+        ],
+        "excludes": [
+          "Accidental physical damage (drops, impacts, liquid spills)",
+          "Damage from operating outside designed surfaces (wet floors, outdoor use, stairs)",
+          "Consumables (brushes, filters, dustbin liners)",
+          "Damage from non-OEM parts or unauthorized service",
+          "Cosmetic wear (scratches, scuffs) that does not affect function",
+          "Normal wear and tear"
+        ],
+        "transferable": false
+      },
+      {
+        "sku_id": "sku_003",
+        "duration_months": 3,
+        "covers": [
+          "Manufacturing defects in materials and workmanship (filter tearing, brush bristle loss in first month)"
+        ],
+        "excludes": [
+          "Normal consumption — these are consumables and degrade with use",
+          "Damage from cleaning with cleaners other than water",
+          "Use beyond the recommended replacement interval (~6 months)"
+        ],
+        "transferable": true
+      }
+    ],
+    "claim_process": "1. Email warranty@roborock.us with: order number, SKU, photo or short video showing the defect, brief description, and your shipping address. 2. We respond within 3 business days with a Return Merchandise Authorization (RMA) number and a prepaid shipping label. 3. Pack the unit (no original box required for robots) and drop at any UPS location. 4. We inspect within 5 business days of receipt. 5. If covered, a replacement unit ships within 7 business days, or you can request a refund to the original payment method. 6. If not covered, we email you with the inspection result and an optional repair quote.",
+    "claim_contact_email": "warranty@roborock.us",
+    "body_md": "# Roborock Limited Warranty\n\n**Effective: 2026-04-22.**\n\nRoborock Inc. (\"Roborock\") warrants its products against defects in materials and workmanship under normal use for the periods stated below.\n\n## Warranty periods by product\n\n| Product | SKU | Warranty | Transferable |\n|---|---|---|---|\n| S-Series Pro robot vacuum + mop | sku_001 | **24 months** from delivery | No (original purchaser only) |\n| E-Series Essential robot vacuum | sku_002 | **24 months** from delivery | No (original purchaser only) |\n| Replenish Kit (consumables) | sku_003 | **3 months** from delivery (defects only) | Yes |\n\n## What is covered\n\n- Manufacturing defects in materials and workmanship\n- Motor and drive train failure under normal use\n- Lidar / navigation sensor failure (sku_001 only)\n- Battery degradation below 70% of rated capacity within the warranty period\n- Charging dock electronic failure\n\n## What is not covered\n\n- Accidental damage, drops, impacts, liquid spills (other than designed mop function)\n- Operating outside designed surfaces (wet floors not on mop mode, outdoor use, falls down stairs)\n- Consumables: brushes, filters, mop pads, dustbin liners (these have a 3-month defect-only warranty under sku_003 above; otherwise replace as needed)\n- Damage from non-OEM parts or unauthorized service\n- Cosmetic wear that does not affect function\n- Normal wear and tear\n\n## How to make a warranty claim\n\n1. **Email** warranty@roborock.us with:\n   - Your order number\n   - The SKU (or product name)\n   - A photo or 30-second video showing the defect\n   - A brief description of the problem\n   - Your shipping address\n2. **We reply within 3 business days** with a Return Merchandise Authorization (RMA) number and a prepaid UPS shipping label.\n3. **Pack and ship** — no original box required for the robots. Tape the RMA number to the outside of the box.\n4. **We inspect within 5 business days** of receipt.\n5. **If covered**: a replacement unit ships within 7 business days, or you can request a full refund to the original payment method.\n6. **If not covered**: we email you with the inspection result and an optional repair quote (you can also have the unit returned to you free of charge).\n\n## Implied warranties\n\nTo the extent permitted by law, any implied warranties are limited to the duration of this express warranty. Some states do not allow such limitations — these may not apply to you.\n\n## Limitation of liability\n\nIn no event shall Roborock's liability exceed the amount you paid for the product, except where prohibited by law (such as for personal injury caused by a manufacturing defect).\n\n## How state law applies\n\nThis warranty gives you specific legal rights, and you may also have other rights that vary from state to state.\n\n## Contact\n\n**warranty@roborock.us** — typical response within 3 business days."
+  },
+  "gdpr_data_request_contact": {
+    "email": "privacy@roborock.us",
+    "response_sla_days": 30,
+    "dpo_name": "Not designated — Roborock controller acts as data protection contact",
+    "supervisory_authority": "Not applicable — no EU establishment. EU residents may contact their local DPA; we cooperate with all EU supervisory authorities."
+  },
+  "dmca_contact": {
+    "agent_name": "Roborock Inc., DMCA Designated Agent",
+    "email": "dmca@roborock.us",
+    "address": "100 Roborock Way, Mountain View, CA 94043, United States",
+    "phone": "+1 (650) 555-0142"
+  },
+  "footer_link_group": {
+    "heading": "Legal",
+    "links": [
+      { "label": "Privacy Notice", "route_path": "/pages/privacy" },
+      { "label": "Terms of Service", "route_path": "/pages/terms" },
+      { "label": "Cookies", "route_path": "/pages/cookies" },
+      { "label": "Accessibility", "route_path": "/pages/accessibility" },
+      { "label": "Do Not Sell My Info", "route_path": "/pages/ccpa-do-not-sell" },
+      { "label": "Prop 65 Warning", "route_path": "/pages/prop65" },
+      { "label": "Warranty", "route_path": "/pages/warranty" },
+      { "label": "GDPR Data Request", "route_path": "/pages/gdpr-data-request" },
+      { "label": "DMCA", "route_path": "/pages/dmca" }
+    ]
+  },
+  "meta": {
+    "generated_at": "2026-04-22T10:00:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "source_count": 3,
+    "user_input_summary": "include_eula=false; prop65_strict=false; upstream: 02 + 03 + 05"
+  }
+}

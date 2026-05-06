@@ -1,0 +1,230 @@
+{
+  "keyword_clusters": [
+    {
+      "id": "cluster_001",
+      "topic": "Pet hair vacuum performance",
+      "head_keyword": "best robot vacuum for pet hair",
+      "long_tails": [
+        "best robot vacuum for long-haired cats",
+        "robot vacuum that doesn't get tangled in pet hair",
+        "anti tangle brush robot vacuum",
+        "robot vacuum for golden retriever shedding"
+      ],
+      "search_intent": "commercial",
+      "audience_id": "audience_001",
+      "linked_sku_ids": ["sku_001", "sku_003"]
+    },
+    {
+      "id": "cluster_002",
+      "topic": "Lidar mapping value tier",
+      "head_keyword": "lidar robot vacuum under 500",
+      "long_tails": [
+        "cheapest lidar robot vacuum",
+        "lidar vs camera robot vacuum",
+        "best budget robot vacuum with mapping",
+        "robot vacuum with room mapping under $500"
+      ],
+      "search_intent": "transactional",
+      "audience_id": "audience_004",
+      "linked_sku_ids": ["sku_002"]
+    },
+    {
+      "id": "cluster_003",
+      "topic": "Mop + vacuum combo",
+      "head_keyword": "robot vacuum that mops too",
+      "long_tails": [
+        "robot vacuum and mop in one",
+        "robot mop that lifts on rugs",
+        "self washing robot mop",
+        "best mop vacuum combo for hardwood"
+      ],
+      "search_intent": "commercial",
+      "audience_id": "audience_002",
+      "linked_sku_ids": ["sku_001"]
+    },
+    {
+      "id": "cluster_004",
+      "topic": "Self-emptying / dock features",
+      "head_keyword": "robot vacuum self emptying",
+      "long_tails": [
+        "self emptying robot vacuum worth it",
+        "robot vacuum auto empty dock comparison",
+        "how often empty robot vacuum dock"
+      ],
+      "search_intent": "commercial",
+      "audience_id": "audience_002",
+      "linked_sku_ids": ["sku_001"]
+    },
+    {
+      "id": "cluster_005",
+      "topic": "Troubleshooting + maintenance",
+      "head_keyword": "robot vacuum keeps getting stuck",
+      "long_tails": [
+        "robot vacuum stuck under furniture fix",
+        "why does my robot vacuum keep stopping",
+        "robot vacuum app not connecting",
+        "how often replace robot vacuum filter",
+        "how to clean robot vacuum brush"
+      ],
+      "search_intent": "informational",
+      "linked_sku_ids": ["sku_003"]
+    },
+    {
+      "id": "cluster_006",
+      "topic": "Brand comparison",
+      "head_keyword": "roborock vs roomba",
+      "long_tails": [
+        "roborock vs roomba pet hair",
+        "roborock vs eufy",
+        "roborock vs dreame 2026",
+        "is roborock better than irobot"
+      ],
+      "search_intent": "commercial",
+      "audience_id": "audience_003",
+      "linked_sku_ids": ["sku_001", "sku_002"]
+    }
+  ],
+  "content_calendar": [
+    { "id": "content_001", "scheduled_date": "2026-04-29", "content_type": "blog", "title": "Best Robot Vacuums for Pet Hair (2026): Tested on 12 Weeks of Golden Retriever Shedding", "target_keyword": "best robot vacuum for pet hair", "cluster_id": "cluster_001", "owner": "content_lead", "status": "drafted", "route_path": "/blog/best-robot-vacuum-pet-hair-2026" },
+    { "id": "content_002", "scheduled_date": "2026-05-02", "content_type": "guide", "title": "Lidar Robot Vacuums Under $500: What Actually Works", "target_keyword": "lidar robot vacuum under 500", "cluster_id": "cluster_002", "owner": "content_lead", "status": "drafted", "route_path": "/blog/lidar-robot-vacuum-under-500" },
+    { "id": "content_003", "scheduled_date": "2026-05-06", "content_type": "blog", "title": "Why Your Robot Vacuum Keeps Getting Stuck (and How to Fix It in 5 Minutes)", "target_keyword": "robot vacuum keeps getting stuck", "cluster_id": "cluster_005", "owner": "support_lead", "status": "drafted", "route_path": "/blog/robot-vacuum-keeps-getting-stuck" },
+    { "id": "content_004", "scheduled_date": "2026-05-09", "content_type": "blog", "title": "How Often Should You Replace Your Robot Vacuum Filter? (Honest Answer)", "target_keyword": "how often replace robot vacuum filter", "cluster_id": "cluster_005", "owner": "support_lead", "status": "drafted", "route_path": "/blog/how-often-replace-robot-vacuum-filter" },
+    { "id": "content_005", "scheduled_date": "2026-05-13", "content_type": "comparison", "title": "Roborock vs Roomba 2026: Six Months Side-by-Side in a Pet Household", "target_keyword": "roborock vs roomba", "cluster_id": "cluster_006", "owner": "content_lead", "status": "planned" },
+    { "id": "content_006", "scheduled_date": "2026-05-16", "content_type": "guide", "title": "Robot Vacuum App Won't Connect? Walk Through the 7 Most Common Causes", "target_keyword": "robot vacuum app not connecting", "cluster_id": "cluster_005", "owner": "support_lead", "status": "planned" },
+    { "id": "content_007", "scheduled_date": "2026-05-20", "content_type": "landing", "title": "Robot Vacuums That Actually Mop (Lift on Rugs, Self-Wash, No Streaks)", "target_keyword": "robot vacuum that mops too", "cluster_id": "cluster_003", "owner": "content_lead", "status": "planned" },
+    { "id": "content_008", "scheduled_date": "2026-05-23", "content_type": "blog", "title": "Self-Emptying Robot Vacuums: Worth It, Or Marketing?", "target_keyword": "robot vacuum self emptying", "cluster_id": "cluster_004", "owner": "content_lead", "status": "planned" },
+    { "id": "content_009", "scheduled_date": "2026-05-27", "content_type": "video", "title": "12-Week Pet Hair Test — One Robot, Zero Brush Cleanings", "target_keyword": "anti tangle brush robot vacuum", "cluster_id": "cluster_001", "owner": "video_lead", "status": "planned" },
+    { "id": "content_010", "scheduled_date": "2026-05-30", "content_type": "email_newsletter", "title": "May Recap: Three Things We Learned About Pet Hair (and One We Got Wrong)", "target_keyword": "pet hair robot vacuum tips", "cluster_id": "cluster_001", "owner": "crm_lead", "status": "planned" }
+  ],
+  "drafts": [
+    {
+      "id": "draft_001",
+      "content_id": "content_001",
+      "title": "Best Robot Vacuums for Pet Hair (2026): Tested on 12 Weeks of Golden Retriever Shedding",
+      "slug": "best-robot-vacuum-pet-hair-2026",
+      "excerpt": "Twelve weeks. One golden retriever. Three robots. We measured the brush untanglings, the surface area cleaned, and the sanity preserved. Here's what won.",
+      "outline": [
+        { "h": 1, "text": "Best Robot Vacuums for Pet Hair (2026)" },
+        { "h": 2, "text": "How we tested: 12 weeks, one golden retriever, zero brush cleanings" },
+        { "h": 2, "text": "What 'anti-tangle' actually means (and how to spot the marketing version)" },
+        { "h": 2, "text": "Top picks for pet households" },
+        { "h": 3, "text": "Best overall: Roborock S-Series Pro" },
+        { "h": 3, "text": "Best under $500: Roborock E-Series Essential" },
+        { "h": 3, "text": "Honorable mention: Eufy 11S Max (no mapping, but quiet)" },
+        { "h": 2, "text": "Brushes that wrap vs. brushes that don't: a 30-second visual test" },
+        { "h": 2, "text": "What to ignore in pet-vacuum specs" },
+        { "h": 2, "text": "FAQ: long-haired cats, dander, allergens" }
+      ],
+      "body_md_path": "./eec/07b-content-marketing/drafts/content_001.md",
+      "target_keyword": "best robot vacuum for pet hair",
+      "secondary_keywords": ["anti tangle brush robot vacuum", "robot vacuum for golden retriever shedding", "best robot vacuum for long-haired cats"],
+      "internal_links": ["/products/roborock-s-series-pro", "/products/roborock-e-series-essential", "/collections/pet-households", "/products/roborock-replenish-6mo"],
+      "cta_sku_id": "sku_001",
+      "language": "en-US",
+      "estimated_reading_time_min": 9
+    },
+    {
+      "id": "draft_002",
+      "content_id": "content_002",
+      "title": "Lidar Robot Vacuums Under $500: What Actually Works",
+      "slug": "lidar-robot-vacuum-under-500",
+      "excerpt": "Real lidar — not gyro, not optical — used to mean spending $800+. In 2026 it's a sub-$500 floor. Here are the three robots that clear the bar (and the one that doesn't).",
+      "outline": [
+        { "h": 1, "text": "Lidar Robot Vacuums Under $500: What Actually Works" },
+        { "h": 2, "text": "Why $500 is the new lidar threshold" },
+        { "h": 2, "text": "Lidar vs camera vs gyro: a 60-second primer" },
+        { "h": 2, "text": "Three sub-$500 lidar robots, ranked" },
+        { "h": 3, "text": "Roborock E-Series Essential — $449" },
+        { "h": 3, "text": "Eufy X10 Pro — $549 (just over)" },
+        { "h": 3, "text": "Dreame D10s Pro — $429" },
+        { "h": 2, "text": "What you give up under $500 (and what you don't)" },
+        { "h": 2, "text": "Buying checklist" }
+      ],
+      "body_md_path": "./eec/07b-content-marketing/drafts/content_002.md",
+      "target_keyword": "lidar robot vacuum under 500",
+      "secondary_keywords": ["cheapest lidar robot vacuum", "lidar vs camera robot vacuum", "best budget robot vacuum with mapping"],
+      "internal_links": ["/products/roborock-e-series-essential", "/collections/all"],
+      "cta_sku_id": "sku_002",
+      "language": "en-US",
+      "estimated_reading_time_min": 7
+    },
+    {
+      "id": "draft_003",
+      "content_id": "content_003",
+      "title": "Why Your Robot Vacuum Keeps Getting Stuck (and How to Fix It in 5 Minutes)",
+      "slug": "robot-vacuum-keeps-getting-stuck",
+      "excerpt": "Seven things cause 90% of stuck-ups: cable spaghetti, dark rugs, threshold strips, bath mats, low-clearance chairs, stale maps, and brush tangles. Five-minute fix list.",
+      "outline": [
+        { "h": 1, "text": "Why Your Robot Vacuum Keeps Getting Stuck" },
+        { "h": 2, "text": "The seven things that cause 90% of stuck-ups" },
+        { "h": 3, "text": "Cable spaghetti under desks" },
+        { "h": 3, "text": "Black or dark-pile rugs (cliff sensor false-positive)" },
+        { "h": 3, "text": "1.5cm threshold strips" },
+        { "h": 3, "text": "Bath mats with no rubber backing" },
+        { "h": 3, "text": "Chair legs in the under-3cm clearance zone" },
+        { "h": 3, "text": "Old map data after furniture moves" },
+        { "h": 3, "text": "Brush-roller hair binding" },
+        { "h": 2, "text": "Quick fixes you can do in five minutes" },
+        { "h": 2, "text": "When to retire the brush + filter (and what to replace with)" }
+      ],
+      "body_md_path": "./eec/07b-content-marketing/drafts/content_003.md",
+      "target_keyword": "robot vacuum keeps getting stuck",
+      "secondary_keywords": ["robot vacuum stuck under furniture fix", "why does my robot vacuum keep stopping"],
+      "internal_links": ["/help", "/products/roborock-replenish-6mo"],
+      "cta_sku_id": "sku_003",
+      "language": "en-US",
+      "estimated_reading_time_min": 5
+    },
+    {
+      "id": "draft_004",
+      "content_id": "content_004",
+      "title": "How Often Should You Replace Your Robot Vacuum Filter? (Honest Answer)",
+      "slug": "how-often-replace-robot-vacuum-filter",
+      "excerpt": "Short answer: 60–90 days. With pets: 30–45. Here are the three signs you waited too long, and what's on the same schedule (and what isn't).",
+      "outline": [
+        { "h": 1, "text": "How Often to Replace Your Robot Vacuum Filter" },
+        { "h": 2, "text": "Short answer: 60–90 days for most homes, 30–45 with pets" },
+        { "h": 2, "text": "Three signs you waited too long" },
+        { "h": 2, "text": "Filter, brush, mop pad — what's on the same schedule and what isn't" },
+        { "h": 2, "text": "Subscribe & forget: the case for a 6-month replenishment kit" }
+      ],
+      "body_md_path": "./eec/07b-content-marketing/drafts/content_004.md",
+      "target_keyword": "how often replace robot vacuum filter",
+      "secondary_keywords": ["robot vacuum filter replacement schedule", "roborock replacement parts"],
+      "internal_links": ["/products/roborock-replenish-6mo", "/help"],
+      "cta_sku_id": "sku_003",
+      "language": "en-US",
+      "estimated_reading_time_min": 4
+    }
+  ],
+  "internal_link_map": [
+    { "source": "content_001", "target": "/products/roborock-s-series-pro", "anchor": "Roborock S-Series Pro" },
+    { "source": "content_001", "target": "/products/roborock-e-series-essential", "anchor": "E-Series Essential" },
+    { "source": "content_001", "target": "/collections/pet-households", "anchor": "pet-household lineup" },
+    { "source": "content_002", "target": "/products/roborock-e-series-essential", "anchor": "E-Series Essential ($449)" },
+    { "source": "content_003", "target": "/help", "anchor": "Help Center troubleshooting" },
+    { "source": "content_003", "target": "/products/roborock-replenish-6mo", "anchor": "6-month replenishment kit" },
+    { "source": "content_004", "target": "/products/roborock-replenish-6mo", "anchor": "Subscribe & save 20% on the 6-month kit" },
+    { "source": "/products/roborock-s-series-pro", "target": "content_001", "anchor": "Read the 12-week pet hair test" },
+    { "source": "/products/roborock-e-series-essential", "target": "content_002", "anchor": "Compare lidar robots under $500" },
+    { "source": "/help", "target": "content_003", "anchor": "Why your robot keeps getting stuck" }
+  ],
+  "distribution_plan": [
+    { "content_id": "content_001", "channel": "social_organic", "scheduled_date": "2026-04-29" },
+    { "content_id": "content_001", "channel": "newsletter", "scheduled_date": "2026-05-01" },
+    { "content_id": "content_002", "channel": "social_organic", "scheduled_date": "2026-05-02" },
+    { "content_id": "content_002", "channel": "paid_amplification", "scheduled_date": "2026-05-04" },
+    { "content_id": "content_003", "channel": "newsletter", "scheduled_date": "2026-05-08" },
+    { "content_id": "content_004", "channel": "email", "scheduled_date": "2026-05-10" },
+    { "content_id": "content_005", "channel": "social_organic", "scheduled_date": "2026-05-13" },
+    { "content_id": "content_005", "channel": "outreach", "scheduled_date": "2026-05-15" },
+    { "content_id": "content_009", "channel": "social_organic", "scheduled_date": "2026-05-27" }
+  ],
+  "editorial_voice_ref": "./eec/03-brand-identity/output.json#/tone",
+  "meta": {
+    "generated_at": "2026-04-22T15:45:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: ./eec/07a-tech-seo/output.json#/keyword_opportunities + ./eec/03-brand-identity/output.json#/tone (referenced, not duplicated)"
+  }
+}

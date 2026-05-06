@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/07a-tech-seo",
+  "title": "eec-07a-tech-seo output",
+  "type": "object",
+  "required": ["audit_report", "core_web_vitals_baseline", "sitemap_url", "schema_org_emitted", "applied_changes", "keyword_opportunities", "meta"],
+  "properties": {
+    "audit_report": {
+      "type": "object",
+      "required": ["lighthouse_scores", "technical_issues"],
+      "properties": {
+        "lighthouse_scores": {
+          "type": "object",
+          "properties": {
+            "performance": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "accessibility": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "best_practices": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "seo": { "type": "integer", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "technical_issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "category", "description"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["critical", "high", "medium", "low"] },
+              "category": {
+                "type": "string",
+                "enum": ["crawlability", "indexing", "performance", "metadata", "structured_data", "accessibility", "i18n", "mobile", "security"]
+              },
+              "description": { "type": "string" },
+              "affected_routes": { "type": "array", "items": { "type": "string" } },
+              "fix_recommendation": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "core_web_vitals_baseline": {
+      "type": "object",
+      "required": ["lcp_p75_ms", "inp_p75_ms", "cls_p75"],
+      "properties": {
+        "lcp_p75_ms": { "type": "number", "description": "Largest Contentful Paint, p75, milliseconds" },
+        "inp_p75_ms": { "type": "number", "description": "Interaction to Next Paint, p75, milliseconds" },
+        "cls_p75": { "type": "number", "description": "Cumulative Layout Shift, p75" },
+        "by_route": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["route", "lcp_p75_ms", "inp_p75_ms", "cls_p75"],
+            "properties": {
+              "route": { "type": "string" },
+              "lcp_p75_ms": { "type": "number" },
+              "inp_p75_ms": { "type": "number" },
+              "cls_p75": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "sitemap_url": { "type": "string", "format": "uri" },
+    "robots_txt_path": { "type": "string" },
+    "schema_org_emitted": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["route", "type", "validated"],
+        "properties": {
+          "route": { "type": "string" },
+          "type": { "type": "string", "description": "e.g. Product, Organization, BreadcrumbList, FAQPage, Article" },
+          "validated": { "type": "boolean" },
+          "validator": { "type": "string", "description": "e.g. schema-validator, search-console" }
+        }
+      }
+    },
+    "canonical_strategy": { "type": "string" },
+    "internal_link_summary": {
+      "type": "object",
+      "properties": {
+        "total_internal_links": { "type": "integer" },
+        "orphan_pages": { "type": "array", "items": { "type": "string" } },
+        "deepest_click_depth": { "type": "integer" }
+      }
+    },
+    "redirects_recommended": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "code"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "code": { "type": "integer", "enum": [301, 302, 308] },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "keyword_opportunities": {
+      "type": "array",
+      "description": "Handed forward to eec-07b-content-marketing for cluster planning",
+      "items": {
+        "type": "object",
+        "required": ["keyword", "intent", "difficulty"],
+        "properties": {
+          "keyword": { "type": "string" },
+          "intent": { "type": "string", "enum": ["informational", "commercial", "transactional", "navigational"] },
+          "current_rank": { "type": "integer", "description": "Use 0 if not ranked" },
+          "difficulty": { "type": "string", "enum": ["low", "medium", "high"] },
+          "monthly_volume_estimate": { "type": "integer" },
+          "suggested_target_route": { "type": "string" }
+        }
+      }
+    },
+    "applied_changes": {
+      "type": "array",
+      "description": "Concrete changes 07a wrote to the codebase / CMS",
+      "items": {
+        "type": "object",
+        "required": ["change_type", "target", "applied_at"],
+        "properties": {
+          "change_type": { "type": "string" },
+          "target": { "type": "string" },
+          "applied_at": { "type": "string", "format": "date-time" },
+          "diff_summary": { "type": "string" }
+        }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/04-creative-factory",
+  "title": "eec-04-creative-factory output",
+  "type": "object",
+  "required": ["assets", "copy_blocks", "naming_convention", "meta"],
+  "properties": {
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "purpose", "channel", "language"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^asset_[0-9]{3}$" },
+          "type": { "type": "string", "enum": ["image", "video", "copy", "hook", "audio"] },
+          "purpose": { "type": "string", "enum": ["hero", "product", "lifestyle", "ad", "email", "social", "seo", "testimonial", "ugc"] },
+          "channel": { "type": "string", "enum": ["meta", "tiktok", "google", "youtube", "email", "web", "pinterest", "x", "any"] },
+          "language": { "$ref": "_common#/$defs/LanguageCode" },
+          "format": { "type": "string", "description": "e.g. 1:1, 9:16, 16:9, 4:5, text" },
+          "sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+          "source": {
+            "type": "string",
+            "enum": ["ai_generated", "user_uploaded", "shot", "stock"],
+            "default": "ai_generated",
+            "description": "Provenance of this asset. ai_generated = produced by generate_image / LLM; user_uploaded = the brand owner provided the file (preserve as-is, never regenerate); shot = real photography / video capture; stock = licensed third-party asset. Downstream skills (05/07b/08) MUST NOT regenerate user_uploaded/shot/stock assets."
+          },
+          "auto_tagged": {
+            "type": "boolean",
+            "default": false,
+            "description": "True when sku_id / audience_ids / purpose / channel were proposed by AI (--existing-dir mode) and not yet confirmed by the user. UI should surface as 'AI 推荐 — 待复核'. Downstream skills MAY still consume these assets but should mark dependent decisions as provisional."
+          },
+          "uploaded_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp when the user uploaded this asset (only set for source=user_uploaded). Used by Web UI to sort/group recent uploads."
+          },
+          "audience_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^audience_[0-9]{3}$" },
+            "description": "One asset can target multiple audiences (many-to-many). Empty/omitted = brand-level asset."
+          },
+          "file_path": { "type": "string", "description": "Relative to project root" },
+          "text_content": { "type": "string", "description": "For type=copy/hook" },
+          "alt_text": { "type": "string" },
+          "prompt_used": { "type": "string", "description": "For AI-generated assets — keeps reproducibility" },
+          "approved": { "type": "boolean", "default": false },
+          "size_bytes": { "type": "integer" },
+          "status": {
+            "type": "string",
+            "enum": ["brief", "stub", "shot", "retouched", "approved"],
+            "default": "brief",
+            "description": "Production state. brief = direction only. stub = AI/placeholder generated. shot = real capture or final-quality render. retouched = post-processed. approved = signed off by brand. Site renders <Image> only when status ∈ {shot, retouched, approved}."
+          },
+          "shoot_brief_md_path": {
+            "type": "string",
+            "description": "Path to the markdown shot brief (relative to repo root). One file per asset under eec/04-creative-factory/asset_briefs/. REQUIRED for any asset with status != 'approved' so a real shoot can later happen. Self-check MUST verify the file exists on disk (per conventions.md §13)."
+          },
+          "delivered_file_path": {
+            "type": "string",
+            "pattern": "^/.+\\.(jpg|jpeg|png|webp|avif|svg|mp4|webm)$",
+            "description": "Absolute path under /public (must start with /). Required when status >= shot. Examples: /og/asset_001.jpg, /videos/asset_005.mp4."
+          },
+          "width": { "type": "integer", "minimum": 1, "description": "Pixel width — required for next/image when status >= shot." },
+          "height": { "type": "integer", "minimum": 1, "description": "Pixel height — required for next/image when status >= shot." }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "status": { "enum": ["shot", "retouched", "approved"] } }, "required": ["status"] },
+            "then": { "required": ["delivered_file_path", "width", "height"] }
+          },
+          {
+            "if": { "properties": { "status": { "enum": ["brief", "stub"] } }, "required": ["status"] },
+            "then": { "required": ["shoot_brief_md_path"], "$comment": "Per conventions.md §13: every brief/stub asset MUST point at a real .md brief on disk so a future shoot can actually happen. Self-check verifies file exists." }
+          }
+        ]
+      }
+    },
+    "copy_blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "purpose", "headline", "language"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^copy_[0-9]{3}$" },
+          "purpose": {
+            "type": "string",
+            "enum": ["product_card", "hero_banner", "ad_primary", "ad_headline", "email_subject", "email_body", "blog_intro", "cta", "feature_block", "faq", "review_response"]
+          },
+          "channel": { "type": "string" },
+          "headline": { "type": "string" },
+          "subhead": { "type": "string" },
+          "body": { "type": "string" },
+          "cta": { "type": "string" },
+          "language": { "$ref": "_common#/$defs/LanguageCode" },
+          "sku_id": { "type": "string" },
+          "audience_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^audience_[0-9]{3}$" }
+          },
+          "char_count": { "type": "integer" },
+          "platform_constraints_met": { "type": "boolean", "description": "e.g. Meta primary text ≤125 chars" }
+        }
+      }
+    },
+    "video_briefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "hook", "scenes", "duration_s", "channel"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^video_[0-9]{3}$" },
+          "hook": { "type": "string", "description": "First 3-second hook" },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["second_start", "shot"],
+              "properties": {
+                "second_start": { "type": "number" },
+                "shot": { "type": "string" },
+                "vo": { "type": "string", "description": "Voice-over" },
+                "on_screen_text": { "type": "string" }
+              }
+            }
+          },
+          "cta": { "type": "string" },
+          "duration_s": { "type": "number" },
+          "channel": { "type": "string" },
+          "language": { "$ref": "_common#/$defs/LanguageCode" },
+          "sku_id": { "type": "string" }
+        }
+      }
+    },
+    "naming_convention": {
+      "type": "object",
+      "required": ["pattern", "example"],
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "Token pattern, e.g. {sku}_{purpose}_{channel}_{lang}_{format}_{seq}"
+        },
+        "example": { "type": "string" }
+      }
+    },
+    "asset_coverage_matrix": {
+      "type": "object",
+      "description": "Self-check: how many assets per (purpose × channel × language) intersection. Per conventions.md §13/§14: this matrix MUST be derived from filesystem reality (count actual files in repo/public/), not from the briefs[]. Aspirational matrices are forbidden — past incident: matrix claimed 15 assets shipped while only 1 existed.",
+      "additionalProperties": { "type": "integer" }
+    },
+    "asset_coverage_source": {
+      "type": "string",
+      "enum": ["filesystem"],
+      "default": "filesystem",
+      "description": "Locked to 'filesystem'. The skill MUST NOT compute asset_coverage_matrix from the briefs/spec — only from on-disk inventory of repo/public/."
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

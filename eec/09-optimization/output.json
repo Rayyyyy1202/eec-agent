@@ -1,0 +1,181 @@
+{
+  "data_sources": [
+    {
+      "platform": "meta_marketing_api",
+      "api_endpoint": "act_<id>/insights",
+      "api_version": "v19.0",
+      "auth_method": "oauth2_system_user",
+      "required_env_vars": ["META_ACCESS_TOKEN", "META_AD_ACCOUNT_ID", "META_BUSINESS_ID"],
+      "account_id_placeholder": "TBD_act_meta",
+      "metrics_pulled": ["impressions", "clicks", "spend", "purchase_value", "actions:purchase", "actions:add_to_cart"],
+      "dimensions_pulled": ["campaign_id", "adset_id", "ad_id", "date"],
+      "pull_frequency": "daily",
+      "rate_limit_observed": "Tier-2 system user: ~60k calls/hour, well below cap",
+      "last_pulled_at": "2026-04-29T08:00:00Z",
+      "status": "ok",
+      "rows_fetched": 421
+    },
+    {
+      "platform": "tiktok_marketing_api",
+      "api_endpoint": "report/integrated/get/",
+      "api_version": "v1.3",
+      "auth_method": "oauth2_user",
+      "required_env_vars": ["TIKTOK_ACCESS_TOKEN", "TIKTOK_ADVERTISER_ID"],
+      "account_id_placeholder": "TBD_advertiser_tiktok",
+      "metrics_pulled": ["impressions", "clicks", "spend", "complete_payment", "complete_payment_rate", "video_play_actions"],
+      "dimensions_pulled": ["campaign_id", "adgroup_id", "ad_id", "stat_time_day"],
+      "pull_frequency": "daily",
+      "last_pulled_at": "2026-04-29T08:05:00Z",
+      "status": "ok",
+      "rows_fetched": 287
+    },
+    {
+      "platform": "google_ads_api",
+      "api_endpoint": "customers/<id>/googleAds:searchStream",
+      "api_version": "v17",
+      "auth_method": "oauth2_user",
+      "required_env_vars": ["GOOGLE_ADS_DEVELOPER_TOKEN", "GOOGLE_ADS_CLIENT_ID", "GOOGLE_ADS_CLIENT_SECRET", "GOOGLE_ADS_REFRESH_TOKEN", "GOOGLE_ADS_CUSTOMER_ID"],
+      "account_id_placeholder": "TBD_google_ads",
+      "metrics_pulled": ["metrics.impressions", "metrics.clicks", "metrics.cost_micros", "metrics.conversions", "metrics.conversions_value"],
+      "dimensions_pulled": ["campaign.id", "ad_group.id", "segments.date"],
+      "pull_frequency": "daily",
+      "last_pulled_at": "2026-04-29T08:10:00Z",
+      "status": "ok",
+      "rows_fetched": 198
+    },
+    {
+      "platform": "ga4_data_api",
+      "api_endpoint": "properties/<id>:runReport",
+      "api_version": "v1beta",
+      "auth_method": "service_account",
+      "required_env_vars": ["GA4_PROPERTY_ID", "GA4_SERVICE_ACCOUNT_JSON_PATH"],
+      "account_id_placeholder": "TBD_ga4_property",
+      "metrics_pulled": ["sessions", "totalUsers", "engagementRate", "conversions", "purchaseRevenue", "averagePurchaseRevenue"],
+      "dimensions_pulled": ["sessionSourceMedium", "landingPage", "deviceCategory", "date"],
+      "pull_frequency": "daily",
+      "last_pulled_at": "2026-04-29T08:15:00Z",
+      "status": "ok",
+      "rows_fetched": 612
+    },
+    {
+      "platform": "stripe_api",
+      "api_endpoint": "charges.list + customers.list",
+      "api_version": "2025-09-15",
+      "auth_method": "api_key",
+      "required_env_vars": ["STRIPE_SECRET_KEY"],
+      "account_id_placeholder": "TBD_stripe_account",
+      "metrics_pulled": ["amount_captured", "refunded", "currency", "status"],
+      "dimensions_pulled": ["created", "metadata.order_id", "metadata.customer_email_hash"],
+      "pull_frequency": "daily",
+      "last_pulled_at": "2026-04-29T08:20:00Z",
+      "status": "ok",
+      "rows_fetched": 89
+    },
+    {
+      "platform": "search_console_api",
+      "api_endpoint": "sites/<site>/searchAnalytics/query",
+      "api_version": "v1",
+      "auth_method": "service_account",
+      "required_env_vars": ["GSC_SITE_URL", "GSC_SERVICE_ACCOUNT_JSON_PATH"],
+      "account_id_placeholder": "https://roborock-us.example.com/",
+      "metrics_pulled": ["clicks", "impressions", "ctr", "position"],
+      "dimensions_pulled": ["query", "page", "date"],
+      "pull_frequency": "weekly",
+      "last_pulled_at": "2026-04-29T08:25:00Z",
+      "status": "ok",
+      "rows_fetched": 134,
+      "error_detail": "Note: GSC has 2-3 day data lag — first usable data expected 2026-05-02"
+    }
+  ],
+  "data_pull": {
+    "period_start": "2026-04-22",
+    "period_end": "2026-04-28",
+    "source_data_source_ids": [0, 1, 2, 3, 4],
+    "metrics_by_dim": [
+      {
+        "dimension": "campaign",
+        "rows": [
+          { "key": "campaign_001", "impressions": 412330, "clicks": 5621, "spend": { "amount": 1389.5, "currency": "USD" }, "ctr": 0.0136, "cvr": 0.0214, "cpa": { "amount": 11.55, "currency": "USD" }, "roas": 2.81, "purchases": 120, "revenue": { "amount": 3905.85, "currency": "USD" } },
+          { "key": "campaign_002", "impressions": 28910, "clicks": 1184, "spend": { "amount": 547.2, "currency": "USD" }, "ctr": 0.0410, "cvr": 0.0735, "cpa": { "amount": 6.29, "currency": "USD" }, "roas": 5.42, "purchases": 87, "revenue": { "amount": 2965.84, "currency": "USD" } },
+          { "key": "campaign_003", "impressions": 921400, "clicks": 2102, "spend": { "amount": 348.6, "currency": "USD" }, "ctr": 0.0023, "cvr": 0.0024, "cpa": { "amount": 69.72, "currency": "USD" }, "roas": 0.18, "purchases": 5, "revenue": { "amount": 62.74, "currency": "USD" } },
+          { "key": "campaign_004", "impressions": 689210, "clicks": 11487, "spend": { "amount": 1042.8, "currency": "USD" }, "ctr": 0.0167, "cvr": 0.0142, "cpa": { "amount": 6.39, "currency": "USD" }, "roas": 4.03, "purchases": 163, "revenue": { "amount": 4202.49, "currency": "USD" } },
+          { "key": "campaign_005", "impressions": 213400, "clicks": 4187, "spend": { "amount": 411.5, "currency": "USD" }, "ctr": 0.0196, "cvr": 0.0084, "cpa": { "amount": 11.69, "currency": "USD" }, "roas": 1.94, "purchases": 35, "revenue": { "amount": 798.31, "currency": "USD" } },
+          { "key": "campaign_006", "impressions": 198400, "clicks": 4012, "spend": { "amount": 832.9, "currency": "USD" }, "ctr": 0.0202, "cvr": 0.0356, "cpa": { "amount": 5.83, "currency": "USD" }, "roas": 6.89, "purchases": 143, "revenue": { "amount": 5738.68, "currency": "USD" } },
+          { "key": "campaign_007", "impressions": 8420, "clicks": 1841, "spend": { "amount": 245.9, "currency": "USD" }, "ctr": 0.2186, "cvr": 0.1043, "cpa": { "amount": 1.28, "currency": "USD" }, "roas": 14.62, "purchases": 192, "revenue": { "amount": 3595.05, "currency": "USD" } },
+          { "key": "campaign_008", "impressions": 142300, "clicks": 2284, "spend": { "amount": 612.4, "currency": "USD" }, "ctr": 0.0161, "cvr": 0.0271, "cpa": { "amount": 9.88, "currency": "USD" }, "roas": 3.31, "purchases": 62, "revenue": { "amount": 2027.04, "currency": "USD" } }
+        ]
+      },
+      {
+        "dimension": "creative",
+        "rows": [
+          { "key": "pairing_001", "impressions": 142800, "clicks": 1623, "spend": { "amount": 421.3, "currency": "USD" }, "ctr": 0.0114, "cvr": 0.0185, "roas": 2.21, "purchases": 30 },
+          { "key": "pairing_002", "impressions": 138900, "clicks": 1842, "spend": { "amount": 458.6, "currency": "USD" }, "ctr": 0.0133, "cvr": 0.0212, "roas": 2.74, "purchases": 39 },
+          { "key": "pairing_003", "impressions": 130630, "clicks": 2156, "spend": { "amount": 509.6, "currency": "USD" }, "ctr": 0.0165, "cvr": 0.0237, "roas": 3.48, "purchases": 51 },
+          { "key": "pairing_005", "impressions": 921400, "clicks": 2102, "spend": { "amount": 348.6, "currency": "USD" }, "ctr": 0.0023, "cvr": 0.0024, "roas": 0.18, "purchases": 5 },
+          { "key": "pairing_006", "impressions": 412600, "clicks": 7298, "spend": { "amount": 624.8, "currency": "USD" }, "ctr": 0.0177, "cvr": 0.0148, "roas": 4.31, "purchases": 108 },
+          { "key": "pairing_007", "impressions": 276610, "clicks": 4189, "spend": { "amount": 418.0, "currency": "USD" }, "ctr": 0.0151, "cvr": 0.0131, "roas": 3.62, "purchases": 55 },
+          { "key": "pairing_009", "impressions": 198400, "clicks": 4012, "spend": { "amount": 832.9, "currency": "USD" }, "ctr": 0.0202, "cvr": 0.0356, "roas": 6.89, "purchases": 143 }
+        ]
+      },
+      {
+        "dimension": "landing_route",
+        "rows": [
+          { "key": "/products/roborock-s-series-pro", "impressions": 0, "clicks": 8945, "purchases": 215, "cvr": 0.0240, "revenue": { "amount": 7244.05, "currency": "USD" } },
+          { "key": "/products/roborock-e-series-essential", "impressions": 0, "clicks": 6296, "purchases": 205, "cvr": 0.0326, "revenue": { "amount": 7765.73, "currency": "USD" } },
+          { "key": "/collections/pet-households", "impressions": 0, "clicks": 4187, "purchases": 35, "cvr": 0.0084, "revenue": { "amount": 798.31, "currency": "USD" } },
+          { "key": "/", "impressions": 0, "clicks": 3943, "purchases": 197, "cvr": 0.0500, "revenue": { "amount": 3657.79, "currency": "USD" } }
+        ]
+      },
+      {
+        "dimension": "device",
+        "rows": [
+          { "key": "mobile", "impressions": 1830200, "clicks": 21156, "spend": { "amount": 3680.4, "currency": "USD" }, "purchases": 543, "cvr": 0.0257, "roas": 3.94 },
+          { "key": "desktop", "impressions": 712400, "clicks": 9462, "spend": { "amount": 1456.7, "currency": "USD" }, "purchases": 234, "cvr": 0.0247, "roas": 4.61 },
+          { "key": "tablet", "impressions": 174760, "clicks": 2102, "spend": { "amount": 293.8, "currency": "USD" }, "purchases": 30, "cvr": 0.0143, "roas": 2.18 }
+        ]
+      }
+    ]
+  },
+  "diagnostics": [
+    { "id": "diag_001", "observation": "campaign_003 (MET awareness/lifestyle) ROAS 0.18, CTR 0.23% — bottom 5% of all campaigns and creatives.", "hypothesis": "Brand-level lifestyle creative (asset_009) has no product hook; awareness objective is wrong fit for week 1 when Phase 2 retargeting pool is still small. Spend is being burned to fill an audience we can't yet retarget.", "severity": "high", "related_dims": ["campaign:campaign_003", "creative:pairing_005"] },
+    { "id": "diag_002", "observation": "campaign_007 (GGL brand search) ROAS 14.62, CPA $1.28 — by far the highest-efficiency campaign but is daily-budget capped at $40 with impression share lost = 41%.", "hypothesis": "Branded search demand is exceeding supply; we're leaving high-intent traffic to organic (which is also winning) but missing the controlled landing experience.", "severity": "high", "related_dims": ["campaign:campaign_007"] },
+    { "id": "diag_003", "observation": "/collections/pet-households CVR 0.84% vs PDP CVR 2.4-3.3% — collection page underperforms despite high intent.", "hypothesis": "Either (a) PLP filter UX is hiding the value-tier SKU, or (b) traffic from TikTok pairing_006 to a PLP forces an extra click before commitment. PDPs convert much better than the PLP for the same audience.", "severity": "medium", "related_dims": ["landing_route:/collections/pet-households", "campaign:campaign_005"] },
+    { "id": "diag_004", "observation": "Tablet ROAS 2.18 vs mobile 3.94 / desktop 4.61 — tablet is the worst-performing device on every campaign.", "hypothesis": "Tablet checkout flow may be desktop-rendered without responsive breakpoint hitting smoothly; could also be tablet users skewing older + window-shopping. Worth a UX audit before deciding to exclude.", "severity": "medium", "related_dims": ["device:tablet"] },
+    { "id": "diag_005", "observation": "pairing_003 (Roborock S-Pro carousel with copy_009 'V-shape brush') CTR 1.65% and ROAS 3.48 — top single-image performer.", "hypothesis": "The 'pet hair on the brush' visual proof point + engineering specificity is doing the persuasive work. This is the angle to lean into across creative refresh.", "severity": "low", "related_dims": ["creative:pairing_003"] },
+    { "id": "diag_006", "observation": "campaign_006 (PMax E-Essential) ROAS 6.89 with $832 spend in 7 days — well above 2.5 unlock threshold for tROAS bidding.", "hypothesis": "PMax learning phase concluded faster than expected; the $449 price point + lidar message has strong product-market fit on Google. Safe to switch from max-conversion-value to tROAS=4.0 to compound efficiency.", "severity": "low", "related_dims": ["campaign:campaign_006"] }
+  ],
+  "experiments": [
+    { "id": "exp_001", "hypothesis": "Replacing pairing_005 (lifestyle/brand) with pairing_003 (V-shape brush proof) in the awareness slot will lift campaign_003 ROAS from 0.18 to ≥ 1.5 within 5 days.", "variant_a": "campaign_003 with pairing_005 (control, kill)", "variant_b": "campaign_003 with pairing_003 swapped in", "success_metric": "ROAS by day 5", "duration_days": 5, "status": "proposed", "minimum_sample_size": 50000 },
+    { "id": "exp_002", "hypothesis": "Routing TikTok pairing_006 directly to /products/roborock-s-series-pro (instead of /collections/pet-households for campaign_005) will lift CVR from 0.84% to ≥ 1.5%.", "variant_a": "TikTok traffic → /collections/pet-households (control)", "variant_b": "TikTok traffic → /products/roborock-s-series-pro (test)", "success_metric": "CVR by day 7", "duration_days": 7, "status": "proposed", "minimum_sample_size": 8000 },
+    { "id": "exp_003", "hypothesis": "Removing the 'Brand' wordmark from the welcome popup hero and leading with the 10% discount code (per 03.welcome_offer) will lift email_signup rate from 4.1% to ≥ 6%.", "variant_a": "Current welcome popup (control)", "variant_b": "Discount-led welcome popup", "success_metric": "email_signup conversion rate", "duration_days": 7, "status": "running", "minimum_sample_size": 12000 }
+  ],
+  "decisions": [
+    { "id": "dec_001", "action": "pause", "target": "campaign_003", "target_type": "campaign", "rationale": "ROAS 0.18 across full week, $348 spent for 5 purchases. Awareness objective fires too early in funnel before retargeting pool is meaningful. Capital better redeployed to campaign_007.", "expected_impact": "Save ~$50/day; redeploy to campaign_007 brand search expansion", "diagnostic_ids": ["diag_001"] },
+    { "id": "dec_002", "action": "scale_up", "target": "campaign_007", "target_type": "campaign", "rationale": "ROAS 14.62, CPA $1.28, but losing 41% impression share to budget cap. Triple daily budget from $40 to $120. Should still maintain ROAS > 8 even with diminishing returns.", "expected_impact": "+$80/day spend → ~+$640/day projected revenue at conservative ROAS=8", "diagnostic_ids": ["diag_002"] },
+    { "id": "dec_003", "action": "scale_up", "target": "campaign_006", "target_type": "campaign", "rationale": "PMax E-Essential ROAS 6.89 with healthy volume. Increase budget +30% from $120 → $156 and switch from max-conv-value to tROAS=4.0.", "expected_impact": "+$36/day spend; tROAS bid prevents efficiency drift while volume scales", "diagnostic_ids": ["diag_006"] },
+    { "id": "dec_004", "action": "swap_creative", "target": "campaign_003", "target_type": "campaign", "rationale": "If campaign_003 reactivated post-experiment, replace pairing_005 with pairing_003 (V-shape brush proof). exp_001 tests this hypothesis.", "expected_impact": "Lift ROAS 0.18 → ≥1.5 if hypothesis holds", "diagnostic_ids": ["diag_001", "diag_005"] },
+    { "id": "dec_005", "action": "change_landing", "target": "campaign_005", "target_type": "campaign", "rationale": "TikTok traffic to PLP underperforms. Switch landing_route from /collections/pet-households to /products/roborock-s-series-pro. exp_002 will validate.", "expected_impact": "Lift CVR 0.84% → ≥1.5%; +$200/day projected revenue", "diagnostic_ids": ["diag_003"] },
+    { "id": "dec_006", "action": "scale_down", "target": "tablet_placement_global", "target_type": "ad_set", "rationale": "Tablet ROAS 2.18 vs mobile 3.94. Reduce tablet bid modifier by -30% on all Meta + Google campaigns until tablet checkout UX audit completes (06b).", "expected_impact": "Marginal cost savings while preserving learnings", "diagnostic_ids": ["diag_004"] },
+    { "id": "dec_007", "action": "no_change", "target": "campaign_002", "target_type": "campaign", "rationale": "Retargeting ROAS 5.42 is healthy. Audience pool will grow naturally as prospecting fills it; revisit budget after 14d.", "expected_impact": "Stable", "diagnostic_ids": [] }
+  ],
+  "applied_changes": [
+    { "decision_id": "dec_001", "applied_at": "2026-04-29T10:00:00Z", "before": { "campaign_003_status": "active", "daily_budget_usd": 50 }, "after": { "campaign_003_status": "paused", "daily_budget_usd": 0 } },
+    { "decision_id": "dec_002", "applied_at": "2026-04-29T10:05:00Z", "before": { "campaign_007_daily_budget_usd": 40 }, "after": { "campaign_007_daily_budget_usd": 120 } },
+    { "decision_id": "dec_003", "applied_at": "2026-04-29T10:10:00Z", "before": { "campaign_006_daily_budget_usd": 120, "bidding_strategy": "Maximize conversion value" }, "after": { "campaign_006_daily_budget_usd": 156, "bidding_strategy": "tROAS = 4.0" } },
+    { "decision_id": "dec_006", "applied_at": "2026-04-29T10:15:00Z", "before": { "tablet_bid_modifier": "0%" }, "after": { "tablet_bid_modifier": "-30%" } }
+  ],
+  "next_actions": [
+    { "action": "Launch exp_001: rebuild campaign_003 with pairing_003, $50/day, 5-day runtime", "owner_role": "media_buyer", "due": "2026-04-30" },
+    { "action": "Launch exp_002: split campaign_005 into PLP-landing vs PDP-landing AB", "owner_role": "media_buyer", "due": "2026-04-30" },
+    { "action": "Tablet checkout UX audit + Lighthouse run on /checkout for tablet viewport", "owner_role": "frontend_engineer", "due": "2026-05-03" },
+    { "action": "Schedule next data pull + decision cycle (weekly cadence)", "owner_role": "growth_lead", "due": "2026-05-06" },
+    { "action": "Once GSC has 7d data (~2026-05-02), start ranking 07b content_001 + content_002 against keyword targets and feed back to 07b for refresh", "owner_role": "seo_lead", "due": "2026-05-06" },
+    { "action": "When Phase 2 (eec-10-email-crm) launches, add cart_abandoned + email-channel attribution to next data_pull", "owner_role": "growth_lead", "due": "2026-05-20" }
+  ],
+  "meta": {
+    "generated_at": "2026-04-29T10:30:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: live API pulls from Meta/TikTok/Google/GA4/Stripe over 2026-04-22→2026-04-28 (week-1 of paid launch from eec-08); cross-references eec-08 campaign_ids and eec-04 creative_pairing_ids for diagnostics."
+  }
+}

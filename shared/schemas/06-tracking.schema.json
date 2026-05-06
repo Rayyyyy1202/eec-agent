@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/06-tracking",
+  "title": "eec-06-tracking output",
+  "type": "object",
+  "required": [
+    "events_spec", "destinations", "consent_mode", "utm_taxonomy",
+    "email_consent_event", "purchase_event_full_spec",
+    "pii_hash_algorithm", "site_build_writeback",
+    "validation_checklist", "meta"
+  ],
+  "properties": {
+    "events_spec": {
+      "type": "array",
+      "minItems": 13,
+      "description": "MUST include AT MINIMUM these 13 named events: page_view, view_item, add_to_cart, begin_checkout, purchase, email_signup, cart_abandoned (H15), email_unsubscribed (H16), return_initiated (H17), refund (H17), order_shipped (H17), order_delivered (H17), order_canceled (H17). Validated by allOf/contains below.",
+      "items": {
+        "type": "object",
+        "required": ["name", "trigger", "params", "destinations"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "description": "GA4-style snake_case event name"
+          },
+          "trigger": { "type": "string", "description": "Where in site this fires" },
+          "params": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": { "type": "string" },
+                "type": { "type": "string", "enum": ["string", "number", "boolean", "array", "object"] },
+                "sample": {},
+                "required": { "type": "boolean", "default": false },
+                "pii": { "type": "boolean", "default": false }
+              }
+            }
+          },
+          "destinations": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "description": "List of destination IDs that consume this event"
+          }
+        }
+      },
+      "allOf": [
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "page_view" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "view_item" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "add_to_cart" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "begin_checkout" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "purchase" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "email_signup" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "cart_abandoned" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "email_unsubscribed" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "return_initiated" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "refund" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "order_shipped" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "order_delivered" } } } },
+        { "contains": { "type": "object", "required": ["name"], "properties": { "name": { "const": "order_canceled" } } } }
+      ]
+    },
+    "destinations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^dest_[0-9]{3}$" },
+          "type": {
+            "type": "string",
+            "enum": ["ga4", "meta_pixel", "tiktok_pixel", "google_ads", "gtm_server", "consent_layer", "internal_db", "snapchat", "pinterest"]
+          },
+          "scope": { "type": "string", "description": "What this destination is used for" },
+          "container_id_placeholder": { "type": "string", "description": "Use 'TBD' if not yet created" }
+        }
+      }
+    },
+    "consent_mode": {
+      "type": "object",
+      "required": ["framework", "regions", "defaults", "required_categories"],
+      "properties": {
+        "framework": { "type": "string", "enum": ["gdpr", "ccpa", "global", "none"] },
+        "regions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "ISO-3166 country codes where consent is required"
+        },
+        "defaults": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "enum": ["granted", "denied"] },
+          "description": "Default state per category, e.g. { analytics_storage: 'denied', ad_storage: 'denied' }"
+        },
+        "required_categories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["analytics", "ad_storage", "ad_user_data", "ad_personalization", "functional"]
+          }
+        }
+      }
+    },
+    "utm_taxonomy": {
+      "type": "object",
+      "required": ["source_format", "medium_format", "campaign_format"],
+      "properties": {
+        "source_format": { "type": "string", "description": "e.g. 'lower_snake; one of meta|google|tiktok|email|organic'" },
+        "medium_format": { "type": "string" },
+        "campaign_format": { "type": "string", "description": "e.g. '{objective}_{audience}_{date:YYMMDD}'" },
+        "content_format": { "type": "string" },
+        "term_format": { "type": "string" }
+      }
+    },
+    "email_consent_event": {
+      "type": "object",
+      "required": ["event_name", "params", "destinations_phase2"],
+      "description": "phase2_hook: required by eec-10-email-crm. MUST be present in MVP even if no MVP destination consumes it.",
+      "properties": {
+        "event_name": { "type": "string", "default": "email_signup" },
+        "params": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "required": { "type": "boolean" }
+            }
+          }
+        },
+        "destinations_phase2": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Destination IDs reserved for Phase 2 — use placeholder type 'internal_db' in MVP"
+        }
+      }
+    },
+    "purchase_event_full_spec": {
+      "type": "object",
+      "required": ["event_name", "must_emit_fields"],
+      "description": "phase2_hook (H11): required by eec-11-fulfillment. The 'purchase' event MUST emit at minimum these fields. Field 'is_first_purchase' (H18) is also required so eec-10-email-crm can fork welcome vs returning-customer flows.",
+      "properties": {
+        "event_name": { "type": "string", "default": "purchase" },
+        "must_emit_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "order_id", "items", "shipping_address",
+              "customer_email_hash", "total", "currency",
+              "shipping_cost", "tax", "discount_code",
+              "is_first_purchase"
+            ]
+          },
+          "minItems": 6,
+          "description": "MUST include order_id, items, shipping_address, customer_email_hash, total, is_first_purchase at minimum",
+          "allOf": [
+            { "contains": { "const": "order_id" } },
+            { "contains": { "const": "items" } },
+            { "contains": { "const": "shipping_address" } },
+            { "contains": { "const": "customer_email_hash" } },
+            { "contains": { "const": "total" } },
+            { "contains": { "const": "is_first_purchase" } }
+          ]
+        }
+      }
+    },
+    "pii_hash_algorithm": {
+      "type": "string",
+      "const": "sha256",
+      "description": "Locked to SHA-256. Any PII-flagged param emitted to advertising destinations MUST be hashed with SHA-256 (lowercase hex, after trim+lowercase normalization for emails per platform spec). Tracking validation MUST verify this is enforced at runtime."
+    },
+    "site_build_writeback": {
+      "type": "object",
+      "required": ["target_repo_path", "files_modified", "rebuild_required", "rebuild_executed"],
+      "description": "Closes the loop with eec-05-site-build: records what 06 wrote back into 05's repo (e.g. GTM container ID into env file) and whether the site has been rebuilt.",
+      "properties": {
+        "target_repo_path": {
+          "type": "string",
+          "description": "Refs eec-05-site-build.repo_path"
+        },
+        "files_modified": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "change_type"],
+            "properties": {
+              "path": { "type": "string", "description": "Path inside target_repo_path; MUST be in eec-05-site-build.analytics_endpoints.rebuild_protocol.writeback_target_files" },
+              "change_type": { "type": "string", "enum": ["env_var_set", "script_inserted", "config_updated", "file_created"] },
+              "summary": { "type": "string" }
+            }
+          }
+        },
+        "rebuild_required": { "type": "boolean" },
+        "rebuild_executed": { "type": "boolean", "description": "true if 06 ran the rebuild_command from 05 itself" },
+        "rebuild_command_run": { "type": "string" },
+        "post_rebuild_validation_status": { "type": "string", "enum": ["pass", "fail", "blocked", "not_applicable"], "description": "Per shared/conventions.md §15: 'skipped' is FORBIDDEN. Use 'blocked' (with blocking_reason) when preconditions unmet. 'not_applicable' allowed only if 05 did NOT declare a post_rebuild_validation command." },
+        "blocking_reason": { "type": "string", "description": "Required when post_rebuild_validation_status == 'blocked'." },
+        "spec_code_parity": {
+          "type": "object",
+          "description": "Per conventions.md §17: events_spec ↔ track() callsites in 05.repo_path. Both arrays MUST be empty for a passing skill run.",
+          "required": ["declared_not_fired", "fired_not_declared", "checked_at"],
+          "properties": {
+            "declared_not_fired": { "type": "array", "items": { "type": "string" }, "maxItems": 0 },
+            "fired_not_declared": { "type": "array", "items": { "type": "string" }, "maxItems": 0 },
+            "checked_at": { "type": "string", "format": "date-time" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "rebuild_required": { "const": true } }, "required": ["rebuild_required"] },
+          "then": {
+            "required": ["rebuild_executed", "post_rebuild_validation_status"],
+            "properties": {
+              "rebuild_executed": { "const": true },
+              "post_rebuild_validation_status": { "enum": ["pass"] }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "post_rebuild_validation_status": { "const": "blocked" } }, "required": ["post_rebuild_validation_status"] },
+          "then": { "required": ["blocking_reason"] }
+        }
+      ]
+    },
+    "gtm_container_export_path": { "type": "string", "description": "Path to exported GTM container .json" },
+    "validation_checklist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["item", "status"],
+        "properties": {
+          "item": { "type": "string" },
+          "status": { "type": "string", "enum": ["pass", "fail", "manual_check_required"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

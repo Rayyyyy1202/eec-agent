@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/09-optimization",
+  "title": "eec-09-optimization output",
+  "description": "Decisions and applied changes derived from live ad/site data. Per conventions.md §15: skill MUST NOT write output when ANY data_source.status != 'ok'. 'no change without measurement' — applied_changes[] required when any diagnostic exists.",
+  "type": "object",
+  "required": ["data_sources", "data_pull", "diagnostics", "decisions", "applied_changes", "next_actions", "meta"],
+  "properties": {
+    "data_sources": {
+      "type": "array",
+      "minItems": 1,
+      "description": "API connectors used to pull live data. Each connector specifies WHICH platform, HOW to authenticate, and WHAT was actually fetched.",
+      "items": {
+        "type": "object",
+        "required": ["platform", "auth_method", "required_env_vars", "metrics_pulled", "dimensions_pulled", "pull_frequency", "last_pulled_at", "status"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["meta_marketing_api", "google_ads_api", "ga4_data_api", "tiktok_marketing_api", "shopify_admin_api", "stripe_api", "search_console_api", "pinterest_api", "youtube_analytics_api", "internal_db"]
+          },
+          "api_endpoint": { "type": "string", "description": "Specific endpoint, e.g. 'insights' for Meta or 'runReport' for GA4" },
+          "api_version": { "type": "string", "description": "e.g. 'v19.0' for Meta, 'v17' for Google Ads" },
+          "auth_method": {
+            "type": "string",
+            "enum": ["oauth2_user", "oauth2_system_user", "service_account", "api_key", "session_token"]
+          },
+          "required_env_vars": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+            "minItems": 1,
+            "description": "Env var names that MUST be set, e.g. ['META_ACCESS_TOKEN', 'META_AD_ACCOUNT_ID']"
+          },
+          "account_id_placeholder": { "type": "string", "description": "Use 'TBD' if not yet configured" },
+          "metrics_pulled": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "description": "API metric names actually requested, e.g. ['impressions', 'clicks', 'spend', 'purchase_value', 'purchase']"
+          },
+          "dimensions_pulled": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "API dimension/breakdown names, e.g. ['campaign_id', 'adset_id', 'ad_id', 'date']"
+          },
+          "pull_frequency": {
+            "type": "string",
+            "enum": ["hourly", "daily", "weekly", "on_demand"]
+          },
+          "rate_limit_observed": { "type": "string", "description": "e.g. 'Meta Tier-2: 60k calls/hour'" },
+          "last_pulled_at": { "type": "string", "format": "date-time" },
+          "status": {
+            "type": "string",
+            "enum": ["ok", "rate_limited", "auth_error", "missing_env_vars", "endpoint_error", "not_configured", "stale"]
+          },
+          "error_detail": { "type": "string", "description": "Required when status != 'ok'" },
+          "rows_fetched": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "data_pull": {
+      "type": "object",
+      "required": ["period_start", "period_end", "metrics_by_dim"],
+      "properties": {
+        "period_start": { "type": "string", "format": "date" },
+        "period_end": { "type": "string", "format": "date" },
+        "source_data_source_ids": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "Index references into data_sources[] showing which connectors fed this pull"
+        },
+        "metrics_by_dim": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["dimension", "rows"],
+            "properties": {
+              "dimension": {
+                "type": "string",
+                "enum": ["campaign", "audience", "creative", "product", "landing_route", "device", "geo", "hour", "day_of_week"]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["key"],
+                  "properties": {
+                    "key": { "type": "string" },
+                    "impressions": { "type": "integer" },
+                    "clicks": { "type": "integer" },
+                    "spend": { "$ref": "_common#/$defs/Money" },
+                    "ctr": { "type": "number" },
+                    "cvr": { "type": "number" },
+                    "cpa": { "$ref": "_common#/$defs/Money" },
+                    "roas": { "type": "number" },
+                    "purchases": { "type": "integer" },
+                    "revenue": { "$ref": "_common#/$defs/Money" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "observation", "hypothesis", "severity"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^diag_[0-9]{3}$" },
+          "observation": { "type": "string", "description": "What the data shows, factual" },
+          "hypothesis": { "type": "string", "description": "Why it might be happening" },
+          "severity": { "type": "string", "enum": ["critical", "high", "medium", "low"] },
+          "related_dims": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "experiments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "hypothesis", "variant_a", "variant_b", "success_metric", "duration_days", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^exp_[0-9]{3}$" },
+          "hypothesis": { "type": "string" },
+          "variant_a": { "type": "string" },
+          "variant_b": { "type": "string" },
+          "success_metric": { "type": "string" },
+          "duration_days": { "type": "integer", "minimum": 1 },
+          "status": { "type": "string", "enum": ["proposed", "running", "concluded", "cancelled"] },
+          "minimum_sample_size": { "type": "integer" }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "action", "target", "target_type", "rationale"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^dec_[0-9]{3}$" },
+          "action": {
+            "type": "string",
+            "enum": ["pause", "scale_up", "scale_down", "swap_creative", "change_audience", "change_landing", "duplicate", "consolidate", "no_change"]
+          },
+          "target": { "type": "string", "description": "ID of campaign/audience/creative being acted on" },
+          "target_type": { "type": "string", "enum": ["campaign", "ad_set", "ad", "creative_pairing", "landing_route"] },
+          "rationale": { "type": "string" },
+          "expected_impact": { "type": "string" },
+          "diagnostic_ids": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "applied_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["decision_id", "applied_at", "before", "after"],
+        "properties": {
+          "decision_id": { "type": "string", "pattern": "^dec_[0-9]{3}$" },
+          "applied_at": { "type": "string", "format": "date-time" },
+          "before": { "type": "object" },
+          "after": { "type": "object" }
+        }
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "owner_role", "due"],
+        "properties": {
+          "action": { "type": "string" },
+          "owner_role": { "type": "string" },
+          "due": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  },
+  "allOf": [
+    {
+      "$comment": "Per conventions.md §15: data_sources[*].status MUST be 'ok' before this skill writes output. Any other status → blocked, exit non-zero.",
+      "properties": {
+        "data_sources": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "status": { "const": "ok" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "$comment": "If diagnostics exist, applied_changes[] MUST be non-empty: 'no change without measurement' — past incident: 09 emitted 4 diagnostics + 0 applied changes.",
+      "if": { "properties": { "diagnostics": { "type": "array", "minItems": 1 } } },
+      "then": { "properties": { "applied_changes": { "type": "array", "minItems": 1 } } }
+    }
+  ]
+}

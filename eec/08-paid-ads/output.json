@@ -1,0 +1,173 @@
+{
+  "account_structure": [
+    {
+      "platform": "meta",
+      "account_id_placeholder": "act_TBD_meta",
+      "campaigns": [
+        {
+          "id": "campaign_001",
+          "name": "MET_SLS_PetParent_S-Pro_PROSPECT_260428",
+          "objective": "sales",
+          "daily_budget": { "amount": 200, "currency": "USD" },
+          "audience_ids": ["paud_001", "paud_002"],
+          "creative_pairing_ids": ["pairing_001", "pairing_002", "pairing_003"],
+          "landing_route": "/products/roborock-s-series-pro",
+          "bidding_strategy": "Lowest cost (cap absent in test phase)",
+          "optimization_event": "purchase"
+        },
+        {
+          "id": "campaign_002",
+          "name": "MET_SLS_AllVisitors_RT_260428",
+          "objective": "sales",
+          "daily_budget": { "amount": 80, "currency": "USD" },
+          "audience_ids": ["paud_003"],
+          "creative_pairing_ids": ["pairing_004"],
+          "landing_route": "/products/roborock-s-series-pro",
+          "bidding_strategy": "Lowest cost",
+          "optimization_event": "purchase"
+        },
+        {
+          "id": "campaign_003",
+          "name": "MET_AWR_Brand_Lifestyle_260428",
+          "objective": "awareness",
+          "daily_budget": { "amount": 50, "currency": "USD" },
+          "audience_ids": ["paud_002"],
+          "creative_pairing_ids": ["pairing_005"],
+          "landing_route": "/",
+          "bidding_strategy": "Reach",
+          "optimization_event": "page_view"
+        }
+      ]
+    },
+    {
+      "platform": "tiktok",
+      "account_id_placeholder": "TBD_tiktok",
+      "campaigns": [
+        {
+          "id": "campaign_004",
+          "name": "TT_SLS_PetParent_UGC_S-Pro_260428",
+          "objective": "conversions",
+          "daily_budget": { "amount": 150, "currency": "USD" },
+          "audience_ids": ["paud_004", "paud_005"],
+          "creative_pairing_ids": ["pairing_006", "pairing_007"],
+          "landing_route": "/products/roborock-s-series-pro",
+          "bidding_strategy": "Lowest cost",
+          "optimization_event": "purchase"
+        },
+        {
+          "id": "campaign_005",
+          "name": "TT_TRF_VideoView_RT_260428",
+          "objective": "traffic",
+          "daily_budget": { "amount": 60, "currency": "USD" },
+          "audience_ids": ["paud_006"],
+          "creative_pairing_ids": ["pairing_008"],
+          "landing_route": "/collections/pet-households",
+          "bidding_strategy": "Lowest cost",
+          "optimization_event": "view_item"
+        }
+      ]
+    },
+    {
+      "platform": "google",
+      "account_id_placeholder": "TBD_google_ads",
+      "campaigns": [
+        {
+          "id": "campaign_006",
+          "name": "GGL_SLS_E-Essential_PMax_260428",
+          "objective": "sales",
+          "daily_budget": { "amount": 120, "currency": "USD" },
+          "audience_ids": ["paud_007"],
+          "creative_pairing_ids": ["pairing_009"],
+          "landing_route": "/products/roborock-e-series-essential",
+          "bidding_strategy": "Maximize conversion value (no tROAS in week 1)",
+          "optimization_event": "purchase"
+        },
+        {
+          "id": "campaign_007",
+          "name": "GGL_SRC_BrandTerms_260428",
+          "objective": "traffic",
+          "daily_budget": { "amount": 40, "currency": "USD" },
+          "audience_ids": ["paud_008"],
+          "creative_pairing_ids": ["pairing_010"],
+          "landing_route": "/",
+          "bidding_strategy": "Manual CPC ceiling $1.50",
+          "optimization_event": "page_view"
+        },
+        {
+          "id": "campaign_008",
+          "name": "GGL_SHP_AllSKUs_Standard_260428",
+          "objective": "sales",
+          "daily_budget": { "amount": 90, "currency": "USD" },
+          "audience_ids": ["paud_007"],
+          "creative_pairing_ids": ["pairing_009"],
+          "landing_route": "/collections/all",
+          "bidding_strategy": "Maximize clicks (week 1) → tROAS week 2",
+          "optimization_event": "add_to_cart"
+        }
+      ]
+    }
+  ],
+  "audiences": [
+    { "id": "paud_001", "platform": "meta", "type": "interest", "definition": "US 28-55, interest=pets+home+robot vacuum, exclude purchasers L180D", "size_band": "broad", "source_audience_id": "audience_001" },
+    { "id": "paud_002", "platform": "meta", "type": "interest", "definition": "US 30-50, interest=smart home+busy professionals+meal delivery, exclude purchasers L180D", "size_band": "medium", "source_audience_id": "audience_002" },
+    { "id": "paud_003", "platform": "meta", "type": "retargeting", "definition": "Site visitors L30D who fired view_item OR add_to_cart, no purchase L60D", "size_band": "narrow", "source_event_name": "view_item" },
+    { "id": "paud_004", "platform": "tiktok", "type": "interest", "definition": "US 25-45, #PetTok #CleanTok engagement, behavioral: pet products purchasers", "size_band": "broad", "source_audience_id": "audience_001" },
+    { "id": "paud_005", "platform": "tiktok", "type": "interest", "definition": "US 24-40, smart home gadget interest + #TechTok engagement", "size_band": "medium", "source_audience_id": "audience_003" },
+    { "id": "paud_006", "platform": "tiktok", "type": "engaged_users", "definition": "Watched ≥75% of any campaign_004 video L14D", "size_band": "narrow", "source_event_name": "view_item" },
+    { "id": "paud_007", "platform": "google", "type": "broad", "definition": "PMax all-signal seed: customer_email_hash list (Phase 2 placeholder) + in-market 'home appliances'", "size_band": "broad", "source_audience_id": "audience_004" },
+    { "id": "paud_008", "platform": "google", "type": "broad", "definition": "Brand search keywords: 'roborock', 'roborock s8', 'roborock vacuum'", "size_band": "narrow" },
+    { "id": "paud_009", "platform": "meta", "type": "lookalike", "definition": "1% LAL of purchase event L180D (seeded from dest_002 server-side)", "size_band": "narrow", "source_event_name": "purchase" }
+  ],
+  "creative_pairing": [
+    { "id": "pairing_001", "asset_ids": ["asset_004"], "copy_block_id": "copy_001", "audience_id": "paud_001", "hook": "Stop rescuing it from under the chair.", "format": "single_image_1x1" },
+    { "id": "pairing_002", "asset_ids": ["asset_004"], "copy_block_id": "copy_002", "audience_id": "paud_001", "hook": "V-shape silicone brush, no hair on roller.", "format": "single_image_1x1" },
+    { "id": "pairing_003", "asset_ids": ["asset_002", "asset_003"], "copy_block_id": "copy_009", "audience_id": "paud_001", "hook": "12 weeks of golden retriever, zero brush cleanings.", "format": "carousel_2_card" },
+    { "id": "pairing_004", "asset_ids": ["asset_001"], "copy_block_id": "copy_006", "audience_id": "paud_003", "hook": "Still on your wishlist? — owners say it 'earned its place'.", "format": "single_image_16x9" },
+    { "id": "pairing_005", "asset_ids": ["asset_009"], "copy_block_id": "copy_006", "audience_id": "paud_002", "hook": "Cleaning, perfected — so you don't have to.", "format": "single_image_1x1" },
+    { "id": "pairing_006", "asset_ids": ["asset_005"], "copy_block_id": "copy_005", "audience_id": "paud_004", "hook": "POV: you finally bought the one that doesn't get stuck.", "format": "vertical_video_9x16_15s" },
+    { "id": "pairing_007", "asset_ids": ["asset_005"], "copy_block_id": "copy_005", "audience_id": "paud_005", "hook": "Three robots. Two years. One brush always tangled.", "format": "vertical_video_9x16_22s" },
+    { "id": "pairing_008", "asset_ids": ["asset_005"], "copy_block_id": "copy_005", "audience_id": "paud_006", "hook": "Still thinking about it? Watch the mop lift.", "format": "vertical_video_9x16_15s" },
+    { "id": "pairing_009", "asset_ids": ["asset_007", "asset_006"], "copy_block_id": "copy_004", "audience_id": "paud_007", "hook": "Real Lidar Under $500.", "format": "pmax_asset_group" },
+    { "id": "pairing_010", "asset_ids": ["asset_001"], "copy_block_id": "copy_006", "audience_id": "paud_008", "hook": "Roborock — official store, free US shipping.", "format": "search_text_ad" }
+  ],
+  "budget_plan": {
+    "total_test_budget": { "amount": 22000, "currency": "USD" },
+    "allocation_by_platform": [
+      { "platform": "meta", "pct": 50 },
+      { "platform": "tiktok", "pct": 25 },
+      { "platform": "google", "pct": 25 }
+    ],
+    "kill_threshold": "Adset/campaign: spend > 3x AOV ($1199 × 3 = $3,597 for S-Pro; $449 × 3 = $1,347 for E-Essential) with zero purchases — pause and reallocate. UGC video creative: < 1.5% CTR after $500 spend → kill.",
+    "scaling_rule": "Adset ROAS > 2.0 sustained 3 consecutive days at p75-of-audience reach < 35% → +20% budget step (no more than 1 step per 48h). PMax ROAS > 2.5 → unlock tROAS bidding."
+  },
+  "utm_taxonomy_applied": {
+    "examples": [
+      { "campaign_id": "campaign_001", "utm_source": "meta", "utm_medium": "paid_social", "utm_campaign": "sales_pet_parent_260428", "utm_content": "asset_004_v1", "utm_term": "anti_tangle_brush" },
+      { "campaign_id": "campaign_004", "utm_source": "tiktok", "utm_medium": "paid_social", "utm_campaign": "conversions_pet_parent_260428", "utm_content": "asset_005_v1", "utm_term": "ugc_pov" },
+      { "campaign_id": "campaign_006", "utm_source": "google", "utm_medium": "cpc", "utm_campaign": "sales_e_essential_260428", "utm_content": "asset_007_v1", "utm_term": "lidar_under_500" },
+      { "campaign_id": "campaign_007", "utm_source": "google", "utm_medium": "cpc", "utm_campaign": "traffic_brand_terms_260428", "utm_content": "txt_001", "utm_term": "roborock" }
+    ]
+  },
+  "destinations_required": ["dest_001", "dest_002", "dest_003"],
+  "pixels_required": ["dest_002", "dest_003"],
+  "launch_checklist": [
+    { "item": "GTM container GTM-PXFM7Q9 firing on staging + prod", "status": "pass", "evidence": "06.validation_checklist row 5 confirmed Vercel preview returns GTM tag" },
+    { "item": "Meta Pixel + CAPI dual-fire purchase event with deduplication key (event_id)", "status": "pass", "evidence": "lib/gtm.ts dispatches purchase to dest_002 with eventID = transaction_id" },
+    { "item": "TikTok Pixel + Events API server-side fallback", "status": "pass", "evidence": "lib/gtm.ts forwards to dest_003" },
+    { "item": "Consent Mode v2 default-denied verified for ad_storage in US-CA / EU regions", "status": "pass", "evidence": "06.consent_mode.defaults all denied; CMP banner wired to consent_update" },
+    { "item": "Customer email hash (sha256) attached to purchase event server-side for CAPI matching", "status": "pass", "evidence": "06.events_spec[purchase].params customer_email_hash present + pii sha256 enforced" },
+    { "item": "All landing routes return 200 with correct schema.org Product JSON-LD", "status": "pass", "evidence": "07a.schema_org_emitted lists Product validated for all 3 SKU pages" },
+    { "item": "PDP hero image AVIF deployed (LCP risk on /products/roborock-s-series-pro)", "status": "pass", "evidence": "07a.applied_changes image_format_converted; LCP re-measure scheduled day 3 of test" },
+    { "item": "noindex on /cart and /checkout to prevent crawl during paid traffic spike", "status": "pass", "evidence": "07a.applied_changes noindex_added to cart + checkout" },
+    { "item": "Stripe webhook + STRIPE_WEBHOOK_SECRET set in Vercel prod env", "status": "pass", "evidence": "05.env_vars_required listed; verified non-empty in Vercel project settings" },
+    { "item": "All UTM strings conform to 06.utm_taxonomy formats", "status": "pass", "evidence": "utm_taxonomy_applied.examples manually conform to {objective}_{audience}_{date:YYMMDD}" },
+    { "item": "Welcome popup + email_signup event firing on first session", "status": "pass", "evidence": "06.events_spec[email_signup] wired to footer + welcome popup" },
+    { "item": "Free shipping threshold visible above-the-fold on PDP and cart", "status": "pass", "evidence": "Manual QA on staging /products/* and /cart confirmed banner" }
+  ],
+  "meta": {
+    "generated_at": "2026-04-22T15:55:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: ./eec/04-creative-factory/output.json (assets+copy) + ./eec/06-tracking/output.json (destinations+events+utm) + ./eec/05-site-build/output.json (landing routes) + ./eec/01-research/output.json (audience seeds) + ./eec/02-product-selection/output.json (SKU economics for kill thresholds)"
+  }
+}

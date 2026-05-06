@@ -1,0 +1,196 @@
+{
+  "niche": {
+    "primary_keyword": "portable blender",
+    "related_keywords": ["personal blender", "USB rechargeable blender", "smoothie cup blender"],
+    "region": "North America",
+    "language": "en-US"
+  },
+  "trends": {
+    "direction_12mo": "rising",
+    "trajectory_5yr": "Steady upward since 2021, accelerated post-2023 as fitness/wellness purchasing rebounded.",
+    "seasonality": {
+      "has_seasonality": true,
+      "peak_months": [5, 6, 7, 8],
+      "trough_months": [11, 12, 1]
+    },
+    "claim_meta": {
+      "sources": [
+        { "url": "https://trends.google.com/trends/explore?q=portable%20blender", "accessed_at": "2026-04-21", "type": "trends", "title": "Google Trends — portable blender (12 mo)" },
+        { "url": "https://www.pinterest.com/ideas/portable-blender/", "accessed_at": "2026-04-21", "type": "trends", "title": "Pinterest Trends — portable blender" }
+      ],
+      "confidence": "high"
+    }
+  },
+  "demand": {
+    "volume_band": "high",
+    "monthly_search_estimate": 60500,
+    "rising_queries": ["usb portable blender", "smoothie blender for travel", "ninja portable blender"],
+    "related_queries": ["mini blender", "personal smoothie maker", "blender bottle"],
+    "claim_meta": {
+      "sources": [
+        { "url": "https://ads.google.com/keywordplanner", "accessed_at": "2026-04-21", "type": "tool", "title": "Google Keyword Planner export" }
+      ],
+      "confidence": "medium"
+    }
+  },
+  "pain_points": [
+    {
+      "id": "pain_001",
+      "summary": "Battery dies after 2-3 uses; charging takes too long for daily commuter use",
+      "verbatim_quotes": [
+        "Mine barely lasts a week without charging — useless if I forget to plug it in",
+        "Promised 20 blends, delivers maybe 6 before the motor stalls"
+      ],
+      "frequency": "dominant",
+      "segment": "daily_commuter",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.reddit.com/r/smoothies/comments/1abc123/portable_blender_battery_life/", "accessed_at": "2026-04-21", "type": "social", "title": "r/smoothies thread" },
+          { "url": "https://www.amazon.com/-/dp/B08XYZ123", "accessed_at": "2026-04-21", "type": "competitor", "title": "Amazon BlendJet 2 reviews — battery complaints aggregated" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "pain_002",
+      "summary": "Cleaning is a hassle — blades trap pulp, base is hand-wash only",
+      "frequency": "common",
+      "segment": "busy_parent",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.youtube.com/watch?v=portable_blender_review", "accessed_at": "2026-04-21", "type": "social", "title": "YouTube review compilation" }
+        ],
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "pain_003",
+      "summary": "Cannot crush ice or frozen fruit reliably — motor under-powered",
+      "frequency": "common",
+      "segment": "smoothie_enthusiast",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.reddit.com/r/MealPrepSunday/comments/portable_blender_frozen/", "accessed_at": "2026-04-21", "type": "social" }
+        ],
+        "confidence": "medium"
+      }
+    }
+  ],
+  "competitors": [
+    {
+      "id": "comp_001",
+      "brand": "BlendJet",
+      "url": "https://blendjet.com",
+      "est_traffic_band": "leader",
+      "key_angle": "Lifestyle & color variety; influencer-heavy",
+      "price_band": "mid",
+      "ad_creatives_observed_count": 47,
+      "weakness_observed": "Battery / motor complaints dominate review section",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.facebook.com/ads/library/?id=blendjet", "accessed_at": "2026-04-21", "type": "competitor", "title": "Meta Ad Library — BlendJet" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "comp_002",
+      "brand": "BEAST Mini",
+      "url": "https://thebeast.com",
+      "est_traffic_band": "medium",
+      "key_angle": "Premium design, kitchen-aesthetic positioning",
+      "price_band": "premium",
+      "ad_creatives_observed_count": 18,
+      "weakness_observed": "Not actually portable — corded; price puts off impulse buyers",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://thebeast.com/products/mini-blender", "accessed_at": "2026-04-21", "type": "competitor" }
+        ],
+        "confidence": "medium"
+      }
+    }
+  ],
+  "audience_profiles": [
+    {
+      "id": "audience_001",
+      "name": "Daily Commuter — Smoothie on the Go",
+      "size_estimate_band": "large",
+      "demographics": {
+        "age_band": "25-34",
+        "gender_skew": "balanced",
+        "income_band": "mid",
+        "geo": ["US", "CA"]
+      },
+      "psychographics": {
+        "interests": ["fitness", "meal prep", "wellness"],
+        "values": ["convenience", "health", "time efficiency"],
+        "lifestyle": ["urban professional", "gym 3x/week"]
+      },
+      "channels": ["instagram", "tiktok", "youtube"],
+      "moments": ["morning commute", "post-workout", "office snack"]
+    },
+    {
+      "id": "audience_002",
+      "name": "Travel Enthusiast",
+      "size_estimate_band": "medium",
+      "demographics": {
+        "age_band": "28-45",
+        "gender_skew": "female",
+        "income_band": "upper_mid",
+        "geo": ["US"]
+      },
+      "psychographics": {
+        "interests": ["travel", "hotel-room cooking", "wellness on the road"],
+        "values": ["self-care", "independence"],
+        "lifestyle": ["frequent flyer", "digital nomad"]
+      },
+      "channels": ["instagram", "pinterest", "youtube"],
+      "moments": ["packing for trip", "hotel breakfast", "airbnb stay"]
+    }
+  ],
+  "ad_intelligence": {
+    "top_creatives": [
+      {
+        "platform": "meta",
+        "url_or_id": "ad_lib_4521234",
+        "hook": "Smoothie in 20 seconds — even at the airport",
+        "format": "9:16 vertical UGC",
+        "observed_runtime_days": 42
+      },
+      {
+        "platform": "tiktok",
+        "url_or_id": "tt_creative_887",
+        "hook": "POV: you finally found a blender that survives travel",
+        "format": "15s native",
+        "observed_runtime_days": 28
+      }
+    ],
+    "common_hooks": [
+      "Smoothie in N seconds",
+      "POV / lifestyle shot",
+      "Before-after: ice → smoothie texture",
+      "Cleaning in one rinse"
+    ],
+    "avg_cpm_band": "mid"
+  },
+  "supply_signals": {
+    "aliexpress_avg_cost": { "amount": 11.50, "currency": "USD" },
+    "alibaba_avg_cost": { "amount": 7.80, "currency": "USD" },
+    "lead_time_days_band": "14_30",
+    "claim_meta": {
+      "sources": [
+        { "url": "https://www.alibaba.com/trade/search?SearchText=portable+blender", "accessed_at": "2026-04-21", "type": "tool" },
+        { "url": "https://www.aliexpress.com/wholesale?SearchText=portable+blender", "accessed_at": "2026-04-21", "type": "tool" }
+      ],
+      "confidence": "medium"
+    }
+  },
+  "meta": {
+    "generated_at": "2026-04-21T10:00:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "source_count": 11,
+    "execution_time_s": 142.6,
+    "user_input_summary": "portable blender, North America"
+  }
+}

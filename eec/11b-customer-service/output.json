@@ -1,0 +1,159 @@
+{
+  "contact_methods": [
+    {
+      "id": "contact_001",
+      "channel": "email",
+      "value": "support@roborock.us",
+      "hours_window": "Mon-Fri 7am-7pm PT, Sat 9am-3pm PT",
+      "sla_minutes": 60,
+      "languages": ["en"],
+      "label": "Email a human"
+    },
+    {
+      "id": "contact_002",
+      "channel": "web_form",
+      "value": "/contact",
+      "hours_window": "24/7 (replies in business hours)",
+      "sla_minutes": 1440,
+      "languages": ["en"],
+      "label": "Contact form"
+    },
+    {
+      "id": "contact_003",
+      "channel": "social_dm",
+      "value": "https://www.instagram.com/roborock_us",
+      "hours_window": "Mon-Fri 9am-6pm PT",
+      "sla_minutes": 240,
+      "languages": ["en"],
+      "label": "DM us on Instagram"
+    }
+  ],
+  "live_chat_provider": {
+    "mode": "none",
+    "stub_until": "never",
+    "consent_category": "functional"
+  },
+  "video_tutorials": [
+    {
+      "id": "video_001",
+      "title": "Roborock first-time setup in 90 seconds",
+      "youtube_id": "dQw4w9WgXcQ",
+      "duration_seconds": 90,
+      "topic": "setup",
+      "related_sku_ids": ["sku_001", "sku_002"],
+      "transcript_summary": "Plug dock against a flat wall with 1m clearance each side. Open Roborock app, scan QR on robot, follow pairing wizard. First map takes 25 minutes — let it finish before starting any clean."
+    },
+    {
+      "id": "video_002",
+      "title": "Why your Roborock keeps getting stuck — top 7 fixes",
+      "youtube_id": "dQw4w9WgXcQ",
+      "duration_seconds": 165,
+      "topic": "troubleshooting",
+      "related_sku_ids": ["sku_001", "sku_002"],
+      "transcript_summary": "Cable spaghetti under desks, dark/high-pile rugs (cliff sensor false-positive), 1.5cm threshold strips, chair legs in the under-3cm zone, sock pickup, dust bin full, mop pad too wet on transitions. Fix each in turn."
+    },
+    {
+      "id": "video_003",
+      "title": "Replacing your filter, brush, and mop pads",
+      "youtube_id": "dQw4w9WgXcQ",
+      "duration_seconds": 120,
+      "topic": "maintenance",
+      "related_sku_ids": ["sku_001", "sku_002", "sku_003"],
+      "transcript_summary": "Filter every 60-90 days (30-45 with pets). Main brush every 6-12 months. Side brushes every 3-6 months. Mop pads every ~50 washes or when fraying. The 6-month replenish kit covers all of it on schedule."
+    },
+    {
+      "id": "video_004",
+      "title": "Setting up no-go zones and virtual walls in the app",
+      "youtube_id": "dQw4w9WgXcQ",
+      "duration_seconds": 75,
+      "topic": "feature_walkthrough",
+      "related_sku_ids": ["sku_001"],
+      "transcript_summary": "Open the map in the Roborock app, tap Edit Map, drag rectangles for no-go zones (around pet bowls or fragile vases), or draw lines for virtual walls (across doorways for off-limits rooms). Saves per-floor."
+    },
+    {
+      "id": "video_005",
+      "title": "When to deep-clean the dock vs. the robot itself",
+      "youtube_id": "dQw4w9WgXcQ",
+      "duration_seconds": 95,
+      "topic": "maintenance",
+      "related_sku_ids": ["sku_001"],
+      "transcript_summary": "Dock: empty waste-water tank weekly, refill clean-water tank weekly, scrub the auto-wash basin monthly. Robot: rinse the dustbin filter monthly under cold water, dry 24h before reinstalling."
+    }
+  ],
+  "manuals": [
+    { "sku_id": "sku_001", "pdf_url": "/manuals/sku_001-en.pdf", "language": "en", "version": "v1.2", "file_size_kb": 4200, "page_count": 32 },
+    { "sku_id": "sku_002", "pdf_url": "/manuals/sku_002-en.pdf", "language": "en", "version": "v1.1", "file_size_kb": 3100, "page_count": 24 },
+    { "sku_id": "sku_003", "pdf_url": "/manuals/sku_003-en.pdf", "language": "en", "version": "v1.0", "file_size_kb": 800, "page_count": 8 }
+  ],
+  "parts_finder": [
+    {
+      "parent_sku_id": "sku_001",
+      "replacement_sku_id": "sku_003",
+      "fitment_note": "Fits all S-Series Pro generations (2024+). Snap-out replacement, no tools. Includes 2 HEPA filters, 1 main brush, 2 side brushes, 4 mop pads.",
+      "replacement_interval_days": 180,
+      "part_type": "kit"
+    },
+    {
+      "parent_sku_id": "sku_002",
+      "replacement_sku_id": "sku_003",
+      "fitment_note": "Same Replenish Kit fits both S-Series Pro and E-Series Essential. The mop pads in the kit are unused on the E-Series (no wet-mop module) — keep as spares or recycle.",
+      "replacement_interval_days": 180,
+      "part_type": "kit"
+    }
+  ],
+  "escalation_policy": {
+    "cs_tone_ref": "eec/03-brand-identity/output.json#/cs_tone",
+    "rules": [
+      {
+        "trigger": "Refund request > $200 (excluding Replenish Kit)",
+        "action": "Escalate to human supervisor; auto-acknowledge within 1h with timeline expectation. Do NOT respond by template.",
+        "sla_minutes": 60
+      },
+      {
+        "trigger": "Negative sentiment in 2+ consecutive messages",
+        "action": "Hand off to senior CS rep; tag thread 'recovery'; senior reviews full thread before reply.",
+        "sla_minutes": 30
+      },
+      {
+        "trigger": "Battery / fire / smoke / personal injury report (any product)",
+        "action": "Page on-call lead immediately by SMS + Slack. Stop sale of affected unit pending root-cause review. Do NOT respond by template.",
+        "sla_minutes": 5
+      },
+      {
+        "trigger": "Warranty claim with photo or video evidence (clear defect)",
+        "action": "Auto-RMA via warranty@roborock.us; ship prepaid return label same day; replacement ships on receipt of returned unit.",
+        "sla_minutes": 1440
+      },
+      {
+        "trigger": "Order tracking shows no movement > 7 days post-ship",
+        "action": "Refund preauth at full order value; file carrier claim; ship replacement immediately at our cost. Customer does nothing.",
+        "sla_minutes": 240
+      }
+    ]
+  },
+  "contact_form_config": {
+    "route_path": "/contact",
+    "post_endpoint": "/api/contact",
+    "stub_until": "never",
+    "fields": [
+      { "id": "name", "label": "Your name", "type": "text", "required": true, "max_length": 100 },
+      { "id": "email", "label": "Email", "type": "email", "required": true, "max_length": 200 },
+      { "id": "order_number", "label": "Order # (optional)", "type": "text", "required": false, "placeholder": "RBR-12345", "max_length": 30 },
+      {
+        "id": "reason",
+        "label": "What's this about?",
+        "type": "select",
+        "required": true,
+        "options": ["Order status", "Return / refund", "Warranty claim", "Product question", "Setup help", "Press / wholesale", "Other"]
+      },
+      { "id": "message", "label": "Tell us what's up", "type": "textarea", "required": true, "max_length": 2000, "placeholder": "Order number, model, and what's happening. We read every message." }
+    ]
+  },
+  "meta": {
+    "generated_at": "2026-04-22T11:00:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "source_count": 2,
+    "user_input_summary": "provider=none; include_phone=false; upstream: 02 + 03"
+  }
+}

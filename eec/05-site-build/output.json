@@ -1,0 +1,136 @@
+{
+  "site_url": "https://roborock-staging.vercel.app",
+  "production_url": "https://roborock-us.example.com",
+  "tech_stack": {
+    "frontend": "Next.js 15 (App Router, Server Components)",
+    "backend": "Medusa.js 2 (headless commerce)",
+    "cms": "Sanity (product overrides + blog)",
+    "hosting": "Vercel (frontend) + Railway (Medusa)",
+    "payment_processor": "Stripe (cards + Apple Pay + Klarna) + PayPal",
+    "search": "Algolia (autocomplete + faceted PLP)"
+  },
+  "routes": [
+    { "path": "/", "component": "HomePage", "asset_ids": ["asset_001", "asset_009"], "copy_block_ids": ["copy_006", "copy_007", "copy_008"], "seo_intent": "Brand discovery — rank for 'roborock' branded + 'best robot vacuum' generic intent" },
+    { "path": "/about", "component": "AboutPage", "seo_intent": "Brand trust + rank for 'roborock about' / 'who makes roborock'; renders 03.mission + story_short + values[] + timeline[]; emits AboutPage + Brand JSON-LD" },
+    { "path": "/team", "component": "TeamPage", "seo_intent": "Founder transparency for 'roborock founders' / 'who runs roborock'; renders 03.founders[] + values[]; emits Person JSON-LD per founder" },
+    { "path": "/sustainability", "component": "SustainabilityPage", "seo_intent": "Trust + rank for 'roborock sustainability' / 'roborock recycling'; renders 03.sustainability_statement + cross-linked certifications; emits AboutPage JSON-LD" },
+    { "path": "/press", "component": "PressPage", "seo_intent": "Trust signal for 'roborock review' / 'roborock awards'; renders 03.press_mentions[] + 03.awards[] sorted desc" },
+    { "path": "/products/roborock-s-series-pro", "component": "PdpPremium", "sku_ids": ["sku_001"], "asset_ids": ["asset_001", "asset_002", "asset_003"], "copy_block_ids": ["copy_007", "copy_009"], "seo_intent": "Convert lidar-aware buyers searching 'roborock s8' / 'lidar robot vacuum'" },
+    { "path": "/products/roborock-e-series-essential", "component": "PdpValue", "sku_ids": ["sku_002"], "asset_ids": ["asset_006", "asset_007"], "copy_block_ids": ["copy_008"], "seo_intent": "Convert value buyers searching 'lidar robot vacuum under 500'" },
+    { "path": "/products/roborock-replenish-6mo", "component": "PdpAccessory", "sku_ids": ["sku_003"], "asset_ids": ["asset_008"], "seo_intent": "Capture replenishment intent — 'roborock replacement brush' / 'filter'" },
+    { "path": "/collections/all", "component": "PlpAll", "sku_ids": ["sku_001", "sku_002", "sku_003"], "seo_intent": "PLP for 'shop all roborock'" },
+    { "path": "/collections/pet-households", "component": "PlpFiltered", "sku_ids": ["sku_001", "sku_003"], "seo_intent": "Rank for 'best robot vacuum for pet hair'" },
+    { "path": "/compare", "component": "ComparePage", "sku_ids": ["sku_001", "sku_002", "sku_003"], "seo_intent": "Comparison shopper intent — 'roborock s vs e' / 'compare roborock models'; aligns rows by 02.spec_table[].compare_key" },
+    { "path": "/cart", "component": "CartPage", "seo_intent": "Internal — not indexed; abandonment recovery hook fires here" },
+    { "path": "/checkout", "component": "CheckoutPage", "seo_intent": "Internal — not indexed; conversion endpoint" },
+    { "path": "/help", "component": "HelpCenter", "seo_intent": "FAQ schema for 'roborock setup' / 'roborock app not connecting'" },
+    { "path": "/help/setup-videos", "component": "SetupVideosPage", "seo_intent": "Long-tail support intent — 'roborock setup video', 'how to pair roborock', 'how to clean dust bin'; consumed from 11b-customer-service.video_tutorials[]; embeds youtube-nocookie for privacy" },
+    { "path": "/help/manuals", "component": "ManualsPage", "seo_intent": "Capture 'roborock s8 manual pdf' / 'e-series user guide' searches; per-SKU PDF index from 11b-customer-service.manuals[]" },
+    { "path": "/help/parts", "component": "PartsFinderPage", "seo_intent": "Replenishment intent — 'replacement filter for roborock e' / 'roborock brush fitment'; cross-sells sku_003 from 11b-customer-service.parts_finder[]" },
+    { "path": "/contact", "component": "ContactPage", "seo_intent": "Brand support intent + ad-account requirement; renders form (POST /api/contact) + 11b-customer-service.contact_methods[] sidebar with per-channel SLA" },
+    { "path": "/reviews", "component": "ReviewsIndex", "seo_intent": "Aggregated review hub from 04b-social-proof; filterable by sku/rating; AggregateRating JSON-LD on PDPs gates at >=5 reviews per Google policy" },
+    { "path": "/search", "component": "SearchPage", "seo_intent": "Internal — noindex; Algolia stub until NEXT_PUBLIC_ALGOLIA_* env vars are populated, then InstantSearch swaps in" },
+    { "path": "/wishlist", "component": "WishlistPage", "seo_intent": "Internal — saved-items list (localStorage v2); migrates to user-bound storage when /eec-11-fulfillment lands" },
+    { "path": "/blog", "component": "BlogIndexPage", "seo_intent": "Blog hub — surfaces 07b drafts; ranks for 'roborock blog' + cluster head terms" },
+    { "path": "/blog/[slug]", "component": "BlogPostPage", "copy_block_ids": ["draft_001", "draft_002", "draft_003", "draft_004"], "seo_intent": "Long-tail informational SEO from 07b.drafts[]; emits Article + BreadcrumbList JSON-LD per post" },
+    { "path": "/pages/privacy", "component": "PolicyPage", "seo_intent": "Required for ad accounts + GDPR; canonical privacy notice" },
+    { "path": "/pages/terms", "component": "PolicyPage", "seo_intent": "Required for ad accounts; T&Cs" },
+    { "path": "/pages/shipping-returns", "component": "PolicyPage", "seo_intent": "Trust signal + return-policy keywords" },
+    { "path": "/pages/cookies", "component": "PolicyPage", "seo_intent": "Cookie policy — required for EU/UK + ad-account approval; consumed from 03b-legal-pack" },
+    { "path": "/pages/accessibility", "component": "PolicyPage", "seo_intent": "WCAG 2.2 AA conformance statement — ADA + procurement; consumed from 03b-legal-pack" },
+    { "path": "/pages/ccpa-do-not-sell", "component": "PolicyPage", "seo_intent": "CCPA opt-out route — link required in header on every page; consumed from 03b-legal-pack" },
+    { "path": "/pages/prop65", "component": "PolicyPage", "seo_intent": "California Prop 65 chemical warning — required for CA sales; consumed from 03b-legal-pack" },
+    { "path": "/pages/warranty", "component": "PolicyPage", "seo_intent": "Per-SKU warranty terms + claim process — trust signal; consumed from 03b-legal-pack" },
+    { "path": "/pages/gdpr-data-request", "component": "PolicyPage", "seo_intent": "GDPR Article 15-22 rights + 30-day SLA — EU/UK residents; consumed from 03b-legal-pack" },
+    { "path": "/pages/dmca", "component": "PolicyPage", "seo_intent": "DMCA designated agent + notice format — 17 U.S.C. § 512 compliance; consumed from 03b-legal-pack" },
+    { "path": "/sitemap-html", "component": "SitemapHtmlPage", "seo_intent": "Human-readable site index — discoverability fallback when search fails; canonical, low priority (0.3)" },
+    { "path": "/maintenance", "component": "MaintenancePage", "seo_intent": "Internal — noindex; rewritten to by middleware when MAINTENANCE_MODE=true (returns 503). Bypasses: /api/*, /_next/*, /og/*, /manuals/*, /spec-sheets/*, /favicon.ico, /robots.txt, /sitemap.xml" }
+  ],
+  "cms_handles": [
+    { "handle": "roborock-s-series-pro", "type": "product", "sku_id": "sku_001" },
+    { "handle": "roborock-e-series-essential", "type": "product", "sku_id": "sku_002" },
+    { "handle": "roborock-replenish-6mo", "type": "product", "sku_id": "sku_003" },
+    { "handle": "all", "type": "collection" },
+    { "handle": "pet-households", "type": "collection" },
+    { "handle": "privacy", "type": "policy" },
+    { "handle": "terms", "type": "policy" },
+    { "handle": "shipping-returns", "type": "policy" }
+  ],
+  "checkout_flow": {
+    "type": "single_page",
+    "payment_methods": ["card", "apple_pay", "google_pay", "paypal", "klarna"],
+    "shipping_zones": ["US", "CA"],
+    "guest_checkout": true,
+    "abandonment_recovery_hook_present": true
+  },
+  "seo_meta": [
+    { "route": "/", "title": "Roborock — Lidar-Mapped Robot Vacuums", "description": "Robot vacuums engineered for the messy weeks, not the showroom. Lidar mapping, anti-tangle brush, auto-washing dock. Free shipping in the US.", "og_image": "/og/home.jpg", "canonical": "https://roborock-us.example.com/", "schema_org_type": "Organization" },
+    { "route": "/about", "title": "About Roborock — Engineered for the messy weeks", "description": "We measured every brush, mop, and lidar map so you don't have to. Read how Roborock got built — and why we still answer every support email ourselves.", "canonical": "https://roborock-us.example.com/about", "schema_org_type": "AboutPage" },
+    { "route": "/team", "title": "Team & Founders — Roborock", "description": "Meet the engineers behind Roborock — ex-iRobot, ex-self-driving SLAM, and the head of customer who still answers the first 50 escalations a week.", "canonical": "https://roborock-us.example.com/team", "schema_org_type": "Person" },
+    { "route": "/sustainability", "title": "Sustainability — Roborock", "description": "Repairable by design. 60% recycled aluminum. Battery take-back since 2022. Read the four pillars (and the metrics behind them).", "canonical": "https://roborock-us.example.com/sustainability", "schema_org_type": "AboutPage" },
+    { "route": "/press", "title": "Press & Awards — Roborock", "description": "What Wirecutter, The Verge, Tom's Guide, Engadget, and Good Housekeeping have said about Roborock — plus the awards that came with the reviews.", "canonical": "https://roborock-us.example.com/press" },
+    { "route": "/products/roborock-s-series-pro", "title": "S-Series Pro — Lidar Robot + Auto-Mop Dock | Roborock", "description": "10,000 Pa suction, lidar SLAM, auto-lifting mop, self-empty + self-wash dock. The set-and-forget robot for pet households. From $1,199.", "og_image": "/og/sku_001.jpg", "schema_org_type": "Product" },
+    { "route": "/products/roborock-e-series-essential", "title": "E-Series Essential — Real Lidar Under $500 | Roborock", "description": "Lidar mapping that actually works, anti-tangle brush, optional auto-empty dock. The robot vacuum your apartment deserves. $449.", "og_image": "/og/sku_002.jpg", "schema_org_type": "Product" },
+    { "route": "/products/roborock-replenish-6mo", "title": "6-Month Replenish Kit — Brush, Filter, Mop Pads | Roborock", "description": "One kit, six months. Subscribe & save 20%. Fits S-Series Pro and E-Series. $79.", "schema_org_type": "Product" },
+    { "route": "/collections/pet-households", "title": "Best Robot Vacuums for Pet Households | Roborock", "description": "Anti-tangle brush + auto-washing mop. Engineered for long-haired pets. Shop our pet-household lineup.", "schema_org_type": "CollectionPage" },
+    { "route": "/compare", "title": "Compare Roborock models — side-by-side specs", "description": "Suction, battery, mapping, mop, dock — every spec line from S-Series Pro, E-Series Essential, and the Replenish Kit, side-by-side.", "canonical": "https://roborock-us.example.com/compare" },
+    { "route": "/help", "title": "Help Center — Setup, Maps, Troubleshooting | Roborock", "description": "Setup guides, app troubleshooting, replacement parts. Reply to any email and we'll help.", "schema_org_type": "FAQPage" },
+    { "route": "/help/setup-videos", "title": "Setup & Maintenance Videos | Roborock", "description": "Step-by-step video walkthroughs — first-time setup, dock cleaning, brush replacement, and the seven things that fix 90% of stuck-up reports.", "canonical": "https://roborock-us.example.com/help/setup-videos" },
+    { "route": "/help/manuals", "title": "Product Manuals (PDF) | Roborock", "description": "Download the full user manual for every Roborock model. Searchable PDFs, English only at MVP — translations on request.", "canonical": "https://roborock-us.example.com/help/manuals" },
+    { "route": "/help/parts", "title": "Find replacement parts that fit your Roborock", "description": "Pick the model you own to see what fits. The 6-month Replenish Kit covers the wear parts for both robots — set it on subscription.", "canonical": "https://roborock-us.example.com/help/parts" },
+    { "route": "/contact", "title": "Contact us | Roborock", "description": "Email, DM, or send us a note. A human reads every message and replies within a business day.", "canonical": "https://roborock-us.example.com/contact" },
+    { "route": "/reviews", "title": "Customer Reviews — Roborock", "description": "Every verified review across the Roborock catalog. Filter by product or star rating. Real owner experiences, not staged testimonials.", "canonical": "https://roborock-us.example.com/reviews" },
+    { "route": "/blog", "title": "Roborock Blog — Tests, comparisons, fixes", "description": "Hands-on robot vacuum reviews, sub-$500 lidar comparisons, and the troubleshooting list our support team uses daily.", "canonical": "https://roborock-us.example.com/blog" },
+    { "route": "/blog/[slug]", "title": "{post.title} — Roborock", "description": "{post.excerpt}", "schema_org_type": "Article" },
+    { "route": "/sitemap-html", "title": "Site map | Roborock", "description": "Every indexable page on the site, grouped by section.", "canonical": "https://roborock-us.example.com/sitemap-html" },
+    { "route": "/maintenance", "title": "Scheduled maintenance | Roborock", "description": "We are performing scheduled maintenance and will be back shortly." }
+  ],
+  "analytics_endpoints": {
+    "gtm_container_placeholder": "${NEXT_PUBLIC_GTM_ID}",
+    "consent_layer_slot": "<!-- CONSENT_LAYER_INJECTION -->",
+    "data_layer_global": "dataLayer",
+    "rebuild_protocol": {
+      "rebuild_command": "pnpm install --frozen-lockfile && pnpm build && pnpm deploy:preview",
+      "writeback_target_files": [
+        ".env.local",
+        ".env.production",
+        "app/layout.tsx",
+        "components/ConsentBanner.tsx",
+        "lib/gtm.ts"
+      ],
+      "post_rebuild_validation": "curl -s $SITE_URL | grep -q 'GTM-' && curl -s $SITE_URL | grep -q 'consent default'"
+    }
+  },
+  "repo_path": "./eec/05-site-build/repo/",
+  "env_vars_required": [
+    { "name": "NEXT_PUBLIC_GTM_ID", "purpose": "GTM container ID; written by 06-tracking", "scope": "build", "secret": false },
+    { "name": "NEXT_PUBLIC_SITE_URL", "purpose": "Canonical site URL for og + sitemap", "scope": "build", "secret": false },
+    { "name": "MEDUSA_BACKEND_URL", "purpose": "Headless commerce API base URL", "scope": "both", "secret": false },
+    { "name": "MEDUSA_PUBLIC_KEY", "purpose": "Storefront publishable key", "scope": "runtime", "secret": false },
+    { "name": "STRIPE_PUBLIC_KEY", "purpose": "Stripe Elements client key", "scope": "runtime", "secret": false },
+    { "name": "STRIPE_SECRET_KEY", "purpose": "Stripe webhook + server-side checkout", "scope": "runtime", "secret": true },
+    { "name": "STRIPE_WEBHOOK_SECRET", "purpose": "Stripe webhook signature verification", "scope": "runtime", "secret": true },
+    { "name": "PAYPAL_CLIENT_ID", "purpose": "PayPal Smart Buttons", "scope": "runtime", "secret": false },
+    { "name": "PAYPAL_SECRET", "purpose": "PayPal server-side capture", "scope": "runtime", "secret": true },
+    { "name": "ALGOLIA_APP_ID", "purpose": "Search index", "scope": "build", "secret": false },
+    { "name": "ALGOLIA_SEARCH_KEY", "purpose": "Browser search key (read-only)", "scope": "runtime", "secret": false },
+    { "name": "ALGOLIA_ADMIN_KEY", "purpose": "Index updates from Medusa hooks", "scope": "runtime", "secret": true },
+    { "name": "SANITY_PROJECT_ID", "purpose": "CMS content fetch", "scope": "build", "secret": false },
+    { "name": "SANITY_DATASET", "purpose": "CMS dataset name", "scope": "build", "secret": false },
+    { "name": "RESEND_API_KEY", "purpose": "Transactional email send", "scope": "runtime", "secret": true }
+  ],
+  "accessibility_baseline": {
+    "axe_score": 96,
+    "wcag_level": "AA",
+    "known_issues": [
+      "Hero video on / lacks captions (defer to 04 deliverable v1.1)",
+      "Color contrast on gray placeholder text in PDP review widget = 4.4:1 (target 4.5:1) — bumping shade in next sprint"
+    ]
+  },
+  "meta": {
+    "generated_at": "2026-04-22T14:00:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: 02 SKUs, 03 visual_system + tone, 04 assets + copy_blocks"
+  }
+}

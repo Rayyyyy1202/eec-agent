@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /cart
+Disallow: /checkout
+Disallow: /api/
+
+Sitemap: https://roborock-us.example.com/sitemap.xml

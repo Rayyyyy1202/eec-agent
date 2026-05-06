@@ -1,0 +1,283 @@
+{
+  "skus": [
+    {
+      "id": "sku_001",
+      "name": "Roborock S-Series Pro — LiDAR Robot Vacuum + Auto-Mop Dock",
+      "slug": "roborock-s-series-pro",
+      "email_friendly_name": "S-Series Pro",
+      "category": "smart_home",
+      "subcategory": "robot_vacuum_premium",
+      "description_short": "Lidar-mapping vacuum + auto-lifting mop with self-empty + self-wash dock. The set-and-forget machine for pet households.",
+      "description_long": "S-Series Pro is engineered for the household that's tried two cheap robots and given up. 10,000 Pa suction lifts embedded pet hair on first pass; a heated wash dock cleans and dries the mop pad after every run; lidar SLAM creates a 3-floor map with no-go zones; and the auto-empty bin holds 7 weeks of dust before you even think about it.",
+      "key_features": [
+        "10,000 Pa HyperForce suction (lifts embedded pet hair)",
+        "Lidar SLAM mapping — 3-floor support, no-go zones",
+        "Auto-lifting mop pads — 10mm clearance over carpet",
+        "Self-empty + self-wash + heated dry dock (7 weeks bin capacity)",
+        "Anti-tangle V-shape brush (long pet hair)",
+        "Reactive 3D obstacle avoidance — recognizes 30+ object types",
+        "Matter / Alexa / Google Home native"
+      ],
+      "usp": "Solves pain_001 (gets stuck), pain_002 (pet hair tangles) and pain_003 (mop streaks) in one box. Anchor competitor comp_002 (Roborock S8 MaxV) at $1,599 — we ship same lidar tier at $1,199.",
+      "target_audience_ids": ["audience_001", "audience_002", "audience_003"],
+      "cost": { "amount": 348.00, "currency": "USD" },
+      "moq": 200,
+      "lead_time_days": 45,
+      "supplier_id": "supplier_shenzhen_smartclean_007",
+      "supplier_country": "CN",
+      "retail_price": { "amount": 1199.00, "currency": "USD" },
+      "compare_at_price": { "amount": 1499.00, "currency": "USD" },
+      "margin_pct": 70.98,
+      "subscription_eligible": false,
+      "shipping_class": "fragile",
+      "weight_g": 12800,
+      "dim_cm": { "l": 53, "w": 48, "h": 50 },
+      "image_briefs": [
+        { "purpose": "hero", "description": "Top-down studio shot of vacuum docked in the heated wash station, brand colors background, floor visible to show scale" },
+        { "purpose": "lifestyle", "description": "Modern living room — golden retriever lying on rug, robot quietly cleaning around it, owner reading on couch" },
+        { "purpose": "detail", "description": "Macro shot of V-shape anti-tangle brush with no hair wrapped around it (vs competitor brush packed with hair)" },
+        { "purpose": "size_compare", "description": "Beside a coffee table leg + rug edge to show 10mm mop lift clearance" },
+        { "purpose": "ugc_style", "description": "Phone-shot before/after of pet-hair-covered floor — robot pass — clean floor (audience_001)" }
+      ],
+      "return_policy_days": 60,
+      "restricted_geo": ["CU", "IR", "KP", "SY"],
+      "low_stock_threshold": 30,
+      "launch_status": "live",
+      "certifications": [
+        { "name": "FCC Part 15" },
+        { "name": "UL Listed" },
+        { "name": "CE" },
+        { "name": "RoHS" },
+        { "name": "Energy Star", "scope_note": "dock charging efficiency" },
+        { "name": "FSC Packaging" }
+      ],
+      "spec_table": [
+        { "group": "Suction", "label": "Max suction", "value": "10000", "unit": "Pa", "compare_key": "suction_pa" },
+        { "group": "Suction", "label": "Modes", "value": "Quiet · Standard · Turbo · Max", "compare_key": "suction_modes" },
+        { "group": "Battery", "label": "Capacity", "value": "5200", "unit": "mAh", "compare_key": "battery_mah" },
+        { "group": "Battery", "label": "Runtime per charge", "value": "180", "unit": "min", "compare_key": "battery_runtime_min" },
+        { "group": "Battery", "label": "Recharge & resume", "value": "Yes", "compare_key": "recharge_resume" },
+        { "group": "Mapping", "label": "Mapping tech", "value": "Real spinning lidar (PreciSense LDS)", "compare_key": "mapping_tech" },
+        { "group": "Mapping", "label": "Multi-floor maps", "value": "Up to 3 floors", "compare_key": "multi_floor" },
+        { "group": "Mapping", "label": "Obstacle avoidance", "value": "3D Reactive (30+ object classes)", "compare_key": "obstacle_avoid" },
+        { "group": "Mop", "label": "Mop type", "value": "Auto-lifting (10mm clearance)", "compare_key": "mop_type" },
+        { "group": "Mop", "label": "Self-wash dock", "value": "Heated wash + hot-air dry", "compare_key": "mop_dock" },
+        { "group": "Dock", "label": "Auto-empty bin", "value": "2.5", "unit": "L (≈60 days)", "compare_key": "auto_empty_bin" },
+        { "group": "Dock", "label": "Mop tank capacity", "value": "4 L clean / 3.5 L dirty", "compare_key": "mop_tank" },
+        { "group": "Brush", "label": "Brush design", "value": "V-shape silicone anti-tangle", "compare_key": "brush_design" },
+        { "group": "Filter", "label": "Filter rating", "value": "HEPA H13 (washable)", "compare_key": "filter_rating" },
+        { "group": "Acoustics", "label": "Quiet mode", "value": "58", "unit": "dB", "compare_key": "noise_db" },
+        { "group": "Connectivity", "label": "Smart home", "value": "Matter · Alexa · Google Home", "compare_key": "smart_home" },
+        { "group": "Warranty", "label": "Robot warranty", "value": "2", "unit": "years", "compare_key": "warranty_years" }
+      ],
+      "tech_explainers": [
+        {
+          "id": "tech_001",
+          "title": "PreciSense lidar SLAM, in plain language",
+          "body_md": "A spinning laser on top of the puck shoots ~5,000 distance measurements per second. Software stitches those into a centimeter-resolution map and tracks where the robot is on that map in real time. Two practical wins: it works in pitch dark (cameras don't), and the map doesn't drift across weeks of runs (gyro nav does). Result: the robot follows the same efficient path every cycle, instead of re-running spots it already cleaned."
+        },
+        {
+          "id": "tech_002",
+          "title": "Why the V-shape brush doesn't wrap pet hair",
+          "body_md": "A bristle roller catches hair on the bristle root, then friction wraps the whole roller. The V-shape silicone fins do the opposite — hair slides along the fin toward the centerline and into the suction port. Twelve weeks with a golden retriever: zero untanglings. (We made a video.)"
+        },
+        {
+          "id": "tech_003",
+          "title": "Auto-mop dock — what it actually does between cycles",
+          "body_md": "After every cycle the robot returns to the dock. The dock pumps clean water through the mop pads, scrubs them against ridged plates, vacuums the dirty water into a separate tank, and finishes with a 60-minute hot-air dry. Net effect: mop pads stay clean enough to use for 6 months without replacement, and the dock never smells like a wet rag."
+        },
+        {
+          "id": "tech_004",
+          "title": "Reactive 3D obstacle avoidance, honestly",
+          "body_md": "A structured-light projector + camera maps small objects in real time. The model recognizes 30+ classes — cables, socks, phone chargers, pet waste, slippers, kid's toys, weighing scales. It routes around them instead of pushing them. It's not perfect (it'll occasionally miss a black cable on a black floor), but the failure mode is 'stop and ask in the app,' not 'eat the cable.'"
+        }
+      ],
+      "setup_steps": [
+        { "step_number": 1, "title": "Unbox and place the dock", "instruction": "Place the dock against a wall with at least 0.5m clear on each side and 1.5m in front. Plug it in. The status light pulses white when ready.", "estimated_seconds": 120 },
+        { "step_number": 2, "title": "Sit the robot on the dock", "instruction": "Lift the robot onto the dock. The metal contacts on the back of the robot align with the dock pins. The robot beeps once and the dock light turns solid white when seated.", "estimated_seconds": 30 },
+        { "step_number": 3, "title": "Install the Roborock app", "instruction": "Download 'Roborock' from the App Store or Google Play. Create an account or sign in. Tap '+' to add a new device. Select S-Series Pro from the list.", "estimated_seconds": 120 },
+        { "step_number": 4, "title": "Connect to Wi-Fi", "instruction": "The app asks for your home Wi-Fi (2.4 GHz only — the robot does not connect to 5 GHz). Enter the password. The robot beeps three times when connected. This step takes ~2 minutes.", "estimated_seconds": 180 },
+        { "step_number": 5, "title": "Run the first mapping cycle", "instruction": "In the app, tap 'Map your home.' The robot leaves the dock and runs a single mapping pass — no suction, no mop, just lidar. For a 1,200 sq ft home this takes 25–35 minutes. Stay out of its way; you'll get a clean map.", "estimated_seconds": 1800 },
+        { "step_number": 6, "title": "Edit the map (optional)", "instruction": "When mapping finishes, the app shows the map. Drag walls to split rooms, name them, and mark no-go zones (under-bed, in front of pet bowls, etc.). Saved maps persist forever — you only do this once.", "estimated_seconds": 240 },
+        { "step_number": 7, "title": "Schedule your first real clean", "instruction": "Set a daily schedule (we recommend 9 a.m. weekdays — most people are out). Pick rooms, suction power, and whether to mop. Tap 'Save.' You're done.", "estimated_seconds": 120 }
+      ]
+    },
+    {
+      "id": "sku_002",
+      "name": "Roborock E-Series Essential — Smart Robot Vacuum",
+      "slug": "roborock-e-series-essential",
+      "email_friendly_name": "E-Series",
+      "category": "smart_home",
+      "subcategory": "robot_vacuum_value",
+      "description_short": "Lidar-grade mapping at the half-price tier. Auto-empty optional. Perfect first robot.",
+      "description_long": "E-Series Essential brings real lidar mapping (not bump-nav) under $500. Choose with or without the auto-empty dock add-on. Same anti-tangle brush as the Pro — half the dock, all the cleaning.",
+      "key_features": [
+        "Lidar SLAM mapping (real, not random walk)",
+        "5,500 Pa suction",
+        "Anti-tangle brush",
+        "Optional self-empty dock add-on",
+        "App scheduling + room selection"
+      ],
+      "usp": "Best lidar-tier price-point in the market — directly attacks comp_003 (Eufy 11S, no lidar at this price) and comp_005 (Shark Matrix, $399 without lidar).",
+      "target_audience_ids": ["audience_001", "audience_004"],
+      "cost": { "amount": 138.00, "currency": "USD" },
+      "moq": 500,
+      "lead_time_days": 38,
+      "supplier_id": "supplier_shenzhen_smartclean_007",
+      "supplier_country": "CN",
+      "retail_price": { "amount": 449.00, "currency": "USD" },
+      "compare_at_price": { "amount": 549.00, "currency": "USD" },
+      "margin_pct": 69.27,
+      "subscription_eligible": false,
+      "shipping_class": "standard",
+      "weight_g": 4200,
+      "dim_cm": { "l": 36, "w": 36, "h": 9.6 },
+      "image_briefs": [
+        { "purpose": "hero", "description": "Robot on light hardwood, tilted 3/4 angle, app screen overlay showing room map" },
+        { "purpose": "lifestyle", "description": "Apartment kitchen — robot rounding kitchen island, simple/aspirational vibe" },
+        { "purpose": "detail", "description": "Cutaway showing the lidar tower spinning on top, with caption 'real mapping, not random'" }
+      ],
+      "return_policy_days": 30,
+      "restricted_geo": [],
+      "low_stock_threshold": 80,
+      "launch_status": "live",
+      "certifications": [
+        { "name": "FCC Part 15" },
+        { "name": "UL Listed" },
+        { "name": "CE" },
+        { "name": "RoHS" },
+        { "name": "FSC Packaging" }
+      ],
+      "spec_table": [
+        { "group": "Suction", "label": "Max suction", "value": "5500", "unit": "Pa", "compare_key": "suction_pa" },
+        { "group": "Suction", "label": "Modes", "value": "Quiet · Standard · Turbo", "compare_key": "suction_modes" },
+        { "group": "Battery", "label": "Capacity", "value": "3200", "unit": "mAh", "compare_key": "battery_mah" },
+        { "group": "Battery", "label": "Runtime per charge", "value": "130", "unit": "min", "compare_key": "battery_runtime_min" },
+        { "group": "Battery", "label": "Recharge & resume", "value": "Yes", "compare_key": "recharge_resume" },
+        { "group": "Mapping", "label": "Mapping tech", "value": "Real spinning lidar", "compare_key": "mapping_tech" },
+        { "group": "Mapping", "label": "Multi-floor maps", "value": "Up to 2 floors", "compare_key": "multi_floor" },
+        { "group": "Mapping", "label": "Obstacle avoidance", "value": "Bumper + IR cliff", "compare_key": "obstacle_avoid" },
+        { "group": "Mop", "label": "Mop type", "value": "Vibrating pad (no auto-lift)", "compare_key": "mop_type" },
+        { "group": "Mop", "label": "Self-wash dock", "value": "—", "compare_key": "mop_dock" },
+        { "group": "Dock", "label": "Auto-empty bin", "value": "Optional add-on", "compare_key": "auto_empty_bin" },
+        { "group": "Dock", "label": "Mop tank capacity", "value": "300 mL onboard", "compare_key": "mop_tank" },
+        { "group": "Brush", "label": "Brush design", "value": "V-shape silicone anti-tangle", "compare_key": "brush_design" },
+        { "group": "Filter", "label": "Filter rating", "value": "HEPA-grade (washable)", "compare_key": "filter_rating" },
+        { "group": "Acoustics", "label": "Quiet mode", "value": "62", "unit": "dB", "compare_key": "noise_db" },
+        { "group": "Connectivity", "label": "Smart home", "value": "Alexa · Google Home", "compare_key": "smart_home" },
+        { "group": "Warranty", "label": "Robot warranty", "value": "2", "unit": "years", "compare_key": "warranty_years" }
+      ],
+      "tech_explainers": [
+        {
+          "id": "tech_005",
+          "title": "Real lidar — not 'lidar-assist'",
+          "body_md": "Some sub-$500 robots claim 'lidar-assist' but actually run gyro navigation with a single-point lidar dot for assist. The E-Series uses the same spinning lidar puck as our flagship — slightly cheaper module, same SLAM math. The map doesn't drift, doesn't need a re-train each week, and works in the dark."
+        },
+        {
+          "id": "tech_006",
+          "title": "Why we kept the anti-tangle brush at this price",
+          "body_md": "The brush is the most-asked-about part on PDP. Cheaper bristle rollers wrap pet hair and need weekly cleaning. We carried the V-shape silicone design from the Pro because it's cheap to manufacture once tooled, and it's the single biggest day-to-day quality-of-life difference for pet households."
+        },
+        {
+          "id": "tech_007",
+          "title": "What the optional dock add-on does",
+          "body_md": "The base bot ships without an auto-empty dock. The $129 add-on slides into the same charging spot and gives you ~45 days of bin capacity instead of 4–5 days. Most apartment owners skip it. Most pet households add it within 60 days."
+        }
+      ],
+      "setup_steps": [
+        { "step_number": 1, "title": "Charge the robot for 90 minutes", "instruction": "Plug in the included charging contact. The robot ships at ~30% — give it a full charge before the first mapping run. The light goes solid white when full.", "estimated_seconds": 5400 },
+        { "step_number": 2, "title": "Install the Roborock app and sign in", "instruction": "Download 'Roborock' from your app store. Create an account. Tap '+', select 'E-Series Essential' from the device list.", "estimated_seconds": 120 },
+        { "step_number": 3, "title": "Connect to 2.4 GHz Wi-Fi", "instruction": "Enter your home Wi-Fi credentials. The robot connects only on 2.4 GHz (not 5 GHz). Two beeps = connected.", "estimated_seconds": 180 },
+        { "step_number": 4, "title": "Run the first mapping pass", "instruction": "Tap 'Map your home.' The robot lidar-scans without cleaning. ~25 minutes for a typical apartment. Don't move it during this pass.", "estimated_seconds": 1500 },
+        { "step_number": 5, "title": "Schedule your first clean", "instruction": "Pick a daily time, choose rooms, and tap save. We recommend running it once a day in pet households, twice a week otherwise.", "estimated_seconds": 90 }
+      ]
+    },
+    {
+      "id": "sku_003",
+      "name": "Roborock Replenish Kit — 6-Month Brush + Filter + Mop Pad Bundle",
+      "slug": "roborock-replenish-6mo",
+      "email_friendly_name": "Replenish Kit",
+      "category": "accessory",
+      "subcategory": "robot_vacuum_consumable",
+      "description_short": "Stop-the-search refill: 1 main brush, 4 side brushes, 4 HEPA filters, 8 mop pads. Fits S-Series Pro and E-Series.",
+      "description_long": "Owners forget to reorder consumables until the robot starts coughing. This 6-month replenish kit lands on your doorstep before you notice. One SKU fits both robots. Subscribe to save 20%.",
+      "key_features": [
+        "Fits S-Series Pro and E-Series",
+        "1 main brush + 4 side brushes + 4 HEPA filters + 8 mop pads",
+        "Subscribe & save: 20% off + auto-ship every 6 months"
+      ],
+      "usp": "Solves pain_005 (recurring consumable surprise) by bundling 6 months at predictable cost. Kills the 'oh I need a new filter' Amazon search loop.",
+      "target_audience_ids": ["audience_001", "audience_002"],
+      "cost": { "amount": 14.50, "currency": "USD" },
+      "moq": 1000,
+      "lead_time_days": 25,
+      "supplier_id": "supplier_yiwu_consumable_022",
+      "supplier_country": "CN",
+      "retail_price": { "amount": 79.00, "currency": "USD" },
+      "compare_at_price": { "amount": 99.00, "currency": "USD" },
+      "margin_pct": 81.65,
+      "subscription_eligible": true,
+      "shipping_class": "letter",
+      "weight_g": 380,
+      "dim_cm": { "l": 25, "w": 18, "h": 6 },
+      "image_briefs": [
+        { "purpose": "hero", "description": "Flat-lay of all kit contents on brand color background, organized neatly" },
+        { "purpose": "pack_shot", "description": "Box opened with 'subscribe & save 20%' sticker visible" }
+      ],
+      "return_policy_days": 30,
+      "restricted_geo": [],
+      "low_stock_threshold": 200,
+      "launch_status": "live",
+      "certifications": [
+        { "name": "FSC Packaging" }
+      ],
+      "spec_table": [
+        { "group": "Compatibility", "label": "Fits", "value": "S-Series Pro · E-Series Essential", "compare_key": "fits_models" },
+        { "group": "Contents", "label": "Main brush", "value": "1", "unit": "× V-shape silicone", "compare_key": "kit_main_brush" },
+        { "group": "Contents", "label": "Side brushes", "value": "4", "unit": "× pack", "compare_key": "kit_side_brush" },
+        { "group": "Contents", "label": "HEPA filters", "value": "4", "unit": "× pack", "compare_key": "kit_filter" },
+        { "group": "Contents", "label": "Mop pads", "value": "8", "unit": "× pack", "compare_key": "kit_mop" },
+        { "group": "Lifecycle", "label": "Coverage", "value": "~6 months for typical home", "compare_key": "kit_coverage" },
+        { "group": "Subscribe", "label": "Subscribe & save", "value": "20", "unit": "% off + auto-ship every 6 months", "compare_key": "kit_subscribe" }
+      ],
+      "tech_explainers": [
+        {
+          "id": "tech_008",
+          "title": "Why we ship a 6-month bundle (not individual parts)",
+          "body_md": "Owners forget the brush before they forget the filter, and the filter before they forget the mop pads. We grouped them in one kit on the same 6-month cadence so 'replenish' is one decision, not five Amazon searches. Subscribe and we ship before you notice; cancel any time."
+        },
+        {
+          "id": "tech_009",
+          "title": "How long parts actually last (in a pet household)",
+          "body_md": "The pessimistic version: brush 4–5 months, filter 6–8 weeks, mop pad 3 months. The kit gives you headroom on all three for a 6-month cycle in a 2-pet, 1,200 sq ft home. If you don't have pets, the kit lasts 9–12 months — many subscribers skip every other shipment."
+        }
+      ]
+    }
+  ],
+  "primary_sku_id": "sku_001",
+  "bundle_suggestions": [
+    {
+      "name": "Pet Household Starter",
+      "sku_ids": ["sku_001", "sku_003"],
+      "discount_pct": 10,
+      "rationale": "Hero SKU + auto-ship consumable kit. Locks LTV via subscription on day 1."
+    },
+    {
+      "name": "Two-Floor Apartment",
+      "sku_ids": ["sku_002", "sku_003"],
+      "discount_pct": 12,
+      "rationale": "Value robot + replenish kit; targets audience_004 gift shoppers and audience_001 first-time buyers."
+    }
+  ],
+  "pricing_strategy": {
+    "mode": "value_based",
+    "anchor": "comp_002 (Roborock S8 MaxV at $1,599)",
+    "rationale": "Hero SKU undercuts the lidar-premium leader by $400 while matching specs. Compare_at_price $1,499 frames a $300 'discount' for promo windows. Margin 71% leaves room for paid CAC ≤ $180 (target 6.5x ROAS). Value SKU defends the budget tier from comp_003 (Eufy) by giving real lidar at their bump-nav price."
+  },
+  "meta": {
+    "generated_at": "2026-04-22T10:45:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: ./eec/01-research/output.json"
+  }
+}

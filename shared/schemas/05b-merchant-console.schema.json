@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/05b-merchant-console",
+  "title": "eec-05b-merchant-console output",
+  "description": "Merchant-side admin console mounted into the same repo produced by 05-site-build. Reads from 02 (catalog) / 06 (events) / 09 (KPIs) and writes routes under /admin/* in 05's repo. Phase-2 hooks reserve seats for 10-email-crm and 11-fulfillment when those skills land.",
+  "type": "object",
+  "required": [
+    "host_repo_path",
+    "admin_base_path",
+    "admin_routes",
+    "data_bindings",
+    "auth_strategy",
+    "writeback_target_files",
+    "env_vars_required",
+    "meta"
+  ],
+  "properties": {
+    "host_repo_path": {
+      "type": "string",
+      "description": "Relative path to 05's repo. MUST equal 05.output.repo_path — this skill mounts INTO that repo, it does not create its own."
+    },
+    "admin_base_path": {
+      "type": "string",
+      "pattern": "^/admin(/[a-z0-9-]+)?$",
+      "default": "/admin",
+      "description": "Base URL prefix for the console. Default /admin. All admin_routes[].path MUST start with this."
+    },
+    "admin_routes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Each admin page. MUST be noindex. MUST be auth-gated unless auth_strategy.type == 'none' (dev only).",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "purpose", "data_binding_ids", "auth_required", "noindex"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^aroute_[0-9]{3}$" },
+          "path": { "type": "string", "description": "URL path. MUST start with admin_base_path, e.g. /admin/dashboard" },
+          "component": { "type": "string", "description": "Route file path relative to host_repo_path, e.g. app/admin/dashboard/page.tsx" },
+          "purpose": { "type": "string", "description": "What the merchant uses this page for, in one sentence" },
+          "data_binding_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^bind_[0-9]{3}$" },
+            "minItems": 0,
+            "description": "References into data_bindings[]. Empty array allowed for static pages (e.g. login)."
+          },
+          "auth_required": { "type": "boolean", "description": "false ONLY for /admin/login or public-facing admin entry points" },
+          "noindex": { "type": "boolean", "const": true, "description": "Hard-locked true. Admin pages must never be indexed." },
+          "phase2_owner": {
+            "type": "string",
+            "enum": ["10-email-crm", "11-fulfillment"],
+            "description": "Set when the route is a Phase-2 placeholder owned by skill 10 or 11. Drives empty-state copy."
+          }
+        }
+      }
+    },
+    "data_bindings": {
+      "type": "array",
+      "description": "How each admin route reads from upstream skill outputs. Bindings are READ-ONLY by default; set writes_back=true ONLY when the merchant action mutates an upstream skill's output.json.",
+      "items": {
+        "type": "object",
+        "required": ["id", "source_skill", "source_path", "refresh_strategy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^bind_[0-9]{3}$" },
+          "source_skill": {
+            "type": "string",
+            "enum": [
+              "02-product-selection",
+              "05-site-build",
+              "06-tracking",
+              "08-paid-ads",
+              "09-optimization",
+              "10-email-crm",
+              "11-fulfillment",
+              "stripe_api",
+              "medusa_admin_api",
+              "shopify_admin_api"
+            ],
+            "description": "Where the data comes from. Skills are read from ./eec/<skill>/output.json; *_api values mean live API at runtime."
+          },
+          "source_path": {
+            "type": "string",
+            "description": "JSON-pointer or shorthand into the source. e.g. '$.skus[*]', '$.events_spec[*]', '$.diagnostics[*]', or for APIs the resource path '/products?limit=50'"
+          },
+          "refresh_strategy": {
+            "type": "string",
+            "enum": ["build_time", "runtime_fetch", "isr", "on_demand"],
+            "description": "build_time = baked into bundle (e.g. 02 SKUs). runtime_fetch = SSR per request. isr = Next.js revalidate. on_demand = merchant clicks refresh."
+          },
+          "revalidate_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Required when refresh_strategy == 'isr'"
+          },
+          "writes_back": {
+            "type": "boolean",
+            "default": false,
+            "description": "true if the admin UI mutates the source. When true, the source must be one of the *_api enums OR an explicitly whitelisted skill output."
+          },
+          "stub_until": {
+            "type": "string",
+            "enum": ["never", "phase2", "stripe_keys", "medusa_keys"],
+            "description": "Why the binding currently returns mock data instead of real. 'never' means real today."
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "refresh_strategy": { "const": "isr" } } },
+            "then": { "required": ["revalidate_seconds"] }
+          }
+        ]
+      }
+    },
+    "auth_strategy": {
+      "type": "object",
+      "required": ["type", "scope"],
+      "description": "How merchant logins are gated. 'none' is dev-only — production MUST use session or oauth.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["none", "basic", "session_cookie", "oauth_oidc", "magic_link"]
+        },
+        "provider": {
+          "type": "string",
+          "description": "e.g. 'next-auth', 'clerk', 'auth0', 'supabase_auth', 'self_hosted'"
+        },
+        "password_env_var": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$",
+          "description": "Env var holding the seed admin password hash (basic / session_cookie). Required for those types."
+        },
+        "session_secret_env_var": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$",
+          "description": "Env var for signing session cookies. Required for session_cookie."
+        },
+        "mfa_required": { "type": "boolean", "default": false },
+        "scope": {
+          "type": "string",
+          "enum": ["admin_only", "role_based"],
+          "description": "admin_only = single role. role_based = multi-role RBAC; emit roles[] in next iteration."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "session_cookie" } } },
+          "then": { "required": ["password_env_var", "session_secret_env_var"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "basic" } } },
+          "then": { "required": ["password_env_var"] }
+        }
+      ]
+    },
+    "writeback_target_files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Files (relative to host_repo_path) this skill is allowed to create or modify. MUST all be under app/admin/* OR explicitly listed config files. Mirrors 05's rebuild_protocol.writeback_target_files pattern.",
+      "items": {
+        "type": "string",
+        "pattern": "^(app/admin/.*|middleware\\.ts|\\.env\\.example|lib/admin/.*)$"
+      }
+    },
+    "phase2_hooks": {
+      "type": "array",
+      "description": "Reserved admin route placeholders for Phase 2 skills. Each hook MUST point at an admin_routes[] entry whose phase2_owner field is set.",
+      "items": {
+        "type": "object",
+        "required": ["hook_id", "owner_skill", "admin_route_id", "empty_state_copy"],
+        "properties": {
+          "hook_id": { "type": "string", "pattern": "^hook_[0-9]{3}$" },
+          "owner_skill": {
+            "type": "string",
+            "enum": ["10-email-crm", "11-fulfillment"]
+          },
+          "admin_route_id": { "type": "string", "pattern": "^aroute_[0-9]{3}$" },
+          "empty_state_copy": {
+            "type": "string",
+            "description": "What the merchant sees today (e.g. 'Email campaigns appear here once /eec-10-email-crm runs')"
+          },
+          "expected_data_shape": {
+            "type": "string",
+            "description": "Brief description of what the route will render once the owner skill produces output.json"
+          }
+        }
+      }
+    },
+    "env_vars_required": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+          "purpose": { "type": "string" },
+          "scope": { "type": "string", "enum": ["build", "runtime", "both"] },
+          "secret": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "noindex_audit": {
+      "type": "object",
+      "required": ["robots_disallow_present", "meta_robots_present_on_all_routes"],
+      "description": "Self-check that the console is not indexable.",
+      "properties": {
+        "robots_disallow_present": { "type": "boolean", "description": "robots.txt contains 'Disallow: /admin'" },
+        "meta_robots_present_on_all_routes": { "type": "boolean", "description": "Every admin_routes[] page renders <meta name=\"robots\" content=\"noindex,nofollow\">" },
+        "leak_check_url": { "type": "string", "description": "Optional URL to verify post-deploy" }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

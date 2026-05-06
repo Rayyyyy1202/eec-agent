@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/03b-legal-pack",
+  "title": "eec-03b-legal-pack output",
+  "description": "Legal documents required for ad-account approval, regional compliance, and trust signaling. Sibling of 03 (brand). Consumed by 05 to render /pages/* legal routes + footer Legal column + CCPA-required 'Do Not Sell' link in every page header. References 03 for tone and 02 for per-SKU warranty / Prop 65.",
+  "type": "object",
+  "required": [
+    "cookie_policy",
+    "accessibility_statement",
+    "ccpa_disclosure",
+    "warranty_terms",
+    "gdpr_data_request_contact",
+    "dmca_contact",
+    "footer_link_group",
+    "meta"
+  ],
+  "properties": {
+    "cookie_policy": {
+      "type": "object",
+      "required": ["effective_date", "categories", "controller_contact_email", "body_md"],
+      "properties": {
+        "effective_date": { "type": "string", "format": "date" },
+        "controller_contact_email": { "type": "string", "format": "email" },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "purpose", "default_state", "examples"],
+            "properties": {
+              "id": { "type": "string", "enum": ["strictly_necessary", "functional", "analytics", "marketing", "personalization"] },
+              "label": { "type": "string" },
+              "purpose": { "type": "string", "maxLength": 600 },
+              "default_state": { "type": "string", "enum": ["granted", "denied"] },
+              "examples": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+              "retention_days": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "body_md": { "type": "string", "minLength": 200 }
+      }
+    },
+    "accessibility_statement": {
+      "type": "object",
+      "required": ["wcag_level", "axe_score", "conformance_status", "contact_email", "body_md"],
+      "properties": {
+        "wcag_level": { "type": "string", "enum": ["A", "AA", "AAA"] },
+        "wcag_version": { "type": "string", "default": "2.2" },
+        "axe_score": {
+          "type": "object",
+          "required": ["pass", "violations", "measured_at"],
+          "properties": {
+            "pass": { "type": "integer", "minimum": 0 },
+            "violations": { "type": "integer", "minimum": 0 },
+            "measured_at": { "type": "string", "format": "date" }
+          }
+        },
+        "conformance_status": { "type": "string", "enum": ["full", "partial", "non_compliant"] },
+        "known_issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["description", "remediation_eta"],
+            "properties": {
+              "description": { "type": "string", "maxLength": 400 },
+              "remediation_eta": { "type": "string", "format": "date" }
+            }
+          }
+        },
+        "contact_email": { "type": "string", "format": "email" },
+        "body_md": { "type": "string", "minLength": 200 }
+      }
+    },
+    "ccpa_disclosure": {
+      "type": "object",
+      "required": ["effective_date", "do_not_sell_link", "categories_collected", "third_parties_shared", "body_md"],
+      "properties": {
+        "effective_date": { "type": "string", "format": "date" },
+        "do_not_sell_link": {
+          "type": "object",
+          "required": ["route_path", "header_label", "footer_label"],
+          "properties": {
+            "route_path": { "type": "string", "pattern": "^/pages/" },
+            "header_label": { "type": "string", "maxLength": 60 },
+            "footer_label": { "type": "string", "maxLength": 60 }
+          }
+        },
+        "categories_collected": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "third_parties_shared": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "purpose"],
+            "properties": {
+              "name": { "type": "string" },
+              "purpose": { "type": "string", "maxLength": 200 }
+            }
+          }
+        },
+        "request_form_email": { "type": "string", "format": "email" },
+        "body_md": { "type": "string", "minLength": 200 }
+      }
+    },
+    "prop65_warning": {
+      "type": "object",
+      "description": "California Prop 65 disclosure. Optional per-SKU; if empty, page renders 'no warning required for current catalog'.",
+      "required": ["body_md"],
+      "properties": {
+        "applies_to_sku_ids": { "type": "array", "items": { "type": "string", "pattern": "^sku_[0-9]{3}$" } },
+        "chemical_list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["chemical", "exposure_route"],
+            "properties": {
+              "chemical": { "type": "string" },
+              "exposure_route": { "type": "string" }
+            }
+          }
+        },
+        "body_md": { "type": "string" }
+      }
+    },
+    "warranty_terms": {
+      "type": "object",
+      "required": ["per_sku", "claim_process", "body_md"],
+      "properties": {
+        "per_sku": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["sku_id", "duration_months", "covers", "excludes"],
+            "properties": {
+              "sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+              "duration_months": { "type": "integer", "minimum": 1 },
+              "covers": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+              "excludes": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+              "transferable": { "type": "boolean", "default": false }
+            }
+          }
+        },
+        "claim_process": { "type": "string", "maxLength": 800 },
+        "claim_contact_email": { "type": "string", "format": "email" },
+        "body_md": { "type": "string", "minLength": 200 }
+      }
+    },
+    "eula_app": {
+      "type": "object",
+      "description": "End-user license agreement for the companion mobile app. Optional — only required if the brand ships an app.",
+      "required": ["app_name", "platforms", "license_grant_summary", "body_md"],
+      "properties": {
+        "app_name": { "type": "string" },
+        "platforms": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["ios", "android", "web"] },
+          "minItems": 1
+        },
+        "license_grant_summary": { "type": "string", "maxLength": 400 },
+        "data_collection_summary": { "type": "string", "maxLength": 600 },
+        "body_md": { "type": "string", "minLength": 200 }
+      }
+    },
+    "gdpr_data_request_contact": {
+      "type": "object",
+      "required": ["email", "response_sla_days"],
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "response_sla_days": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "dpo_name": { "type": "string" },
+        "supervisory_authority": { "type": "string" }
+      }
+    },
+    "dmca_contact": {
+      "type": "object",
+      "required": ["agent_name", "email", "address"],
+      "properties": {
+        "agent_name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" }
+      }
+    },
+    "footer_link_group": {
+      "type": "object",
+      "required": ["heading", "links"],
+      "description": "What 05 should render as the new 'Legal' column in the footer.",
+      "properties": {
+        "heading": { "type": "string", "maxLength": 30 },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["label", "route_path"],
+            "properties": {
+              "label": { "type": "string", "maxLength": 40 },
+              "route_path": { "type": "string", "pattern": "^/pages/" }
+            }
+          }
+        }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

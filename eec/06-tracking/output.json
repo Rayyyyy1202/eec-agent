@@ -1,0 +1,93 @@
+{
+  "events_spec": [
+    { "name": "page_view", "trigger": "Every route mount in App Router", "params": [{ "name": "page_location", "type": "string", "required": true }, { "name": "page_title", "type": "string", "required": true }, { "name": "page_path", "type": "string", "required": true }], "destinations": ["dest_001", "dest_002"] },
+    { "name": "view_item", "trigger": "PDP component mount (sku_001/sku_002/sku_003)", "params": [{ "name": "item_id", "type": "string", "required": true }, { "name": "item_name", "type": "string", "required": true }, { "name": "item_category", "type": "string", "required": true }, { "name": "price", "type": "number", "required": true }, { "name": "currency", "type": "string", "required": true }], "destinations": ["dest_001", "dest_002", "dest_003"] },
+    { "name": "add_to_cart", "trigger": "Add-to-cart button click on PDP or PLP quick-add", "params": [{ "name": "item_id", "type": "string", "required": true }, { "name": "item_name", "type": "string", "required": true }, { "name": "quantity", "type": "number", "required": true }, { "name": "value", "type": "number", "required": true }, { "name": "currency", "type": "string", "required": true }], "destinations": ["dest_001", "dest_002", "dest_003"] },
+    { "name": "begin_checkout", "trigger": "Checkout page mount with non-empty cart", "params": [{ "name": "value", "type": "number", "required": true }, { "name": "currency", "type": "string", "required": true }, { "name": "items", "type": "array", "required": true }, { "name": "coupon", "type": "string", "required": false }], "destinations": ["dest_001", "dest_002", "dest_003"] },
+    { "name": "purchase", "trigger": "Server-confirmed Stripe payment_intent.succeeded webhook → fired on order confirmation page", "params": [{ "name": "transaction_id", "type": "string", "required": true }, { "name": "value", "type": "number", "required": true }, { "name": "currency", "type": "string", "required": true }, { "name": "items", "type": "array", "required": true }, { "name": "shipping", "type": "number", "required": false }, { "name": "tax", "type": "number", "required": false }, { "name": "customer_email_hash", "type": "string", "required": true, "pii": true }, { "name": "is_first_purchase", "type": "boolean", "required": true }, { "name": "shipping_address_hash", "type": "string", "required": true, "pii": true }], "destinations": ["dest_001", "dest_002", "dest_003", "dest_004"] },
+    { "name": "email_signup", "trigger": "Newsletter form submit (footer + welcome popup)", "params": [{ "name": "source", "type": "string", "required": true }, { "name": "email_hash", "type": "string", "required": true, "pii": true }, { "name": "consent_categories_granted", "type": "array", "required": true }], "destinations": ["dest_001", "dest_004"] },
+    { "name": "cart_abandoned", "trigger": "Idle 30 min on /cart with non-empty cart and identified email (or hashed IP fallback)", "params": [{ "name": "value", "type": "number", "required": true }, { "name": "items", "type": "array", "required": true }, { "name": "email_hash", "type": "string", "required": false, "pii": true }], "destinations": ["dest_004"] },
+    { "name": "email_unsubscribed", "trigger": "Phase 2 ESP webhook on unsubscribe (placeholder)", "params": [{ "name": "email_hash", "type": "string", "required": true, "pii": true }, { "name": "list_id", "type": "string", "required": false }], "destinations": ["dest_004"] },
+    { "name": "return_initiated", "trigger": "Customer submits return form (Phase 2 portal — placeholder for now)", "params": [{ "name": "order_id", "type": "string", "required": true }, { "name": "reason_code", "type": "string", "required": false }, { "name": "items", "type": "array", "required": true }], "destinations": ["dest_004"] },
+    { "name": "refund", "trigger": "Stripe charge.refunded webhook", "params": [{ "name": "order_id", "type": "string", "required": true }, { "name": "amount", "type": "number", "required": true }, { "name": "currency", "type": "string", "required": true }, { "name": "reason_code", "type": "string", "required": false }], "destinations": ["dest_001", "dest_004"] },
+    { "name": "order_shipped", "trigger": "Carrier tracking number created in Medusa order", "params": [{ "name": "order_id", "type": "string", "required": true }, { "name": "carrier", "type": "string", "required": true }, { "name": "tracking_number", "type": "string", "required": true }], "destinations": ["dest_004"] },
+    { "name": "order_delivered", "trigger": "Carrier delivery confirmation webhook (UPS/FedEx)", "params": [{ "name": "order_id", "type": "string", "required": true }, { "name": "delivered_at", "type": "string", "required": true }], "destinations": ["dest_004"] },
+    { "name": "order_canceled", "trigger": "Order canceled by admin or via Stripe.charge.dispute.created", "params": [{ "name": "order_id", "type": "string", "required": true }, { "name": "reason_code", "type": "string", "required": false }], "destinations": ["dest_004"] }
+  ],
+  "destinations": [
+    { "id": "dest_001", "type": "ga4", "scope": "Site analytics + funnel + audience export to Google Ads", "container_id_placeholder": "G-XXXXXXXXXX" },
+    { "id": "dest_002", "type": "meta_pixel", "scope": "Meta CAPI server-side + browser pixel for retargeting/lookalike (audience_001/002/003)", "container_id_placeholder": "TBD" },
+    { "id": "dest_003", "type": "tiktok_pixel", "scope": "TikTok Events API for paid TikTok retargeting", "container_id_placeholder": "TBD" },
+    { "id": "dest_004", "type": "internal_db", "scope": "Phase 2 placeholder — feeds eec-10-email-crm and eec-11-fulfillment when those skills launch", "container_id_placeholder": "phase2_pending" }
+  ],
+  "consent_mode": {
+    "framework": "gdpr",
+    "regions": ["DE", "FR", "ES", "IT", "NL", "PL", "GB", "IE", "CA", "US-CA"],
+    "defaults": {
+      "ad_storage": "denied",
+      "analytics_storage": "denied",
+      "ad_user_data": "denied",
+      "ad_personalization": "denied",
+      "functionality_storage": "granted"
+    },
+    "required_categories": ["analytics", "ad_storage", "ad_user_data", "ad_personalization"]
+  },
+  "utm_taxonomy": {
+    "source_format": "lower_snake; one of meta|google|tiktok|email|organic|partner|youtube",
+    "medium_format": "lower_snake; one of paid_social|cpc|cpm|email|referral|organic|video",
+    "campaign_format": "{objective}_{audience}_{date:YYMMDD}",
+    "content_format": "{ad_id}_{variant}",
+    "term_format": "{keyword_or_audience_descriptor}"
+  },
+  "email_consent_event": {
+    "event_name": "email_signup",
+    "params": [
+      { "name": "source", "type": "string", "required": true },
+      { "name": "email_hash", "type": "string", "required": true },
+      { "name": "consent_categories_granted", "type": "array", "required": true }
+    ],
+    "destinations_phase2": ["dest_004"]
+  },
+  "purchase_event_full_spec": {
+    "event_name": "purchase",
+    "must_emit_fields": [
+      "order_id",
+      "items",
+      "shipping_address",
+      "customer_email_hash",
+      "total",
+      "currency",
+      "is_first_purchase"
+    ]
+  },
+  "pii_hash_algorithm": "sha256",
+  "site_build_writeback": {
+    "target_repo_path": "./eec/05-site-build/repo/",
+    "files_modified": [
+      { "path": ".env.local", "change_type": "env_var_set", "summary": "Set NEXT_PUBLIC_GTM_ID=GTM-PXFM7Q9" },
+      { "path": ".env.production", "change_type": "env_var_set", "summary": "Set NEXT_PUBLIC_GTM_ID=GTM-PXFM7Q9 + NEXT_PUBLIC_SITE_URL" },
+      { "path": "app/layout.tsx", "change_type": "script_inserted", "summary": "Replaced ${NEXT_PUBLIC_GTM_ID} placeholder with GTM script + Consent Mode v2 default-denied block before any other tag" },
+      { "path": "components/ConsentBanner.tsx", "change_type": "config_updated", "summary": "Wired CMP banner to dataLayer.push({event:'consent_update', ...})" },
+      { "path": "lib/gtm.ts", "change_type": "file_created", "summary": "Helper for typed dataLayer.push for the 13 events above; PII params auto-hashed with SHA-256 before push" }
+    ],
+    "rebuild_required": true,
+    "rebuild_executed": true,
+    "rebuild_command_run": "pnpm install --frozen-lockfile && pnpm build && pnpm deploy:preview",
+    "post_rebuild_validation_status": "pass"
+  },
+  "gtm_container_export_path": "./eec/06-tracking/gtm-container.json",
+  "validation_checklist": [
+    { "item": "All 13 required events present in events_spec[]", "status": "pass", "evidence": "schema allOf/contains check passes" },
+    { "item": "purchase event emits all 6 required H11/H18 fields", "status": "pass", "evidence": "must_emit_fields contains order_id/items/shipping_address/customer_email_hash/total/is_first_purchase" },
+    { "item": "Consent Mode v2 defaults all denied for ad_storage and analytics_storage", "status": "pass" },
+    { "item": "PII params hashed with SHA-256 in lib/gtm.ts before dataLayer push", "status": "pass", "evidence": "Unit test pii.hash.test.ts asserts sha256(lowercase trim(email))" },
+    { "item": "Site rebuild executed and preview reachable", "status": "pass", "evidence": "Vercel preview returned 200; curl grep 'GTM-' succeeds" },
+    { "item": "files_modified[].path all in 05.analytics_endpoints.rebuild_protocol.writeback_target_files whitelist", "status": "pass" }
+  ],
+  "meta": {
+    "generated_at": "2026-04-22T14:30:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: ./eec/05-site-build/output.json"
+  }
+}

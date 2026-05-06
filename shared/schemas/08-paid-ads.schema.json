@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/08-paid-ads",
+  "title": "eec-08-paid-ads output",
+  "type": "object",
+  "required": [
+    "account_structure", "audiences", "creative_pairing",
+    "budget_plan", "utm_taxonomy_applied",
+    "destinations_required", "pixels_required",
+    "launch_checklist", "meta"
+  ],
+  "properties": {
+    "account_structure": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["platform", "campaigns"],
+        "properties": {
+          "platform": { "type": "string", "enum": ["meta", "tiktok", "google", "youtube", "pinterest", "x"] },
+          "account_id_placeholder": { "type": "string" },
+          "campaigns": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["id", "name", "objective", "daily_budget", "audience_ids", "creative_pairing_ids", "landing_route"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^campaign_[0-9]{3}$" },
+                "name": { "type": "string" },
+                "objective": { "type": "string", "enum": ["awareness", "traffic", "engagement", "leads", "app_promotion", "sales", "conversions"] },
+                "daily_budget": { "$ref": "_common#/$defs/Money" },
+                "audience_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+                "creative_pairing_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+                "landing_route": { "type": "string", "description": "Refs eec-05-site-build.routes[].path" },
+                "bidding_strategy": { "type": "string" },
+                "optimization_event": { "type": "string", "description": "Refs eec-06-tracking.events_spec[].name" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "audiences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "platform", "type", "definition"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^paud_[0-9]{3}$" },
+          "platform": { "type": "string" },
+          "type": { "type": "string", "enum": ["lookalike", "interest", "broad", "retargeting", "custom_list", "engaged_users"] },
+          "definition": { "type": "string" },
+          "size_band": { "type": "string", "enum": ["narrow", "medium", "broad"] },
+          "source_audience_id": {
+            "type": "string",
+            "pattern": "^audience_[0-9]{3}$",
+            "description": "Refs eec-01-research.audience_profiles[].id"
+          },
+          "source_event_name": {
+            "type": "string",
+            "description": "For retargeting: refs eec-06-tracking.events_spec[].name"
+          }
+        }
+      }
+    },
+    "creative_pairing": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "asset_ids", "copy_block_id", "audience_id"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^pairing_[0-9]{3}$" },
+          "asset_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^asset_[0-9]{3}$" },
+            "minItems": 1,
+            "description": "Refs eec-04-creative-factory.assets[].id"
+          },
+          "copy_block_id": {
+            "type": "string",
+            "pattern": "^copy_[0-9]{3}$",
+            "description": "Refs eec-04-creative-factory.copy_blocks[].id"
+          },
+          "audience_id": { "type": "string", "pattern": "^paud_[0-9]{3}$" },
+          "hook": { "type": "string" },
+          "format": { "type": "string" }
+        }
+      }
+    },
+    "budget_plan": {
+      "type": "object",
+      "required": ["total_test_budget", "allocation_by_platform", "kill_threshold", "scaling_rule"],
+      "properties": {
+        "total_test_budget": { "$ref": "_common#/$defs/Money" },
+        "allocation_by_platform": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["platform", "pct"],
+            "properties": {
+              "platform": { "type": "string" },
+              "pct": { "type": "number", "minimum": 0, "maximum": 100 }
+            }
+          }
+        },
+        "kill_threshold": { "type": "string", "description": "e.g. 'spend > 3x AOV with no purchase'" },
+        "scaling_rule": { "type": "string", "description": "e.g. 'ROAS > 2 for 3 days → +20% budget'" }
+      }
+    },
+    "utm_taxonomy_applied": {
+      "type": "object",
+      "description": "All applied UTMs MUST conform to eec-06-tracking.utm_taxonomy formats",
+      "properties": {
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["campaign_id", "utm_source", "utm_medium", "utm_campaign"],
+            "properties": {
+              "campaign_id": { "type": "string" },
+              "utm_source": { "type": "string" },
+              "utm_medium": { "type": "string" },
+              "utm_campaign": { "type": "string" },
+              "utm_content": { "type": "string" },
+              "utm_term": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "destinations_required": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "List of destination IDs from eec-06-tracking that MUST be live before launch"
+    },
+    "pixels_required": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Pixel destinations from eec-06-tracking that MUST be installed and firing"
+    },
+    "launch_checklist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["item", "status"],
+        "properties": {
+          "item": { "type": "string" },
+          "status": { "type": "string", "enum": ["pass", "fail", "blocked"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

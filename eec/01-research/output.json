@@ -1,0 +1,322 @@
+{
+  "niche": {
+    "primary_keyword": "robot vacuum",
+    "related_keywords": ["robot vacuum and mop", "self emptying robot vacuum", "lidar robot vacuum", "pet hair robot vacuum", "smart vacuum"],
+    "region": "North America",
+    "language": "en-US"
+  },
+  "trends": {
+    "direction_12mo": "stable",
+    "trajectory_5yr": "Mature category — sustained high search volume since 2020 with Q4 spikes (Black Friday/holiday gifting) and a smaller April peak (spring cleaning). Premium tier (vacuum+mop+lidar) growing while sub-$200 tier saturating.",
+    "seasonality": {
+      "has_seasonality": true,
+      "peak_months": [3, 4, 11, 12],
+      "trough_months": [6, 7, 8]
+    },
+    "claim_meta": {
+      "sources": [
+        { "url": "https://trends.google.com/trends/explore?q=robot%20vacuum&geo=US", "accessed_at": "2026-04-22", "type": "trends", "title": "Google Trends — robot vacuum US 12mo" },
+        { "url": "https://www.pinterest.com/ideas/robot-vacuum/", "accessed_at": "2026-04-22", "type": "trends", "title": "Pinterest Trends — robot vacuum" }
+      ],
+      "confidence": "high"
+    }
+  },
+  "demand": {
+    "volume_band": "very_high",
+    "monthly_search_estimate": 673000,
+    "rising_queries": [
+      "robot vacuum with self empty base",
+      "robot vacuum that mops too",
+      "best robot vacuum for pet hair 2026",
+      "lidar mapping robot vacuum",
+      "robot vacuum that empties itself"
+    ],
+    "related_queries": ["roomba", "shark robot vacuum", "eufy robovac", "dreame", "ecovacs deebot"],
+    "claim_meta": {
+      "sources": [
+        { "url": "https://ads.google.com/keywordplanner", "accessed_at": "2026-04-22", "type": "tool", "title": "Google Keyword Planner export — US monthly volume" }
+      ],
+      "confidence": "high"
+    }
+  },
+  "pain_points": [
+    {
+      "id": "pain_001",
+      "summary": "Robot gets stuck on rugs / cables / chair legs and requires manual rescue mid-clean",
+      "verbatim_quotes": [
+        "It maps the house but still wedges itself under the same chair every single day",
+        "Have to babysit it — defeats the entire purpose"
+      ],
+      "frequency": "dominant",
+      "segment": "busy_professional",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.reddit.com/r/RobotVacuums/comments/getting_stuck/", "accessed_at": "2026-04-22", "type": "social", "title": "r/RobotVacuums getting-stuck megathread" },
+          { "url": "https://www.amazon.com/-/dp/B0C2YHPL94", "accessed_at": "2026-04-22", "type": "competitor", "title": "iRobot Roomba j7+ — 1-star reviews aggregated" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "pain_002",
+      "summary": "Long pet hair tangles around brush roll within days; requires manual cleaning every 1-2 sessions",
+      "verbatim_quotes": [
+        "Cat with long fur = brush is a hairball after 2 runs",
+        "Spent more time cutting hair off the brush than I would have just vacuuming"
+      ],
+      "frequency": "dominant",
+      "segment": "pet_owner",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.reddit.com/r/Petloss/comments/pet_hair_robot_vacuum/", "accessed_at": "2026-04-22", "type": "social" },
+          { "url": "https://www.youtube.com/watch?v=robot_vacuum_pet_hair_test", "accessed_at": "2026-04-22", "type": "social", "title": "Pet hair vacuum showdown" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "pain_003",
+      "summary": "Mopping function streaks / leaves dirty water / not actually scrubbing — feels like a wet wipe at best",
+      "frequency": "common",
+      "segment": "premium_buyer",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.rtings.com/vacuum/reviews/robot-vacuum-mop-comparison", "accessed_at": "2026-04-22", "type": "competitor" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "pain_004",
+      "summary": "App connectivity flaky — random WiFi disconnects, slow map load, schedule failures",
+      "frequency": "common",
+      "segment": "smart_home_enthusiast",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.reddit.com/r/smarthome/comments/robot_vac_app_issues/", "accessed_at": "2026-04-22", "type": "social" }
+        ],
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "pain_005",
+      "summary": "Self-empty bag/dock costs $30-60 each refill — recurring expense surprises buyers",
+      "frequency": "common",
+      "segment": "value_buyer",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.amazon.com/-/dp/B0BWCB68LW", "accessed_at": "2026-04-22", "type": "competitor", "title": "Replacement dust bag listings" }
+        ],
+        "confidence": "medium"
+      }
+    }
+  ],
+  "competitors": [
+    {
+      "id": "comp_001",
+      "brand": "iRobot Roomba",
+      "url": "https://www.irobot.com",
+      "est_traffic_band": "leader",
+      "key_angle": "Heritage / first-mover; safe gift; broad lineup from $250–$1400",
+      "price_band": "mid",
+      "ad_creatives_observed_count": 84,
+      "weakness_observed": "Premium models lag on lidar / mopping vs Chinese brands; software polish criticized",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.facebook.com/ads/library/?id=irobot", "accessed_at": "2026-04-22", "type": "competitor", "title": "Meta Ad Library — iRobot" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "comp_002",
+      "brand": "Roborock",
+      "url": "https://us.roborock.com",
+      "est_traffic_band": "leader",
+      "key_angle": "Best-in-class lidar mapping + dual-spinning mop pads; tech-forward / premium positioning",
+      "price_band": "premium",
+      "ad_creatives_observed_count": 56,
+      "weakness_observed": "Brand awareness lower than iRobot in US; price tier ($800-$1600) excludes value buyers",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.facebook.com/ads/library/?id=roborock", "accessed_at": "2026-04-22", "type": "competitor", "title": "Meta Ad Library — Roborock" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "comp_003",
+      "brand": "Eufy (Anker)",
+      "url": "https://www.eufy.com",
+      "est_traffic_band": "large",
+      "key_angle": "Value pricing $150-$400 with solid software; subscription-free",
+      "price_band": "budget",
+      "ad_creatives_observed_count": 42,
+      "weakness_observed": "Mostly bump-navigation (no lidar in entry tier); no premium mop solution",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.facebook.com/ads/library/?id=eufy", "accessed_at": "2026-04-22", "type": "competitor" }
+        ],
+        "confidence": "high"
+      }
+    },
+    {
+      "id": "comp_004",
+      "brand": "Dreame",
+      "url": "https://www.dreametech.com",
+      "est_traffic_band": "medium",
+      "key_angle": "Spec-sheet warrior — highest suction Pa numbers, lifting mop pads, aggressive Amazon discounting",
+      "price_band": "mid",
+      "ad_creatives_observed_count": 31,
+      "weakness_observed": "Spotty US service; brand cachet weaker; obstacle avoidance inconsistent",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.amazon.com/-/dp/B0C7HXJBSV", "accessed_at": "2026-04-22", "type": "competitor" }
+        ],
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "comp_005",
+      "brand": "Shark",
+      "url": "https://www.sharkclean.com",
+      "est_traffic_band": "large",
+      "key_angle": "Mass-market US brand presence + retail (Costco, Target); 'Matrix Clean' obstacle avoidance pitch",
+      "price_band": "mid",
+      "ad_creatives_observed_count": 38,
+      "weakness_observed": "Outdated nav tech vs lidar competitors; mop quality below average",
+      "claim_meta": {
+        "sources": [
+          { "url": "https://www.facebook.com/ads/library/?id=shark", "accessed_at": "2026-04-22", "type": "competitor" }
+        ],
+        "confidence": "medium"
+      }
+    }
+  ],
+  "audience_profiles": [
+    {
+      "id": "audience_001",
+      "name": "Pet Parent — Long-haired Companion",
+      "size_estimate_band": "large",
+      "demographics": {
+        "age_band": "28-45",
+        "gender_skew": "balanced",
+        "income_band": "upper_mid",
+        "geo": ["US", "CA"]
+      },
+      "psychographics": {
+        "interests": ["pets", "home cleanliness", "smart home", "deals"],
+        "values": ["convenience", "pet wellbeing", "household hygiene"],
+        "lifestyle": ["dog/cat household", "works hybrid", "values free weekends"]
+      },
+      "channels": ["instagram", "tiktok", "youtube", "reddit"],
+      "moments": ["after pet shedding season", "moving to new home", "frustration after manual vacuuming"]
+    },
+    {
+      "id": "audience_002",
+      "name": "Time-Poor Professional — Set & Forget",
+      "size_estimate_band": "large",
+      "demographics": {
+        "age_band": "30-50",
+        "gender_skew": "balanced",
+        "income_band": "high",
+        "geo": ["US"]
+      },
+      "psychographics": {
+        "interests": ["productivity", "smart home", "time-saving tech"],
+        "values": ["efficiency", "automation", "premium quality"],
+        "lifestyle": ["dual income no/young kids", "dual home offices", "high tools budget"]
+      },
+      "channels": ["youtube", "instagram", "linkedin", "podcast ads"],
+      "moments": ["new home purchase", "Q4 bonus spending", "annual home upgrade cycle"]
+    },
+    {
+      "id": "audience_003",
+      "name": "Smart Home Enthusiast — Whole Stack",
+      "size_estimate_band": "medium",
+      "demographics": {
+        "age_band": "25-40",
+        "gender_skew": "male",
+        "income_band": "upper_mid",
+        "geo": ["US", "CA"]
+      },
+      "psychographics": {
+        "interests": ["home automation", "matter/homekit/alexa", "tech reviews", "DIY"],
+        "values": ["interoperability", "open standards", "control"],
+        "lifestyle": ["already owns smart locks/lights/thermostat", "follows MKBHD/Reviews.org"]
+      },
+      "channels": ["youtube", "reddit", "x", "tech newsletters"],
+      "moments": ["new gadget release window", "sale events (Prime Day, Black Friday)"]
+    },
+    {
+      "id": "audience_004",
+      "name": "Gift Shopper — Holiday/Anniversary",
+      "size_estimate_band": "mass",
+      "demographics": {
+        "age_band": "35-65",
+        "gender_skew": "balanced",
+        "income_band": "mid",
+        "geo": ["US"]
+      },
+      "psychographics": {
+        "interests": ["practical gifts", "deals", "amazon shopping"],
+        "values": ["thoughtful gifting", "price-quality balance"],
+        "lifestyle": ["last-minute shopper", "doesn't research deeply"]
+      },
+      "channels": ["facebook", "google search", "amazon"],
+      "moments": ["Mother's Day", "Black Friday", "Christmas", "anniversary"]
+    }
+  ],
+  "ad_intelligence": {
+    "top_creatives": [
+      {
+        "platform": "meta",
+        "url_or_id": "ad_lib_roborock_q8_carpet_test",
+        "hook": "Watch it lift its mops over carpet automatically",
+        "format": "9:16 demo",
+        "observed_runtime_days": 67
+      },
+      {
+        "platform": "tiktok",
+        "url_or_id": "tt_roomba_pet_hair_2026",
+        "hook": "POV: stop wrapping pet hair around the brush every week",
+        "format": "15s UGC",
+        "observed_runtime_days": 38
+      },
+      {
+        "platform": "youtube",
+        "url_or_id": "yt_eufy_compare_700",
+        "hook": "$700 robot vac vs $300 — is it really worth it?",
+        "format": "review-style 60s pre-roll",
+        "observed_runtime_days": 51
+      }
+    ],
+    "common_hooks": [
+      "Watch it [carpet/mop transition] automatically",
+      "POV: [pet hair / kid mess] solved in 60 minutes",
+      "$X robot vac vs $Y — is it worth it?",
+      "Before/after: [filthy floor → spotless] timelapse",
+      "Set it once, forget it for a month (auto-empty)"
+    ],
+    "avg_cpm_band": "high"
+  },
+  "supply_signals": {
+    "aliexpress_avg_cost": { "amount": 168.00, "currency": "USD" },
+    "alibaba_avg_cost": { "amount": 98.00, "currency": "USD" },
+    "lead_time_days_band": "30_60",
+    "claim_meta": {
+      "sources": [
+        { "url": "https://www.alibaba.com/trade/search?SearchText=robot+vacuum+lidar", "accessed_at": "2026-04-22", "type": "tool", "title": "Alibaba — robot vacuum OEM listings" }
+      ],
+      "confidence": "medium"
+    }
+  },
+  "meta": {
+    "generated_at": "2026-04-22T09:30:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "source_count": 14,
+    "execution_time_s": 168.4,
+    "user_input_summary": "robot vacuum, North America (Roborock-style positioning)"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "skus": [
+    {
+      "id": "sku_001",
+      "name": "PocketBlend Pro — 22oz Travel Smoothie Maker",
+      "slug": "pocketblend-pro-22oz",
+      "email_friendly_name": "PocketBlend Pro",
+      "category": "small_appliance",
+      "subcategory": "personal_blender",
+      "description_short": "USB-C rechargeable 22oz blender that survives ice, fits in a tote, charges in 45 min for 20+ blends.",
+      "description_long": "PocketBlend Pro is a daily-driver portable blender built for commuters, gym-goers, and travelers who got burned by toy-grade competitors. 200W brushless motor crushes frozen fruit and ice without stalling, USB-C fast charge gives you 20+ blends per cycle, and the entire cup pops apart for top-rack dishwasher cleaning.",
+      "key_features": [
+        "200W brushless motor — crushes ice & frozen fruit",
+        "USB-C fast charge (45 min full)",
+        "20+ blends per charge (vs competitors' 6-8)",
+        "Top-rack dishwasher safe",
+        "TSA-compliant for carry-on",
+        "Spill-proof magnetic lid"
+      ],
+      "usp": "The only portable blender that lasts a full week of commutes without recharging AND actually crushes ice — solves the #1 complaint about BlendJet (pain_001).",
+      "target_audience_ids": ["audience_001", "audience_002"],
+      "cost": { "amount": 14.20, "currency": "USD" },
+      "moq": 500,
+      "lead_time_days": 28,
+      "supplier_id": "supplier_zhongshan_botech_001",
+      "supplier_country": "CN",
+      "retail_price": { "amount": 59.00, "currency": "USD" },
+      "compare_at_price": { "amount": 79.00, "currency": "USD" },
+      "margin_pct": 75.93,
+      "subscription_eligible": false,
+      "shipping_class": "standard",
+      "weight_g": 540,
+      "dim_cm": { "l": 22, "w": 8, "h": 8 },
+      "image_briefs": [
+        { "purpose": "hero", "description": "Clean studio shot, 3/4 angle, brand color background, blender + smoothie cup beside it" },
+        { "purpose": "lifestyle", "description": "Hand pouring smoothie at office desk, laptop visible — POV daily commuter" },
+        { "purpose": "size_compare", "description": "Beside a 16oz reusable water bottle for scale" },
+        { "purpose": "ugc_style", "description": "Phone-shot, gym bag context, slightly imperfect framing — for organic ad style" }
+      ],
+      "return_policy_days": 60,
+      "restricted_geo": ["CU", "IR", "KP", "SY"],
+      "low_stock_threshold": 50
+    },
+    {
+      "id": "sku_002",
+      "name": "PocketBlend Travel Pouch",
+      "slug": "pocketblend-travel-pouch",
+      "email_friendly_name": "Travel Pouch",
+      "category": "accessory",
+      "subcategory": "blender_accessory",
+      "description_short": "Insulated neoprene sleeve sized for PocketBlend Pro — keeps smoothies cold for 4 hours.",
+      "description_long": "Made for the people who actually travel with their blender. Insulated neoprene sleeve with side mesh pocket for the USB-C cable, fits PocketBlend Pro snugly without crushing the lid.",
+      "key_features": ["4-hour insulation", "Side mesh pocket for cable", "Machine washable"],
+      "usp": "First accessory designed specifically for portable-blender travelers (audience_002).",
+      "target_audience_ids": ["audience_002"],
+      "cost": { "amount": 3.10, "currency": "USD" },
+      "moq": 1000,
+      "lead_time_days": 21,
+      "supplier_id": "supplier_yiwu_textile_044",
+      "supplier_country": "CN",
+      "retail_price": { "amount": 19.00, "currency": "USD" },
+      "margin_pct": 83.68,
+      "subscription_eligible": false,
+      "shipping_class": "letter",
+      "weight_g": 80,
+      "dim_cm": { "l": 25, "w": 10, "h": 4 },
+      "image_briefs": [
+        { "purpose": "hero", "description": "Pouch on its own with PocketBlend Pro slipping in, brand color background" },
+        { "purpose": "lifestyle", "description": "Inside an open carry-on bag at airport gate — travel context" }
+      ],
+      "return_policy_days": 30,
+      "restricted_geo": [],
+      "low_stock_threshold": 100
+    }
+  ],
+  "primary_sku_id": "sku_001",
+  "bundle_suggestions": [
+    {
+      "name": "Daily Commuter Bundle",
+      "sku_ids": ["sku_001", "sku_002"],
+      "discount_pct": 12,
+      "rationale": "Pairs core SKU with the highest-affinity accessory; gives reason for AOV lift on first purchase."
+    }
+  ],
+  "pricing_strategy": {
+    "mode": "value_based",
+    "anchor": "comp_001 (BlendJet, $49.95)",
+    "rationale": "Price $10 above BlendJet anchor to reinforce premium battery + ice-crush positioning. Compare_at_price $79 frames the discount and supports future promo windows. Margin 76% leaves room for paid acquisition (target CAC ≤ $25)."
+  },
+  "meta": {
+    "generated_at": "2026-04-21T11:30:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: ./eec/01-research/output.json"
+  }
+}

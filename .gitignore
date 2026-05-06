@@ -1,0 +1,65 @@
+# ─── OS ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Node / package managers ────────────────────────────────────
+node_modules/
+.pnpm-store/
+.yarn/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Build / cache ──────────────────────────────────────────────
+.next/
+dist/
+build/
+out/
+.cache/
+.turbo/
+*.tsbuildinfo
+
+# ─── Env files (NEVER commit; only .env.example is allowed) ─────
+.env
+.env.*
+!.env.example
+
+# ─── Local databases (real conversation history, brand briefs) ──
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+*.db
+agent/server/data/
+
+# ─── Brand workspaces (real brand data — keep private) ──────────
+/lumicup/
+/wickwood/
+/roborock/
+/petropolitian/
+/bigmouse/
+
+# ─── Test artifacts ─────────────────────────────────────────────
+/test-runs/
+
+# ─── External / vendored repos (have their own .git) ────────────
+/external/
+
+# ─── IDE / editor ───────────────────────────────────────────────
+.idea/
+.vscode/
+.claude/
+*.swp
+*.swo
+*~
+
+# ─── Coverage / reports ─────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─── Misc ───────────────────────────────────────────────────────
+*.pid
+*.seed
+.eslintcache

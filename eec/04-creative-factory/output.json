@@ -1,0 +1,86 @@
+{
+  "assets": [
+    { "id": "asset_001", "type": "image", "purpose": "hero", "channel": "web", "language": "en-US", "format": "16:9", "sku_id": "sku_001", "audience_ids": ["audience_001", "audience_002"], "file_path": "./eec/04-creative-factory/assets/img/sku_001_hero_web_en_16x9_001.prompt.txt", "alt_text": "Roborock S-Series Pro docked in heated wash station on light hardwood floor, modern living room background", "prompt_used": "Studio-style 3/4 hero of premium robot vacuum docked in tall multi-function station, navy + warm orange accent palette, cinematic warm lighting, slight depth of field", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_001.md" },
+    { "id": "asset_002", "type": "image", "purpose": "lifestyle", "channel": "web", "language": "en-US", "format": "4:5", "sku_id": "sku_001", "audience_ids": ["audience_001"], "file_path": "./eec/04-creative-factory/assets/img/sku_001_lifestyle_web_en_4x5_001.prompt.txt", "alt_text": "Robot quietly cleaning around golden retriever lying on living room rug, owner reading on couch", "prompt_used": "Lived-in modern living room, late afternoon golden hour light, golden retriever resting, robot vacuum mid-clean rounding rug edge, owner with book on couch in soft focus", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_002.md" },
+    { "id": "asset_003", "type": "image", "purpose": "product", "channel": "web", "language": "en-US", "format": "1:1", "sku_id": "sku_001", "file_path": "./eec/04-creative-factory/assets/img/sku_001_detail_web_en_1x1_001.prompt.txt", "alt_text": "Macro of V-shape anti-tangle brush, hair-free", "prompt_used": "Macro detail of robot vacuum's V-shape silicone brush roller, side-by-side with competitor brush wrapped in pet hair, neutral background, sharp focus", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_003.md" },
+    { "id": "asset_004", "type": "image", "purpose": "ad", "channel": "meta", "language": "en-US", "format": "1:1", "sku_id": "sku_001", "audience_ids": ["audience_001"], "file_path": "./eec/04-creative-factory/assets/img/sku_001_ad_meta_en_1x1_001.prompt.txt", "alt_text": "Before/after split: pet-hair-covered floor → spotless after one robot pass", "prompt_used": "Split-frame: left side living room rug covered in pet hair, right side same rug spotless after robot pass, robot visible at edge, navy + orange brand bar at bottom", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_004.md" },
+    { "id": "asset_005", "type": "image", "purpose": "ad", "channel": "tiktok", "language": "en-US", "format": "9:16", "sku_id": "sku_001", "audience_ids": ["audience_001", "audience_003"], "file_path": "./eec/04-creative-factory/assets/img/sku_001_ad_tiktok_en_9x16_001.prompt.txt", "alt_text": "Vertical UGC-style still of robot lifting mop pad over rug edge", "prompt_used": "9:16 vertical phone-shot UGC frame of robot vacuum auto-lifting mop pad as it transitions from hardwood to area rug, finger pointing at the lift mechanism", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_005.md" },
+    { "id": "asset_006", "type": "image", "purpose": "hero", "channel": "web", "language": "en-US", "format": "16:9", "sku_id": "sku_002", "audience_ids": ["audience_001", "audience_004"], "file_path": "./eec/04-creative-factory/assets/img/sku_002_hero_web_en_16x9_001.prompt.txt", "alt_text": "Roborock E-Series Essential on light hardwood with phone showing app map overlay", "prompt_used": "Top-down 3/4 hero of compact robot vacuum on light hardwood, phone overlay shows generated room map, clean apartment kitchen background", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_006.md" },
+    { "id": "asset_007", "type": "image", "purpose": "ad", "channel": "google", "language": "en-US", "format": "1:1", "sku_id": "sku_002", "audience_ids": ["audience_004"], "file_path": "./eec/04-creative-factory/assets/img/sku_002_ad_google_en_1x1_001.prompt.txt", "alt_text": "Apartment living, robot working, retail-style with $449 price prominent", "prompt_used": "Clean retail-style product shot for Google Performance Max, robot vacuum prominent, $449 price tag on overlay, white-space layout", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_007.md" },
+    { "id": "asset_008", "type": "image", "purpose": "product", "channel": "web", "language": "en-US", "format": "1:1", "sku_id": "sku_003", "file_path": "./eec/04-creative-factory/assets/img/sku_003_packshot_web_en_1x1_001.prompt.txt", "alt_text": "Replenish kit flat-lay: brush, side brushes, filters, mop pads", "prompt_used": "Flat-lay of all consumable kit contents on warm-neutral background, organized neatly in a grid with subtle drop shadows, top-down camera", "approved": false, "status": "brief", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_008.md" },
+    { "id": "asset_009", "type": "image", "purpose": "social", "channel": "meta", "language": "en-US", "format": "1:1", "audience_ids": ["audience_002"], "file_path": "./eec/04-creative-factory/assets/img/brand_social_meta_en_1x1_001.prompt.txt", "alt_text": "Brand-level lifestyle frame — quiet evening home with robot in background, candle lit (Instagram organic)", "prompt_used": "Aspirational evening interior, soft candlelight, robot vacuum quietly working in background out of focus, foreground: cup of tea + open book on couch", "approved": true, "status": "shot", "shoot_brief_md_path": "eec/04-creative-factory/asset_briefs/asset_009.md", "delivered_file_path": "/og/asset_009.svg", "width": 1200, "height": 1200 }
+  ],
+  "copy_blocks": [
+    { "id": "copy_001", "purpose": "ad_primary", "channel": "meta", "headline": "Stop rescuing it from under the chair.", "body": "Lidar mapping that actually remembers where the table legs are. Anti-tangle brush that eats pet hair instead of wearing it. The robot vacuum your last one was supposed to be.", "cta": "See the S-Series Pro", "language": "en-US", "sku_id": "sku_001", "audience_ids": ["audience_001"], "char_count": 215, "platform_constraints_met": false },
+    { "id": "copy_002", "purpose": "ad_primary", "channel": "meta", "headline": "Your robot, but no pet hair on the brush.", "body": "V-shape silicone brush. Lidar mapping. Auto-empty dock. $400 less than the spec-matched Roborock.", "cta": "Shop now", "language": "en-US", "sku_id": "sku_001", "audience_ids": ["audience_001"], "char_count": 110, "platform_constraints_met": true },
+    { "id": "copy_003", "purpose": "ad_headline", "channel": "google", "headline": "Lidar Robot Vacuum — $449", "language": "en-US", "sku_id": "sku_002", "audience_ids": ["audience_004"], "char_count": 26, "platform_constraints_met": false },
+    { "id": "copy_004", "purpose": "ad_headline", "channel": "google", "headline": "Real Lidar Under $500", "language": "en-US", "sku_id": "sku_002", "audience_ids": ["audience_004"], "char_count": 22, "platform_constraints_met": true },
+    { "id": "copy_005", "purpose": "ad_primary", "channel": "tiktok", "headline": "POV: you finally bought the one that doesn't get stuck", "body": "Three robots in two years and we're done. Lidar mapping that actually works, anti-tangle brush, mops that lift over rugs. Engineered for the messy weeks, not the showroom.", "cta": "Watch it work", "language": "en-US", "sku_id": "sku_001", "audience_ids": ["audience_001", "audience_003"], "char_count": 222, "platform_constraints_met": true },
+    { "id": "copy_006", "purpose": "hero_banner", "channel": "web", "headline": "Cleaning, perfected — so you don't have to.", "subhead": "Lidar-mapped. Anti-tangle. Auto-washing. The robot vacuum that earns its place in your home.", "cta": "Shop S-Series Pro", "language": "en-US", "audience_ids": ["audience_001", "audience_002"], "char_count": 142 },
+    { "id": "copy_007", "purpose": "product_card", "channel": "web", "headline": "S-Series Pro", "subhead": "Lidar + auto-mop dock", "body": "10,000 Pa · anti-tangle brush · self-empty + self-wash dock", "cta": "From $1,199", "language": "en-US", "sku_id": "sku_001", "char_count": 95 },
+    { "id": "copy_008", "purpose": "product_card", "channel": "web", "headline": "E-Series Essential", "subhead": "Real lidar, value price", "body": "5,500 Pa · lidar mapping · anti-tangle brush · optional auto-empty", "cta": "From $449", "language": "en-US", "sku_id": "sku_002", "char_count": 100 },
+    { "id": "copy_009", "purpose": "feature_block", "channel": "web", "headline": "The brush that doesn't wear pet hair", "body": "Our V-shape silicone brush sweeps long hair into the suction path instead of wrapping it around the roller. Tested on 12 weeks of golden retriever shedding without a single manual cleaning.", "language": "en-US", "sku_id": "sku_001", "audience_ids": ["audience_001"], "char_count": 218 },
+    { "id": "copy_010", "purpose": "email_subject", "channel": "email", "headline": "Stop rescuing it from under the chair.", "language": "en-US", "audience_ids": ["audience_001"], "char_count": 38 },
+    { "id": "copy_011", "purpose": "email_body", "channel": "email", "headline": "Welcome — your 10% is below.", "body": "Three robots in two years, we get it. Use code WELCOME10 within 14 days for 10% off any robot. The S-Series Pro is the one we'd buy ourselves.", "cta": "Shop the S-Series Pro", "language": "en-US", "char_count": 152 }
+  ],
+  "video_briefs": [
+    {
+      "id": "video_001",
+      "hook": "Watch this $1,200 robot lift its mops automatically when it sees carpet.",
+      "scenes": [
+        { "second_start": 0, "shot": "Close-up of robot rolling on hardwood toward a rug edge", "vo": "Watch this.", "on_screen_text": "$1,200 robot vacuum" },
+        { "second_start": 2.5, "shot": "Slow-mo of mop pads lifting 10mm as wheels hit rug", "vo": "Auto-lift mops, ten millimeters of clearance.", "on_screen_text": "Mop pads lift 10mm" },
+        { "second_start": 7, "shot": "Robot continues across rug — no wet trail", "vo": "No wet rug. No babysitting.", "on_screen_text": "No wet rug" },
+        { "second_start": 11, "shot": "Cut to product hero shot in dock", "vo": "Roborock S-Series Pro.", "on_screen_text": "Shop S-Series Pro · roborock.us" }
+      ],
+      "cta": "Shop S-Series Pro",
+      "duration_s": 15,
+      "channel": "tiktok",
+      "language": "en-US",
+      "sku_id": "sku_001"
+    },
+    {
+      "id": "video_002",
+      "hook": "POV: you got the cat with the never-ending shedding.",
+      "scenes": [
+        { "second_start": 0, "shot": "Phone-shot UGC, cat shedding on couch", "on_screen_text": "POV: long-haired cat household" },
+        { "second_start": 3, "shot": "Cut to floor covered in hair", "vo": "Three robots. Two years. One brush always tangled.", "on_screen_text": "3 robots, 2 years" },
+        { "second_start": 7, "shot": "Roborock S-Series Pro arriving in box", "on_screen_text": "Last try" },
+        { "second_start": 10, "shot": "Robot working — pull brush out — clean", "vo": "First brush check after a week. Nothing.", "on_screen_text": "Week 1: zero hair on brush" },
+        { "second_start": 18, "shot": "Owner closes app, walks out of frame", "vo": "Worth it.", "on_screen_text": "Roborock S-Series Pro" }
+      ],
+      "cta": "Shop now",
+      "duration_s": 22,
+      "channel": "tiktok",
+      "language": "en-US",
+      "sku_id": "sku_001"
+    }
+  ],
+  "naming_convention": {
+    "pattern": "{sku_or_brand}_{purpose}_{channel}_{lang}_{format}_{seq}",
+    "example": "sku_001_hero_web_en_16x9_001"
+  },
+  "asset_coverage_matrix": {
+    "hero_web_en-US": 2,
+    "lifestyle_web_en-US": 1,
+    "product_web_en-US": 2,
+    "ad_meta_en-US": 1,
+    "ad_tiktok_en-US": 1,
+    "ad_google_en-US": 1,
+    "social_meta_en-US": 1
+  },
+  "production_status_summary": {
+    "brief": 8,
+    "stub": 0,
+    "shot": 1,
+    "retouched": 0,
+    "approved": 0,
+    "note": "MVP: 1 of 9 image assets has a delivered placeholder file (asset_009 → /og/asset_009.svg). Other 8 carry the markdown shoot brief and render the gradient placeholder via <SmartImage>. Drop a real file into public/og/ + flip status to shot to swap any single asset live."
+  },
+  "meta": {
+    "generated_at": "2026-04-23T09:00:00Z",
+    "skill_version": "1.1.0",
+    "schema_version": "1.1.0",
+    "user_input_summary": "Phase 8 re-run: added status + shoot_brief_md_path + delivered_file_path per asset. Materialized 9 markdown briefs. asset_009 marked status=shot with /og/asset_009.svg as delivered demo."
+  }
+}

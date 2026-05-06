@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Brand evening interior — quiet home with candle and robot in background">
+  <defs>
+    <radialGradient id="evening" cx="78%" cy="22%" r="95%">
+      <stop offset="0%" stop-color="#FFB57A" stop-opacity="0.95"/>
+      <stop offset="22%" stop-color="#E07A3F" stop-opacity="0.55"/>
+      <stop offset="58%" stop-color="#2A2D45" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0F1B2D"/>
+    </radialGradient>
+    <radialGradient id="candle" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFEAB8" stop-opacity="0.95"/>
+      <stop offset="60%" stop-color="#FF8A3D" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1F2E"/>
+      <stop offset="100%" stop-color="#0A0E18"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="1200" fill="url(#evening)"/>
+
+  <!-- floor plane -->
+  <polygon points="0,820 1200,720 1200,1200 0,1200" fill="url(#floor)" opacity="0.9"/>
+
+  <!-- candle warm glow -->
+  <circle cx="930" cy="280" r="240" fill="url(#candle)"/>
+
+  <!-- soft window frame suggestion (left side) -->
+  <rect x="60" y="160" width="250" height="420" fill="#FFFFFF" opacity="0.04" rx="6"/>
+  <line x1="185" y1="160" x2="185" y2="580" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="2"/>
+  <line x1="60" y1="370" x2="310" y2="370" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="2"/>
+
+  <!-- low couch silhouette -->
+  <path d="M 80 880 Q 80 800 180 800 L 720 800 Q 820 800 820 880 L 820 980 L 80 980 Z" fill="#0A0E18" opacity="0.85"/>
+  <rect x="100" y="780" width="700" height="40" fill="#1A1F2E" opacity="0.9" rx="20"/>
+
+  <!-- open book on couch (foreground) -->
+  <g transform="translate(360 760) rotate(-6)">
+    <rect x="0" y="0" width="220" height="140" fill="#F5F5F2" opacity="0.95" rx="3"/>
+    <line x1="110" y1="0" x2="110" y2="140" stroke="#0F1B2D" stroke-opacity="0.2" stroke-width="1"/>
+    <g stroke="#0F1B2D" stroke-opacity="0.18" stroke-width="1">
+      <line x1="14" y1="22" x2="98" y2="22"/>
+      <line x1="14" y1="36" x2="92" y2="36"/>
+      <line x1="14" y1="50" x2="100" y2="50"/>
+      <line x1="14" y1="64" x2="88" y2="64"/>
+      <line x1="14" y1="78" x2="96" y2="78"/>
+      <line x1="14" y1="92" x2="80" y2="92"/>
+      <line x1="124" y1="22" x2="208" y2="22"/>
+      <line x1="124" y1="36" x2="200" y2="36"/>
+      <line x1="124" y1="50" x2="206" y2="50"/>
+      <line x1="124" y1="64" x2="196" y2="64"/>
+      <line x1="124" y1="78" x2="204" y2="78"/>
+    </g>
+  </g>
+
+  <!-- tea cup -->
+  <g transform="translate(640 850)">
+    <ellipse cx="0" cy="0" rx="50" ry="14" fill="#0F1B2D"/>
+    <path d="M -42 -2 Q -42 60 -10 70 L 10 70 Q 42 60 42 -2 Z" fill="#1A1F2E"/>
+    <ellipse cx="0" cy="-2" rx="40" ry="11" fill="#3A1B0E"/>
+    <path d="M 42 8 Q 78 12 78 38 Q 78 54 56 54" stroke="#1A1F2E" stroke-width="6" fill="none"/>
+  </g>
+
+  <!-- robot vacuum (background, soft focus illusion via low contrast) -->
+  <g transform="translate(960 920)" opacity="0.55">
+    <ellipse cx="0" cy="0" rx="120" ry="28" fill="#000" opacity="0.4"/>
+    <circle cx="0" cy="-22" r="105" fill="#0F1B2D"/>
+    <circle cx="0" cy="-22" r="105" fill="none" stroke="#FF6B35" stroke-width="3" stroke-opacity="0.4"/>
+    <circle cx="0" cy="-22" r="14" fill="#FF6B35" opacity="0.7"/>
+  </g>
+
+  <!-- candle (small, behind robot) -->
+  <g transform="translate(1020 580)">
+    <rect x="-9" y="0" width="18" height="60" fill="#F5F5F2" opacity="0.85" rx="2"/>
+    <ellipse cx="0" cy="-14" rx="6" ry="14" fill="#FFEAB8"/>
+    <ellipse cx="0" cy="-12" rx="3" ry="8" fill="#FF8A3D"/>
+  </g>
+
+  <!-- brand mark -->
+  <g transform="translate(60 1120)">
+    <text font-family="ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" fill="#F5F5F2" letter-spacing="3" opacity="0.9">ROBORCK</text>
+    <text x="0" y="22" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#F5F5F2" opacity="0.55">Engineered for the messy weeks.</text>
+  </g>
+</svg>

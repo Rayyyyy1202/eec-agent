@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/04b-social-proof",
+  "title": "eec-04b-social-proof output",
+  "description": "Reviews, UGC, case studies, press logos, AggregateRating per SKU. Sibling of 04 (creative). Consumed by 05 PDP + /reviews route + home UGC carousel + footer trust-bar.",
+  "type": "object",
+  "required": ["reviews", "aggregate_ratings", "press_widget", "review_provider", "meta"],
+  "properties": {
+    "review_provider": {
+      "type": "object",
+      "required": ["mode", "stub_until"],
+      "description": "Where reviews come from at runtime. MVP ships 'self_hosted' synthetic; switching to a paid provider is one schema bump away.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["self_hosted", "stamped", "yotpo", "judge_me", "trustpilot", "okendo"],
+          "description": "self_hosted = static JSON shipped with site; everything else requires provider env vars"
+        },
+        "stub_until": {
+          "type": "string",
+          "description": "Sentinel literal 'never' if no env required, or env-var name (e.g. 'STAMPED_PUBLIC_KEY') that gates real-data binding"
+        },
+        "provider_env_vars": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "purpose", "secret"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+              "purpose": { "type": "string" },
+              "secret": { "type": "boolean" }
+            }
+          }
+        },
+        "writeback_target_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "When provider goes live, these are the only 05/repo files this skill is allowed to overwrite (mirrors 05b/05 protocol)"
+        }
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Individual customer reviews. Synthetic samples MUST set synthetic=true; real provider data sets it false. FTC: synthetic reviews CANNOT be marked verified_purchase=true.",
+      "items": {
+        "type": "object",
+        "required": ["id", "sku_id", "rating", "title", "body", "author_name", "published_at", "verified_purchase", "synthetic"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^review_[0-9]{3}$" },
+          "sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$", "description": "Refs eec/02-product-selection.skus[].id" },
+          "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "title": { "type": "string", "maxLength": 80 },
+          "body": { "type": "string", "maxLength": 1000 },
+          "author_name": { "type": "string", "maxLength": 60, "description": "Display name; redact PII" },
+          "author_location": { "type": "string", "maxLength": 60, "description": "Optional 'City, ST' for trust" },
+          "published_at": { "type": "string", "format": "date" },
+          "verified_purchase": { "type": "boolean" },
+          "synthetic": { "type": "boolean", "description": "true for hand-authored MVP samples; false for real provider data" },
+          "ugc_asset_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional refs into ugc_assets[].id for photo/video reviews"
+          },
+          "helpful_count": { "type": "integer", "minimum": 0 },
+          "merchant_response": {
+            "type": "object",
+            "required": ["body", "responded_at"],
+            "properties": {
+              "body": { "type": "string", "maxLength": 600 },
+              "responded_at": { "type": "string", "format": "date" }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "synthetic": { "const": true } }, "required": ["synthetic"] },
+            "then": { "properties": { "verified_purchase": { "const": false } }, "required": ["verified_purchase"] },
+            "$comment": "FTC §16 CFR Part 465: a fabricated review cannot represent a verified purchase. Schema-level enforcement."
+          }
+        ]
+      }
+    },
+    "aggregate_ratings": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Per-SKU rollup. Site emits AggregateRating JSON-LD ONLY when review_count >= 5 (Google's threshold). Schema enforces emit_jsonld flag; SKU MUST omit AggregateRating block when review_count < 5.",
+      "items": {
+        "type": "object",
+        "required": ["sku_id", "rating_average", "review_count", "rating_distribution", "emit_jsonld"],
+        "properties": {
+          "sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+          "rating_average": { "type": "number", "minimum": 1, "maximum": 5 },
+          "review_count": { "type": "integer", "minimum": 0 },
+          "emit_jsonld": { "type": "boolean", "description": "Must equal (review_count >= 5). 05/PDP renderer reads this flag — no JSON-LD when false." },
+          "rating_distribution": {
+            "type": "object",
+            "required": ["1", "2", "3", "4", "5"],
+            "properties": {
+              "1": { "type": "integer", "minimum": 0 },
+              "2": { "type": "integer", "minimum": 0 },
+              "3": { "type": "integer", "minimum": 0 },
+              "4": { "type": "integer", "minimum": 0 },
+              "5": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "review_count": { "type": "integer", "minimum": 5 } }, "required": ["review_count"] },
+            "then": { "properties": { "emit_jsonld": { "const": true } } },
+            "else": { "properties": { "emit_jsonld": { "const": false } } },
+            "$comment": "Google rich-results threshold: AggregateRating ineligible below 5 reviews. Skill MUST keep emit_jsonld in sync with review_count."
+          }
+        ]
+      }
+    },
+    "ugc_assets": {
+      "type": "array",
+      "description": "Customer-submitted photos/videos. Renders in home UGC carousel + can attach to reviews.",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "caption", "author_handle", "consent_status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^ugc_[0-9]{3}$" },
+          "type": { "type": "string", "enum": ["photo", "video"] },
+          "caption": { "type": "string", "maxLength": 200 },
+          "author_handle": { "type": "string", "description": "Social handle, e.g. '@kim.l'" },
+          "author_platform": { "type": "string", "enum": ["instagram", "tiktok", "youtube", "reddit", "direct_upload"] },
+          "consent_status": { "type": "string", "enum": ["granted", "pending", "expired"], "description": "Only 'granted' renders publicly" },
+          "asset_path": { "type": "string", "description": "Relative to /public, e.g. '/ugc/ugc_001.jpg'. May be missing during stub phase." },
+          "linked_sku_id": { "type": "string", "pattern": "^sku_[0-9]{3}$" },
+          "synthetic": { "type": "boolean" }
+        }
+      }
+    },
+    "case_studies": {
+      "type": "array",
+      "description": "Long-form 'X used product Y for N weeks' write-ups for blog/PR.",
+      "items": {
+        "type": "object",
+        "required": ["id", "headline", "summary", "linked_sku_ids"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^case_[0-9]{3}$" },
+          "headline": { "type": "string", "maxLength": 120 },
+          "summary": { "type": "string", "maxLength": 400 },
+          "body_md_path": { "type": "string", "description": "Relative path to markdown body (optional MVP)" },
+          "linked_sku_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^sku_[0-9]{3}$" }
+          },
+          "metric_highlights": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "press_widget": {
+      "type": "object",
+      "required": ["display_mode", "logos"],
+      "description": "Trust-bar above footer. Logos source from 03.press_mentions[] but this skill curates which subset goes in the widget + ordering.",
+      "properties": {
+        "display_mode": { "type": "string", "enum": ["logos_only", "logos_with_quote", "carousel"] },
+        "logos": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["outlet", "url"],
+            "properties": {
+              "outlet": { "type": "string", "description": "Must match an outlet in 03.press_mentions[]" },
+              "url": { "type": "string", "format": "uri" },
+              "logo_asset_id": { "type": "string", "description": "Optional ref to 04.assets[]" },
+              "pull_quote": { "type": "string", "maxLength": 200, "description": "Used when display_mode includes quote" }
+            }
+          }
+        }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/site-spec",
+  "title": "Build Plan — brand-level site spec",
+  "description": "Page-level wireframe + section-level content. Sits between research outputs (02/03/04) and the coding agent (05). Each leaf value is wrapped { value, source, locked?, required? } so the UI can show provenance and target an 'ask me' chat at any field.",
+  "type": "object",
+  "required": ["brand_id", "global", "navigation", "routes"],
+  "properties": {
+    "brand_id": { "type": "string" },
+    "version": { "type": "integer", "minimum": 1, "default": 1 },
+    "updated_at": { "type": "string", "format": "date-time" },
+
+    "global": {
+      "type": "object",
+      "required": ["brand_name", "tagline", "primary_palette", "voice_tone", "domain"],
+      "properties": {
+        "brand_name":      { "$ref": "#/$defs/StringField" },
+        "tagline":         { "$ref": "#/$defs/StringField" },
+        "mission":         { "$ref": "#/$defs/StringField" },
+        "primary_palette": { "$ref": "#/$defs/PaletteField" },
+        "logo_brief":      { "$ref": "#/$defs/StringField" },
+        "voice_tone":      { "$ref": "#/$defs/StringField" },
+        "domain":          { "$ref": "#/$defs/StringField" },
+        "tech_stack":      { "$ref": "#/$defs/StringField" }
+      }
+    },
+
+    "navigation": {
+      "type": "object",
+      "required": ["header", "footer"],
+      "properties": {
+        "header": { "$ref": "#/$defs/NavListField" },
+        "footer": { "$ref": "#/$defs/NavListField" }
+      }
+    },
+
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Route" }
+    }
+  },
+
+  "$defs": {
+    "Source": {
+      "type": "string",
+      "description": "Provenance tag: which upstream source filled this field.",
+      "enum": ["empty", "user", "01", "02", "03", "04", "03+04", "04+03", "derived"]
+    },
+
+    "FieldEnvelope": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": {},
+        "source": { "$ref": "#/$defs/Source" },
+        "locked": { "type": "boolean", "default": false, "description": "True once user has edited; refresh-from-sources will not overwrite." },
+        "required": { "type": "boolean", "default": false }
+      }
+    },
+
+    "StringField": {
+      "allOf": [{ "$ref": "#/$defs/FieldEnvelope" }],
+      "properties": { "value": { "type": ["string", "null"] } }
+    },
+
+    "PaletteField": {
+      "allOf": [{ "$ref": "#/$defs/FieldEnvelope" }],
+      "properties": {
+        "value": {
+          "type": ["array", "null"],
+          "items": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+        }
+      }
+    },
+
+    "NavItem": {
+      "type": "object",
+      "required": ["label", "route"],
+      "properties": {
+        "label": { "type": "string" },
+        "route": { "type": "string", "description": "URL path, e.g. /products" }
+      }
+    },
+
+    "NavListField": {
+      "allOf": [{ "$ref": "#/$defs/FieldEnvelope" }],
+      "properties": {
+        "value": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/NavItem" }
+        }
+      }
+    },
+
+    "SectionVariant": {
+      "type": "string",
+      "description": "Layout token from a fixed enum so 05 has a known component to render.",
+      "enum": [
+        "hero-split-image-right",
+        "hero-centered",
+        "hero-full-bleed",
+        "features-three-column",
+        "features-grid",
+        "social-proof-logo-strip",
+        "social-proof-quotes",
+        "product-grid",
+        "product-detail-classic",
+        "product-detail-with-tech",
+        "faq-accordion",
+        "cta-banner",
+        "footer-standard",
+        "rich-text",
+        "image-gallery"
+      ]
+    },
+
+    "Section": {
+      "type": "object",
+      "required": ["id", "variant"],
+      "properties": {
+        "id":              { "type": "string", "description": "Stable id within this route, e.g. 'hero', 'features'" },
+        "variant":         { "$ref": "#/$defs/SectionVariant" },
+        "asset_id":        { "type": ["string", "null"], "description": "ref into 04.assets[] (single-asset variants)" },
+        "asset_ids":       { "type": "array", "items": { "type": "string" }, "description": "ref into 04.assets[] (multi-asset variants)" },
+        "copy_block_id":   { "type": ["string", "null"], "description": "ref into 04.copy_blocks[]" },
+        "copy_block_ids":  { "type": "array", "items": { "type": "string" } },
+        "sku_id":          { "type": ["string", "null"], "description": "ref into 02.skus[]" },
+        "sku_ids":         { "type": "array", "items": { "type": "string" } },
+        "headline":        { "type": ["string", "null"], "description": "Section-level headline override (otherwise 05 reads from copy_block)" },
+        "body":            { "type": ["string", "null"] },
+        "cta": {
+          "type": ["object", "null"],
+          "required": ["label", "route"],
+          "properties": {
+            "label": { "type": "string" },
+            "route": { "type": "string" }
+          }
+        },
+        "source":          { "$ref": "#/$defs/Source" },
+        "required":        { "type": "boolean", "default": false }
+      }
+    },
+
+    "Route": {
+      "type": "object",
+      "required": ["path", "title", "sections"],
+      "properties": {
+        "path":           { "type": "string", "description": "URL path, e.g. /, /products/[slug]" },
+        "title":          { "type": "string" },
+        "seo_intent":     { "type": ["string", "null"], "description": "What this page is meant to rank/convert for" },
+        "sku_template":   { "type": "boolean", "default": false, "description": "True for /products/[slug] — one rendered page per SKU at build time." },
+        "sections":       { "type": "array", "items": { "$ref": "#/$defs/Section" } },
+        "sku_ids":        { "type": "array", "items": { "type": "string" } },
+        "asset_ids":      { "type": "array", "items": { "type": "string" } },
+        "copy_block_ids": { "type": "array", "items": { "type": "string" } },
+        "source":         { "$ref": "#/$defs/Source" }
+      }
+    }
+  }
+}

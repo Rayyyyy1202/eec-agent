@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "eec/13-data-model",
+  "title": "eec-13-data-model output",
+  "description": "Database design for the merchant operations layer. Reads upstream skill outputs (02 catalog / 03 brand / 04 assets / 04b reviews / 05 routes / 06 events / 07b blog / 11b CS / 05b admin RBAC) and produces a normalized relational schema, Prisma model, raw DDL, and a JSON-to-DB seed script. Covers Phase-2 entities (10 email_subscribers, 11 fulfillment) as nullable hooks.",
+  "type": "object",
+  "required": [
+    "database",
+    "entities",
+    "relationships",
+    "migrations",
+    "seed_strategy",
+    "prisma_schema_path",
+    "writeback_target_files",
+    "env_vars_required",
+    "meta"
+  ],
+  "properties": {
+    "database": {
+      "type": "object",
+      "required": ["engine", "hosting", "rationale"],
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": ["postgres", "mysql", "sqlite", "mariadb", "cockroachdb"],
+          "description": "DB engine. Default postgres for DTC merchant. SQLite only for prototyping."
+        },
+        "version": { "type": "string", "description": "e.g. '16.4'" },
+        "hosting": {
+          "type": "string",
+          "enum": ["supabase", "neon", "railway", "rds", "planetscale", "self_hosted", "local_only"]
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Why this engine + host. 1-3 sentences referencing upstream needs (e.g. 'Postgres for jsonb on assets.metadata; Supabase for built-in storage + auth')."
+        },
+        "extensions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "e.g. ['uuid-ossp', 'pgcrypto', 'pg_trgm']"
+        },
+        "schemas_namespace": {
+          "type": "string",
+          "default": "public",
+          "description": "Postgres schema namespace (not JSON Schema). Default 'public'. Use multiple for multi-tenant later."
+        }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Each table. Order by domain group (catalog → orders → customers → cms → ops → audit → phase2).",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "source_skill", "columns", "primary_key"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^ent_[0-9]{3}$" },
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "description": "Snake_case table name, plural noun (products, orders, asset_versions)."
+          },
+          "domain_group": {
+            "type": "string",
+            "enum": ["catalog", "orders", "customers", "cms", "marketing", "ops", "audit", "auth", "phase2"]
+          },
+          "source_skill": {
+            "type": "string",
+            "enum": [
+              "01-research",
+              "02-product-selection",
+              "03-brand-identity",
+              "03b-legal-pack",
+              "04-creative-factory",
+              "04b-social-proof",
+              "05-site-build",
+              "05b-merchant-console",
+              "06-tracking",
+              "07a-tech-seo",
+              "07b-content-marketing",
+              "08-paid-ads",
+              "09-optimization",
+              "10-email-crm",
+              "11-fulfillment",
+              "11b-customer-service",
+              "synthesized"
+            ],
+            "description": "Which upstream skill's data lands here. 'synthesized' = derived (sessions, audit_log) not from any single skill. '01-research' allowed for tables seeded from research artifacts (e.g. audiences from audience_profiles[])."
+          },
+          "purpose": {
+            "type": "string",
+            "description": "One sentence: what business concept the table represents."
+          },
+          "columns": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["name", "type", "nullable"],
+              "properties": {
+                "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+                "type": {
+                  "type": "string",
+                  "description": "DB-engine-native type. e.g. 'uuid', 'text', 'integer', 'numeric(10,2)', 'jsonb', 'timestamptz', 'boolean', 'text[]'"
+                },
+                "nullable": { "type": "boolean" },
+                "default": {
+                  "description": "Default expression as a string (e.g. 'gen_random_uuid()', 'now()', 'false', \"'pending'\")."
+                },
+                "unique": { "type": "boolean", "default": false },
+                "check": { "type": "string", "description": "CHECK constraint expression, e.g. \"status IN ('pending','paid','refunded')\"" },
+                "comment": { "type": "string", "description": "Column comment (becomes Prisma /// comment + SQL COMMENT ON COLUMN)." },
+                "pii_level": {
+                  "type": "string",
+                  "enum": ["none", "low", "high"],
+                  "description": "low = email_hash, name. high = raw email, phone, address, payment_token."
+                },
+                "from_json_path": {
+                  "type": "string",
+                  "description": "JSONPath into source_skill output.json that the seed script reads. e.g. '$.skus[*].id' for products.id"
+                }
+              }
+            }
+          },
+          "primary_key": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" },
+            "description": "Column name(s) forming PK. Single-column for surrogate keys, composite for junction tables."
+          },
+          "indexes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "columns"],
+              "properties": {
+                "name": { "type": "string", "pattern": "^idx_[a-z0-9_]+$" },
+                "columns": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+                "unique": { "type": "boolean", "default": false },
+                "method": { "type": "string", "enum": ["btree", "gin", "gist", "hash", "brin"], "default": "btree" },
+                "where": { "type": "string", "description": "Partial index predicate. e.g. \"status = 'active'\"" },
+                "rationale": { "type": "string", "description": "Which query pattern justifies this index." }
+              }
+            }
+          },
+          "row_count_estimate_band": {
+            "type": "string",
+            "enum": ["tiny", "small", "medium", "large", "huge"],
+            "description": "tiny <100, small <10k, medium <1M, large <100M, huge ≥100M. Drives partition / index decisions."
+          },
+          "soft_delete": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, the table has a deleted_at timestamptz column instead of hard delete."
+          }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Foreign-key relationships. Junction (M:N) tables show up as their own entities AND have two relationships pointing into them.",
+      "items": {
+        "type": "object",
+        "required": ["id", "from_entity_id", "from_columns", "to_entity_id", "to_columns", "type", "on_delete"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^rel_[0-9]{3}$" },
+          "from_entity_id": { "type": "string", "pattern": "^ent_[0-9]{3}$" },
+          "from_columns": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "to_entity_id": { "type": "string", "pattern": "^ent_[0-9]{3}$" },
+          "to_columns": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "type": {
+            "type": "string",
+            "enum": ["one_to_one", "one_to_many", "many_to_many_via_junction"],
+            "description": "M:N is always realized via a junction entity (declare junction in entities[] AND link with two one_to_many rels)."
+          },
+          "on_delete": { "type": "string", "enum": ["cascade", "set_null", "restrict", "no_action"] },
+          "on_update": { "type": "string", "enum": ["cascade", "set_null", "restrict", "no_action"], "default": "no_action" },
+          "name": { "type": "string", "description": "FK constraint name. e.g. 'fk_order_items_order_id'" }
+        }
+      }
+    },
+    "migrations": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of SQL migration files. Number them 0001, 0002 etc.",
+      "items": {
+        "type": "object",
+        "required": ["id", "version", "ddl_path", "purpose"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^mig_[0-9]{4}$" },
+          "version": { "type": "string", "pattern": "^[0-9]{4}$", "description": "Zero-padded order: 0001, 0002, ..." },
+          "ddl_path": { "type": "string", "description": "Relative path to .sql file under ./eec/13-data-model/migrations/" },
+          "purpose": { "type": "string", "description": "One sentence: what this migration does." },
+          "depends_on": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^mig_[0-9]{4}$" },
+            "description": "Other migrations that MUST run first."
+          },
+          "reversible": { "type": "boolean", "default": true },
+          "down_path": { "type": "string", "description": "Optional rollback DDL path." }
+        }
+      }
+    },
+    "seed_strategy": {
+      "type": "object",
+      "required": ["script_path", "source_jsons", "idempotent"],
+      "description": "How to populate the empty DB from existing skill JSON outputs.",
+      "properties": {
+        "script_path": { "type": "string", "description": "Relative path to TypeScript / Python seed script." },
+        "language": { "type": "string", "enum": ["typescript", "python", "sql"], "default": "typescript" },
+        "source_jsons": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["skill", "json_path", "target_entity_id"],
+            "properties": {
+              "skill": { "type": "string", "description": "e.g. '02-product-selection'" },
+              "json_path": { "type": "string", "description": "Relative to project root. e.g. 'eec/02-product-selection/output.json'" },
+              "target_entity_id": { "type": "string", "pattern": "^ent_[0-9]{3}$" },
+              "transform_notes": { "type": "string", "description": "Any non-trivial mapping (e.g. 'flatten variants[] into rows; map currency to ISO code')." }
+            }
+          }
+        },
+        "idempotent": { "type": "boolean", "description": "true if re-running the script does NOT duplicate rows (must use upsert by natural key)." },
+        "dry_run_supported": { "type": "boolean", "default": true }
+      }
+    },
+    "prisma_schema_path": {
+      "type": "string",
+      "description": "Path to generated prisma/schema.prisma. Relative to project root."
+    },
+    "ddl_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Convenience flat list of all .sql files emitted (subset of migrations[].ddl_path)."
+    },
+    "writeback_target_files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Files this skill is allowed to create or modify. All under ./eec/13-data-model/ — no host-repo writes.",
+      "items": {
+        "type": "string",
+        "pattern": "^eec/13-data-model/(prisma/.*|migrations/.*|seed/.*|raw/.*|output\\.json|report\\.md)$"
+      }
+    },
+    "env_vars_required": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+          "purpose": { "type": "string" },
+          "scope": { "type": "string", "enum": ["build", "runtime", "both"] },
+          "secret": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "phase2_hooks": {
+      "type": "array",
+      "description": "Reserved entities owned by Phase 2 skills. Tables exist as nullable scaffolds today; columns get filled when owner skill runs.",
+      "items": {
+        "type": "object",
+        "required": ["hook_id", "owner_skill", "entity_id", "empty_state_note"],
+        "properties": {
+          "hook_id": { "type": "string", "pattern": "^hook_[0-9]{3}$" },
+          "owner_skill": {
+            "type": "string",
+            "enum": ["10-email-crm", "11-fulfillment"]
+          },
+          "entity_id": { "type": "string", "pattern": "^ent_[0-9]{3}$" },
+          "empty_state_note": { "type": "string", "description": "What happens if the merchant queries this table today." }
+        }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "description": "GDPR / CCPA hooks at the data layer.",
+      "properties": {
+        "pii_columns_inventory_path": { "type": "string", "description": "Path to a .md/json that lists every column with pii_level != 'none'. Drives subject-access-request tooling." },
+        "retention_policy_days": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 1 },
+          "description": "Per-entity retention. e.g. { 'audit_log': 365, 'sessions': 30 }"
+        },
+        "soft_delete_default": { "type": "boolean", "default": false }
+      }
+    },
+    "meta": { "$ref": "_common#/$defs/Meta" }
+  }
+}

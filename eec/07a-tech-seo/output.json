@@ -1,0 +1,73 @@
+{
+  "audit_report": {
+    "lighthouse_scores": {
+      "performance": 84,
+      "accessibility": 96,
+      "best_practices": 100,
+      "seo": 100
+    },
+    "technical_issues": [
+      { "severity": "high", "category": "performance", "description": "PDP hero image (asset_001) ships at 3.2MB raw — LCP delayed ~1.4s on mobile 4G", "affected_routes": ["/products/roborock-s-series-pro", "/products/roborock-e-series-essential"], "fix_recommendation": "Convert to AVIF, set width/height attrs, preload first hero, lazy-load rest" },
+      { "severity": "medium", "category": "structured_data", "description": "Product schema missing 'aggregateRating' and 'review' subfields — eligible for star-rating SERP", "affected_routes": ["/products/roborock-s-series-pro", "/products/roborock-e-series-essential", "/products/roborock-replenish-6mo"], "fix_recommendation": "Inject aggregateRating from review widget once 5+ reviews; placeholder OK in interim" },
+      { "severity": "medium", "category": "metadata", "description": "OG images not generated for collection pages — falls back to / hero", "affected_routes": ["/collections/all", "/collections/pet-households"], "fix_recommendation": "Add @vercel/og runtime template per collection slug" },
+      { "severity": "low", "category": "crawlability", "description": "/cart and /checkout missing noindex meta — currently allowed by robots.txt and could leak into index", "affected_routes": ["/cart", "/checkout"], "fix_recommendation": "Add <meta name=\"robots\" content=\"noindex,follow\"> + Disallow in robots.txt" },
+      { "severity": "low", "category": "i18n", "description": "No hreflang declared — fine for current US-only launch but flag before EU/CA expansion", "affected_routes": ["/"], "fix_recommendation": "Defer until 2026 EU launch" }
+    ]
+  },
+  "core_web_vitals_baseline": {
+    "lcp_p75_ms": 2680,
+    "inp_p75_ms": 142,
+    "cls_p75": 0.04,
+    "by_route": [
+      { "route": "/", "lcp_p75_ms": 2410, "inp_p75_ms": 128, "cls_p75": 0.03 },
+      { "route": "/products/roborock-s-series-pro", "lcp_p75_ms": 3120, "inp_p75_ms": 156, "cls_p75": 0.05 },
+      { "route": "/products/roborock-e-series-essential", "lcp_p75_ms": 2890, "inp_p75_ms": 144, "cls_p75": 0.04 },
+      { "route": "/collections/pet-households", "lcp_p75_ms": 2240, "inp_p75_ms": 132, "cls_p75": 0.03 }
+    ]
+  },
+  "sitemap_url": "https://roborock-staging.vercel.app/sitemap.xml",
+  "robots_txt_path": "./eec/05-site-build/repo/public/robots.txt",
+  "schema_org_emitted": [
+    { "route": "/", "type": "Organization", "validated": true, "validator": "schema-validator" },
+    { "route": "/products/roborock-s-series-pro", "type": "Product", "validated": true, "validator": "schema-validator" },
+    { "route": "/products/roborock-e-series-essential", "type": "Product", "validated": true, "validator": "schema-validator" },
+    { "route": "/products/roborock-replenish-6mo", "type": "Product", "validated": true, "validator": "schema-validator" },
+    { "route": "/collections/pet-households", "type": "CollectionPage", "validated": true, "validator": "schema-validator" },
+    { "route": "/help", "type": "FAQPage", "validated": true, "validator": "schema-validator" },
+    { "route": "*", "type": "BreadcrumbList", "validated": true, "validator": "schema-validator" }
+  ],
+  "canonical_strategy": "Self-canonical for all indexable routes; PLP filter params (color, sort) canonicalize to clean PLP path; collection pagination uses rel=next/prev + self-canonical.",
+  "internal_link_summary": {
+    "total_internal_links": 47,
+    "orphan_pages": [],
+    "deepest_click_depth": 3
+  },
+  "redirects_recommended": [
+    { "from": "/product/s-series-pro", "to": "/products/roborock-s-series-pro", "code": 301, "reason": "Singular 'product' path commonly typed; redirect to canonical plural" },
+    { "from": "/blog", "to": "/help", "code": 302, "reason": "Temporary — /blog launches with 07b in 2 weeks" }
+  ],
+  "keyword_opportunities": [
+    { "keyword": "best robot vacuum for pet hair", "intent": "commercial", "current_rank": 0, "difficulty": "high", "monthly_volume_estimate": 33000, "suggested_target_route": "/collections/pet-households" },
+    { "keyword": "robot vacuum that mops too", "intent": "commercial", "current_rank": 0, "difficulty": "medium", "monthly_volume_estimate": 18500, "suggested_target_route": "/products/roborock-s-series-pro" },
+    { "keyword": "lidar robot vacuum under 500", "intent": "transactional", "current_rank": 0, "difficulty": "medium", "monthly_volume_estimate": 8400, "suggested_target_route": "/products/roborock-e-series-essential" },
+    { "keyword": "robot vacuum keeps getting stuck", "intent": "informational", "current_rank": 0, "difficulty": "low", "monthly_volume_estimate": 4900, "suggested_target_route": "/help (new article)" },
+    { "keyword": "how often replace robot vacuum filter", "intent": "informational", "current_rank": 0, "difficulty": "low", "monthly_volume_estimate": 6200, "suggested_target_route": "/help (new article — drives sku_003 cross-sell)" },
+    { "keyword": "roborock vs roomba", "intent": "commercial", "current_rank": 0, "difficulty": "high", "monthly_volume_estimate": 27000, "suggested_target_route": "/blog (comparison post — for 07b)" },
+    { "keyword": "robot vacuum self emptying", "intent": "commercial", "current_rank": 0, "difficulty": "high", "monthly_volume_estimate": 21000, "suggested_target_route": "/products/roborock-s-series-pro" },
+    { "keyword": "robot vacuum app not connecting", "intent": "informational", "current_rank": 0, "difficulty": "low", "monthly_volume_estimate": 3300, "suggested_target_route": "/help (new troubleshooting article)" }
+  ],
+  "applied_changes": [
+    { "change_type": "sitemap_generated", "target": "./eec/05-site-build/repo/public/sitemap.xml", "applied_at": "2026-04-22T15:10:00Z", "diff_summary": "Generated 12-route sitemap with lastmod from CMS; collection + product pages prioritized 0.8/0.9" },
+    { "change_type": "robots_txt_updated", "target": "./eec/05-site-build/repo/public/robots.txt", "applied_at": "2026-04-22T15:11:00Z", "diff_summary": "Added Disallow: /cart and /checkout; sitemap directive" },
+    { "change_type": "schema_jsonld_injected", "target": "./eec/05-site-build/repo/app/products/[slug]/page.tsx", "applied_at": "2026-04-22T15:14:00Z", "diff_summary": "Server-rendered Product JSON-LD with name, image, description, brand, offers" },
+    { "change_type": "schema_jsonld_injected", "target": "./eec/05-site-build/repo/app/help/page.tsx", "applied_at": "2026-04-22T15:15:00Z", "diff_summary": "FAQPage JSON-LD wrapping the existing Q&A accordion" },
+    { "change_type": "image_format_converted", "target": "./eec/05-site-build/repo/public/og + product images", "applied_at": "2026-04-22T15:22:00Z", "diff_summary": "JPEG/PNG → AVIF + WebP fallback; ~62% size reduction; LCP improvement pending re-measure" },
+    { "change_type": "noindex_added", "target": "./eec/05-site-build/repo/app/cart/page.tsx, app/checkout/page.tsx", "applied_at": "2026-04-22T15:24:00Z", "diff_summary": "Added <meta name=\"robots\" content=\"noindex,follow\">" }
+  ],
+  "meta": {
+    "generated_at": "2026-04-22T15:30:00Z",
+    "skill_version": "1.0.0",
+    "schema_version": "1.0.0",
+    "user_input_summary": "Inputs: ./eec/05-site-build/output.json + ./eec/06-tracking/output.json (for noindex coordination)"
+  }
+}
