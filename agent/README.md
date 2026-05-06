@@ -23,14 +23,12 @@ The Agent is **additive** — the existing Claude Code slash-command flow
 ## Quick start
 
 ```bash
-cd agent
-export OPENAI_API_KEY=sk-...
-export WORKSPACE_PATH=/Users/yckj/Desktop/eec_skills/petropolitian   # default
-export OPENAI_MODEL=gpt-4o                                            # default
+cp server/.env.example server/.env.local        # then edit and set OPENAI_API_KEY
 ./bin/start.sh
 ```
 
-Then open http://localhost:4000/pipeline and click any node.
+Then open http://localhost:4000 and create a brand. See the top-level
+[README](../README.md) for the full quickstart.
 
 ## Environment
 
@@ -39,8 +37,8 @@ Then open http://localhost:4000/pipeline and click any node.
 | `OPENAI_API_KEY`  | (required)                                           | OpenAI credential |
 | `OPENAI_MODEL`    | `gpt-4o`                                             | chat completions model |
 | `OPENAI_BASE_URL` | (OpenAI default)                                     | override for compatible providers |
-| `REPO_ROOT`       | `/Users/yckj/Desktop/eec_skills`                     | location of `eec-*` skill dirs + `shared/` |
-| `WORKSPACE_PATH`  | `${REPO_ROOT}/petropolitian`                         | brand workspace where `eec/<NN>-…/output.json` live |
+| `REPO_ROOT`       | derived from `import.meta.url` (the repo root)        | location of `eec-*` skill dirs + `shared/` |
+| `WORKSPACE_PATH`  | `${REPO_ROOT}/workspace`                              | default brand workspace; UI can override per brand |
 | `PORT`            | `3001`                                               | server port |
 | `AGENT_SERVER_URL`| `http://localhost:3001`                              | consumed by web for proxy |
 

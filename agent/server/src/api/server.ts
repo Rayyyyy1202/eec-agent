@@ -3,7 +3,8 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { serve } from '@hono/node-server';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readFileSync, existsSync } from 'node:fs';
 import { SkillRegistry, type SkillNode } from '../skills/registry.ts';
 import { Workspace } from '../workspace/path.ts';
@@ -19,8 +20,10 @@ import { mountSpecRoutes } from './spec.ts';
 import { mountDistillRoutes } from './distill.ts';
 import { mountAssetRoutes } from './assets.ts';
 
-const REPO_ROOT = resolve(process.env.REPO_ROOT ?? '/Users/yckj/Desktop/eec_skills');
-const WORKSPACE_PATH = resolve(process.env.WORKSPACE_PATH ?? `${REPO_ROOT}/petropolitian`);
+// derive repo root from this file's location: agent/server/src/api/server.ts → ../../../..
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = resolve(process.env.REPO_ROOT ?? resolve(__dirname, '../../../..'));
+const WORKSPACE_PATH = resolve(process.env.WORKSPACE_PATH ?? `${REPO_ROOT}/workspace`);
 const PORT = Number(process.env.PORT ?? 3001);
 const DB_PATH = resolve(process.env.AGENT_DB_PATH ?? `${REPO_ROOT}/agent/server/data/eec.sqlite`);
 

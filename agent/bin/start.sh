@@ -5,8 +5,8 @@
 #   OPENAI_API_KEY            (mandatory for /skills/:id/run)
 #
 # Optional env:
-#   REPO_ROOT                 default /Users/yckj/Desktop/eec_skills
-#   WORKSPACE_PATH            default $REPO_ROOT/petropolitian
+#   REPO_ROOT                 default = repo root (derived from this script's path)
+#   WORKSPACE_PATH            default $REPO_ROOT/workspace
 #   OPENAI_MODEL              default gpt-4o
 #   OPENAI_BASE_URL           default https://api.openai.com/v1
 #   AGENT_SERVER_URL          default http://localhost:3001  (consumed by web)
@@ -56,7 +56,7 @@ sleep 3
 echo
 echo "Agent server: http://localhost:${PORT:-3001}"
 echo "Web UI:       http://localhost:4000/pipeline"
-echo "Workspace:    ${WORKSPACE_PATH:-$ROOT/../petropolitian}"
+echo "Workspace:    ${WORKSPACE_PATH:-$ROOT/../workspace}"
 echo
 echo "Tail logs:    tail -f $SERVER_LOG $WEB_LOG"
 echo "Press Ctrl-C to stop both."
