@@ -431,6 +431,31 @@ export const saveMemory = (brandId: string, key: string, content: string): Promi
 export const deleteMemory = (id: string): Promise<{ ok: true }> =>
   getJSON(`/memories/${id}`, { method: 'DELETE' });
 
+// ─── Brand profile (L3 distillation) ────────────────────────────────────
+
+export interface BrandProfile {
+  profile: string | null;
+  updated_at: string | null;
+}
+
+export const fetchBrandProfile = (brandId: string): Promise<BrandProfile> =>
+  getJSON(`/brands/${brandId}/profile`);
+
+export const distillBrandProfile = (
+  brandId: string,
+): Promise<{ profile: string; updated_at: string; promptTokens?: number; completionTokens?: number }> =>
+  getJSON(`/brands/${brandId}/distill-profile`, { method: 'POST' });
+
+export const updateBrandProfile = (
+  brandId: string,
+  profile: string,
+): Promise<{ profile: string; updated_at: string }> =>
+  getJSON(`/brands/${brandId}/profile`, {
+    method: 'PATCH',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ profile }),
+  });
+
 // ─── Asset library (skill 04) ───────────────────────────────────────────
 
 export type AssetSource = 'ai_generated' | 'user_uploaded' | 'shot' | 'stock';

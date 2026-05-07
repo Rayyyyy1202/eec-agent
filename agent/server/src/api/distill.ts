@@ -91,4 +91,16 @@ export function mountDistillRoutes(app: Hono, deps: DistillDeps): void {
     if (!p) return c.json({ profile: null, updated_at: null });
     return c.json(p);
   });
+
+  app.patch('/brands/:id/profile', async (c) => {
+    const id = c.req.param('id');
+    if (!deps.repo.getBrand(id)) return c.json({ error: 'brand not found' }, 404);
+    const body = (await c.req.json().catch(() => ({}))) as { profile?: string };
+    if (typeof body.profile !== 'string') return c.json({ error: 'profile (string) required' }, 400);
+    if (body.profile.length > 32_000) return c.json({ error: 'profile too long (>32k chars)' }, 400);
+    deps.repo.setBrandProfile(id, body.profile);
+    const saved = deps.repo.getBrandProfile(id);
+    if (!saved) return c.json({ error: 'failed to read back saved profile' }, 500);
+    return c.json(saved);
+  });
 }
