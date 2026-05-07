@@ -20,6 +20,7 @@ import { mountSpecRoutes } from './spec.ts';
 import { mountDistillRoutes } from './distill.ts';
 import { mountAssetRoutes } from './assets.ts';
 import { mountIntegrationsRoutes } from './integrations.ts';
+import { mountMcpsRoutes } from './mcps.ts';
 
 // derive repo root from this file's location: agent/server/src/api/server.ts → ../../../..
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -329,6 +330,10 @@ mountAssetRoutes(app, { repo, registry, validator });
 // ─── api integrations catalog (env-var detected) ────────────────────────
 
 mountIntegrationsRoutes(app);
+
+// ─── MCP catalog (本机 mcpServers 配置探测) ─────────────────────────────
+
+mountMcpsRoutes(app, { repoRoot: REPO_ROOT });
 
 // ─── build plan / site spec ──────────────────────────────────────────────
 
