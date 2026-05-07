@@ -553,9 +553,10 @@ function MessageBubble({
 }) {
   const role = message.role;
   const avatar = role === 'user' ? 'U' : role === 'assistant' ? 'A' : role === 'tool' ? 'T' : 'S';
-  const attIds: string[] = message.attachments_json ? JSON.parse(message.attachments_json) : [];
-  const toolCalls: Array<{ id: string; type: string; function: { name: string; arguments: string } }> =
-    message.tool_calls_json ? JSON.parse(message.tool_calls_json) : [];
+  const attIds = safeParseJSON<string[]>(message.attachments_json, []);
+  const toolCalls = safeParseJSON<
+    Array<{ id: string; type: string; function: { name: string; arguments: string } }>
+  >(message.tool_calls_json, []);
 
   return (
     <div className={`msg msg-${role}`}>
@@ -676,6 +677,15 @@ function prettifyJSON(s: string): string {
     return JSON.stringify(JSON.parse(s), null, 2);
   } catch {
     return s;
+  }
+}
+
+function safeParseJSON<T>(s: string | null | undefined, fallback: T): T {
+  if (!s) return fallback;
+  try {
+    return JSON.parse(s) as T;
+  } catch {
+    return fallback;
   }
 }
 

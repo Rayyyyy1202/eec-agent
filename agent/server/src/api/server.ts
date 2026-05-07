@@ -1,9 +1,8 @@
 import { Hono } from 'hono';
-// touch: reload registry after 04 SKILL.md update
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { serve } from '@hono/node-server';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync, existsSync } from 'node:fs';
 import { SkillRegistry, type SkillNode } from '../skills/registry.ts';
@@ -98,7 +97,6 @@ app.get('/skills/:id', (c) => {
     ...skillSummary(s),
     skill_path: s.skillPath,
     modules: s.modulePaths,
-    templates: s.templatePaths,
   });
 });
 
@@ -106,13 +104,27 @@ app.get('/skills/:id', (c) => {
 
 app.get('/brands', (c) => c.json({ brands: repo.listBrands(), default_brand_id: defaultBrandId }));
 
+function ensureWorkspaceInsideRepo(ws: string): string {
+  const abs = resolve(ws);
+  const rel = relative(REPO_ROOT, abs);
+  if (!rel || rel.startsWith('..') || isAbsolute(rel)) {
+    throw new Error(`workspace must be inside REPO_ROOT (${REPO_ROOT}); got ${abs}`);
+  }
+  return abs;
+}
+
 app.post('/brands', async (c) => {
   const body = await c.req.json().catch(() => ({}));
   const { name, workspace, brand_brief } = body as { name?: string; workspace?: string; brand_brief?: string };
   if (!name || !name.trim()) return c.json({ error: 'name is required' }, 400);
-  const wsAbs = workspace && workspace.trim()
-    ? resolve(workspace.trim())
-    : deriveWorkspace(name.trim());
+  let wsAbs: string;
+  try {
+    wsAbs = workspace && workspace.trim()
+      ? ensureWorkspaceInsideRepo(workspace.trim())
+      : deriveWorkspace(name.trim());
+  } catch (e) {
+    return c.json({ error: (e as Error).message }, 400);
+  }
   const brand = repo.createBrand(name.trim(), wsAbs, brand_brief);
   return c.json(brand, 201);
 });
@@ -143,9 +155,17 @@ app.patch('/brands/:id', async (c) => {
     workspace: string;
     brand_brief: string;
   }>;
+  let workspaceAbs: string | undefined;
+  if (body.workspace !== undefined) {
+    try {
+      workspaceAbs = ensureWorkspaceInsideRepo(body.workspace);
+    } catch (e) {
+      return c.json({ error: (e as Error).message }, 400);
+    }
+  }
   const updated = repo.updateBrand(c.req.param('id'), {
     ...(body.name !== undefined && { name: body.name }),
-    ...(body.workspace !== undefined && { workspace: resolve(body.workspace) }),
+    ...(workspaceAbs !== undefined && { workspace: workspaceAbs }),
     ...(body.brand_brief !== undefined && { brand_brief: body.brand_brief }),
   });
   if (!updated) return c.json({ error: 'not found' }, 404);

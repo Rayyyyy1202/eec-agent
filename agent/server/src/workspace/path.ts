@@ -20,9 +20,4 @@ export class Workspace {
   outputJsonPath(node: SkillNode): string {
     return join(this.skillDir(node), 'output.json');
   }
-
-  /** Sub-path inside a skill directory (e.g., reports, assets, drafts) */
-  resolveInside(node: SkillNode, ...segments: string[]): string {
-    return join(this.skillDir(node), ...segments);
-  }
 }

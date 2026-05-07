@@ -27,8 +27,6 @@ export interface SkillRecord {
   schemaPath: string | null;
   /** Absolute paths to module files under modules/ (sorted by name) */
   modulePaths: string[];
-  /** Path to template file if present */
-  templatePaths: string[];
 }
 
 const MAIN_CHAIN_IDS = new Set(['01', '02', '03', '04', '05', '06', '07a', '07b', '08', '09']);
@@ -64,7 +62,6 @@ export function loadSkillsFromRepo(repoRoot: string): SkillRecord[] {
 
     const schemaPath = join(schemasDir, `${id}-${slug}.schema.json`);
     const modulePaths = listDir(join(dir, 'modules'));
-    const templatePaths = listDir(join(dir, 'templates'));
 
     out.push({
       id,
@@ -76,7 +73,6 @@ export function loadSkillsFromRepo(repoRoot: string): SkillRecord[] {
       skillPath,
       schemaPath: existsSync(schemaPath) ? schemaPath : null,
       modulePaths,
-      templatePaths,
     });
   }
 
@@ -93,9 +89,4 @@ export function readSkillModules(record: SkillRecord): Array<{ name: string; bod
     name: basename(p),
     body: readFileSync(p, 'utf-8'),
   }));
-}
-
-export function readSkillSchema(record: SkillRecord): unknown | null {
-  if (!record.schemaPath) return null;
-  return JSON.parse(readFileSync(record.schemaPath, 'utf-8'));
 }

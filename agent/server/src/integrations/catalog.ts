@@ -18,8 +18,6 @@ export interface IntegrationDef {
 
 export interface IntegrationStatus extends IntegrationDef {
   connected: boolean;
-  /** 实际命中的 env var；用于排错（不暴露 value） */
-  detected_env_vars: string[];
 }
 
 export const INTEGRATION_CATALOG: IntegrationDef[] = [
@@ -156,14 +154,10 @@ export const INTEGRATION_CATALOG: IntegrationDef[] = [
 
 export function getIntegrationStatuses(): IntegrationStatus[] {
   return INTEGRATION_CATALOG.map((def) => {
-    const detected = def.env_vars.filter((k) => {
+    const connected = def.env_vars.some((k) => {
       const v = process.env[k];
       return typeof v === 'string' && v.trim().length > 0;
     });
-    return {
-      ...def,
-      connected: detected.length > 0,
-      detected_env_vars: detected,
-    };
+    return { ...def, connected };
   });
 }

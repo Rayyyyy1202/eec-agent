@@ -2,6 +2,24 @@ import { NextRequest } from 'next/server';
 
 const AGENT = process.env.AGENT_SERVER_URL ?? 'http://localhost:3001';
 
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
+{
+  const u = new URL(AGENT);
+  if (!LOOPBACK_HOSTS.has(u.hostname)) {
+    throw new Error(
+      `AGENT_SERVER_URL must point to a loopback address; got ${u.hostname}`,
+    );
+  }
+}
+
+const ALLOW_RESPONSE_HEADERS = new Set([
+  'content-type',
+  'content-length',
+  'cache-control',
+  'transfer-encoding',
+  'content-disposition',
+]);
+
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
@@ -20,9 +38,10 @@ async function proxy(req: NextRequest, params: { path: string[] }) {
     }
   }
   const res = await fetch(target, init);
-  // Pass-through (works for JSON, SSE, and binary)
   const headers = new Headers();
-  res.headers.forEach((v, k) => headers.set(k, v));
+  res.headers.forEach((v, k) => {
+    if (ALLOW_RESPONSE_HEADERS.has(k.toLowerCase())) headers.set(k, v);
+  });
   return new Response(res.body, { status: res.status, headers });
 }
 
