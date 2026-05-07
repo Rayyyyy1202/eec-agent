@@ -529,6 +529,12 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
     });
   });
 
+  app.get('/conversations/:id/usage', (c) => {
+    const conv = deps.repo.getConversation(c.req.param('id'));
+    if (!conv) return c.json({ error: 'not found' }, 404);
+    return c.json(deps.repo.getConversationUsage(conv.id));
+  });
+
   // attachments — upload before sending message; client passes attachment ids in /message body
   app.post('/conversations/:id/attachments', async (c) => {
     const conv = deps.repo.getConversation(c.req.param('id'));
@@ -751,6 +757,7 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                     function: { name: tc.name, arguments: tc.arguments },
                   }))
                 : undefined,
+            usage: resp.usage,
           });
           await send({
             type: 'assistant_message',
@@ -763,6 +770,13 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                   name: tc.name,
                   arguments: tc.arguments,
                 })),
+              }),
+              ...(resp.usage && {
+                usage: {
+                  prompt_tokens: resp.usage.prompt_tokens,
+                  completion_tokens: resp.usage.completion_tokens,
+                  total_tokens: resp.usage.total_tokens,
+                },
               }),
             },
           });
@@ -886,6 +900,7 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                     function: { name: tc.name, arguments: tc.arguments },
                   }))
                 : undefined,
+            usage: resp.usage,
           });
           await send({
             type: 'assistant_message',
@@ -898,6 +913,13 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                   name: tc.name,
                   arguments: tc.arguments,
                 })),
+              }),
+              ...(resp.usage && {
+                usage: {
+                  prompt_tokens: resp.usage.prompt_tokens,
+                  completion_tokens: resp.usage.completion_tokens,
+                  total_tokens: resp.usage.total_tokens,
+                },
               }),
             },
           });

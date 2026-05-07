@@ -27,14 +27,17 @@ CREATE TABLE IF NOT EXISTS conversations (
 CREATE INDEX IF NOT EXISTS idx_conv_brand ON conversations(brand_id, updated_at DESC);
 
 CREATE TABLE IF NOT EXISTS messages (
-  id              TEXT PRIMARY KEY,
-  conversation_id TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-  role            TEXT NOT NULL,         -- 'user' | 'assistant' | 'tool' | 'system'
-  content         TEXT NOT NULL DEFAULT '',
-  tool_call_id    TEXT,                  -- set for role=tool messages
-  tool_calls_json TEXT,                  -- JSON of OpenAI tool_calls when assistant requests them
-  attachments_json TEXT,                 -- JSON array of attachment refs (id list)
-  created_at      TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+  id                TEXT PRIMARY KEY,
+  conversation_id   TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+  role              TEXT NOT NULL,        -- 'user' | 'assistant' | 'tool' | 'system'
+  content           TEXT NOT NULL DEFAULT '',
+  tool_call_id      TEXT,                 -- set for role=tool messages
+  tool_calls_json   TEXT,                 -- JSON of OpenAI tool_calls when assistant requests them
+  attachments_json  TEXT,                 -- JSON array of attachment refs (id list)
+  prompt_tokens     INTEGER,              -- usage.prompt_tokens from the OpenAI response (assistant messages only)
+  completion_tokens INTEGER,              -- usage.completion_tokens from the OpenAI response
+  total_tokens      INTEGER,              -- usage.total_tokens; convenience denormalization
+  created_at        TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
 );
 CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conversation_id, created_at);
 
@@ -103,6 +106,9 @@ export function openDatabase(path: string): DB {
   for (const sql of [
     `ALTER TABLE brands ADD COLUMN brand_profile TEXT`,
     `ALTER TABLE brands ADD COLUMN brand_profile_updated_at TEXT`,
+    `ALTER TABLE messages ADD COLUMN prompt_tokens INTEGER`,
+    `ALTER TABLE messages ADD COLUMN completion_tokens INTEGER`,
+    `ALTER TABLE messages ADD COLUMN total_tokens INTEGER`,
   ]) {
     try { db.exec(sql); } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
