@@ -219,6 +219,17 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
         </div>
         <div
           className="footer-link"
+          onClick={() => {
+            const target = activeBrandId ?? defaultBrandId ?? brands[0]?.id;
+            if (target) router.push(`/brand-profile/${target}`);
+          }}
+          title={activeBrandId ?? defaultBrandId ? 'Open brand profile' : 'No brand selected'}
+        >
+          <span className="icon">◈</span>
+          <span>Brand Profile</span>
+        </div>
+        <div
+          className="footer-link"
           onClick={() => router.push('/memory')}
         >
           <span className="icon">◆</span>
