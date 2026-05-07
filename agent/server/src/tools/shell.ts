@@ -25,13 +25,8 @@ const RULES: Rule[] = [
     match: (a) => a[0] === 'ajv-cli@5' || a[0] === 'ajv',
   },
   {
-    binary: 'npx',
-    shape: 'npx prisma <subcmd>',
-    match: (a) => a[0] === 'prisma',
-  },
-  {
     binary: 'pnpm',
-    shape: 'pnpm --dir <path> <build|dev|test|typecheck|lint>',
+    shape: 'pnpm --dir <ws-path> <build|dev|test|typecheck|lint|install>',
     match: (a) =>
       a[0] === '--dir' &&
       typeof a[1] === 'string' &&
@@ -39,13 +34,9 @@ const RULES: Rule[] = [
   },
   {
     binary: 'node',
-    shape: 'node <ws-relative-script.{js,mjs,ts}>  |  node -e "<script>"  |  node -p "<expr>"',
+    shape: 'node <ws-relative-script.{js,mjs,ts}>',
     match: (a) =>
-      (typeof a[0] === 'string' && /\.(c?js|mjs|ts|tsx)$/.test(a[0])) ||
-      a[0] === '-e' ||
-      a[0] === '--eval' ||
-      a[0] === '-p' ||
-      a[0] === '--print',
+      typeof a[0] === 'string' && /\.(c?js|mjs|ts|tsx)$/.test(a[0]),
   },
   {
     binary: 'tsx',
@@ -103,6 +94,19 @@ export class ShellRunner {
           stderr: '',
           command,
           error: `absolute path outside workspace: ${a}`,
+        };
+      }
+    }
+
+    if (binary === 'pnpm' && args[0] === '--dir' && typeof args[1] === 'string') {
+      if (!pathInsideWorkspace(args[1], this.workspaceRoot)) {
+        return {
+          ok: false,
+          code: null,
+          stdout: '',
+          stderr: '',
+          command,
+          error: `pnpm --dir target outside workspace: ${args[1]}`,
         };
       }
     }

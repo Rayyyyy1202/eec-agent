@@ -579,16 +579,15 @@ async function dispatch(
       if (!outputPath) {
         return { ok: false, error: 'output_path is required. Did you forget to write output.json?' };
       }
-      const abs = resolve(ctx.workspaceRoot, outputPath);
-      if (!existsSync(abs)) {
+      const r = ctx.fs.readFile(outputPath);
+      if (!r.ok) {
         return {
           ok: false,
-          error: `output file does not exist at ${outputPath}. Write the output.json with write_file BEFORE calling finish.`,
+          error: `cannot read output file at ${outputPath}: ${r.error}. Write the output.json with write_file BEFORE calling finish.`,
         };
       }
       try {
-        const text = readFileSync(abs, 'utf-8');
-        JSON.parse(text);
+        JSON.parse(r.content!);
       } catch (e) {
         return {
           ok: false,

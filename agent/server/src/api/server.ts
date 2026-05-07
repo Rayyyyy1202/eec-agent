@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-// touch: reload registry after 04 SKILL.md update
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { serve } from '@hono/node-server';
@@ -8,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync, existsSync } from 'node:fs';
 import { SkillRegistry, type SkillNode } from '../skills/registry.ts';
 import { Workspace } from '../workspace/path.ts';
+import { ensureInsideRepo } from '../workspace/containment.ts';
 import { Validator } from '../tools/validate.ts';
 import { preflight, readSkillState } from '../executor/preflight.ts';
 import { runSkill, type RunEvent } from '../executor/node.ts';
@@ -98,7 +98,6 @@ app.get('/skills/:id', (c) => {
     ...skillSummary(s),
     skill_path: s.skillPath,
     modules: s.modulePaths,
-    templates: s.templatePaths,
   });
 });
 
@@ -110,9 +109,14 @@ app.post('/brands', async (c) => {
   const body = await c.req.json().catch(() => ({}));
   const { name, workspace, brand_brief } = body as { name?: string; workspace?: string; brand_brief?: string };
   if (!name || !name.trim()) return c.json({ error: 'name is required' }, 400);
-  const wsAbs = workspace && workspace.trim()
-    ? resolve(workspace.trim())
-    : deriveWorkspace(name.trim());
+  let wsAbs: string;
+  try {
+    wsAbs = workspace && workspace.trim()
+      ? ensureInsideRepo(workspace.trim(), REPO_ROOT)
+      : deriveWorkspace(name.trim());
+  } catch (e) {
+    return c.json({ error: (e as Error).message }, 400);
+  }
   const brand = repo.createBrand(name.trim(), wsAbs, brand_brief);
   return c.json(brand, 201);
 });
@@ -143,9 +147,17 @@ app.patch('/brands/:id', async (c) => {
     workspace: string;
     brand_brief: string;
   }>;
+  let workspaceAbs: string | undefined;
+  if (body.workspace !== undefined) {
+    try {
+      workspaceAbs = ensureInsideRepo(body.workspace, REPO_ROOT);
+    } catch (e) {
+      return c.json({ error: (e as Error).message }, 400);
+    }
+  }
   const updated = repo.updateBrand(c.req.param('id'), {
     ...(body.name !== undefined && { name: body.name }),
-    ...(body.workspace !== undefined && { workspace: resolve(body.workspace) }),
+    ...(workspaceAbs !== undefined && { workspace: workspaceAbs }),
     ...(body.brand_brief !== undefined && { brand_brief: body.brand_brief }),
   });
   if (!updated) return c.json({ error: 'not found' }, 404);
