@@ -228,6 +228,10 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
           <span className="icon">⌬</span>
           <span>API 接口</span>
         </Link>
+        <Link href="/mcps" className="footer-link" style={{ color: 'inherit' }}>
+          <span className="icon">⊙</span>
+          <span>MCP 浏览</span>
+        </Link>
       </div>
 
       {showBrandModal && (

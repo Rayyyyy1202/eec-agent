@@ -131,6 +131,27 @@ export interface IntegrationsResponse {
   integrations: IntegrationStatus[];
 }
 
+// ─── MCP catalog ────────────────────────────────────────────────────────
+
+export type McpPriority = 'required' | 'recommended' | 'optional';
+
+export interface McpStatus {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  used_by_skills: string[];
+  aliases?: string[];
+  docs_url?: string;
+  priority: McpPriority;
+  connected: boolean;
+}
+
+export interface McpsResponse {
+  summary: { total: number; connected: number };
+  mcps: McpStatus[];
+}
+
 // ─── Approvals ──────────────────────────────────────────────────────────
 
 export type ApprovalDecision = 'approved' | 'modified_rerun' | 'rejected';
@@ -333,6 +354,10 @@ export const fetchSkills = (): Promise<SkillSummary[]> =>
 // integrations
 export const fetchIntegrations = (): Promise<IntegrationsResponse> =>
   getJSON<IntegrationsResponse>(`/integrations`);
+
+// mcps
+export const fetchMcps = (): Promise<McpsResponse> =>
+  getJSON<McpsResponse>(`/mcps`);
 
 export const fetchWorkspaceState = (brandId?: string): Promise<SkillState[]> => {
   const url = brandId ? `/brands/${brandId}/workspace/state` : `/workspace/state`;
