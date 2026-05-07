@@ -2,11 +2,12 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { serve } from '@hono/node-server';
-import { resolve, dirname, relative, isAbsolute } from 'node:path';
+import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync, existsSync } from 'node:fs';
 import { SkillRegistry, type SkillNode } from '../skills/registry.ts';
 import { Workspace } from '../workspace/path.ts';
+import { ensureInsideRepo } from '../workspace/containment.ts';
 import { Validator } from '../tools/validate.ts';
 import { preflight, readSkillState } from '../executor/preflight.ts';
 import { runSkill, type RunEvent } from '../executor/node.ts';
@@ -104,15 +105,6 @@ app.get('/skills/:id', (c) => {
 
 app.get('/brands', (c) => c.json({ brands: repo.listBrands(), default_brand_id: defaultBrandId }));
 
-function ensureWorkspaceInsideRepo(ws: string): string {
-  const abs = resolve(ws);
-  const rel = relative(REPO_ROOT, abs);
-  if (!rel || rel.startsWith('..') || isAbsolute(rel)) {
-    throw new Error(`workspace must be inside REPO_ROOT (${REPO_ROOT}); got ${abs}`);
-  }
-  return abs;
-}
-
 app.post('/brands', async (c) => {
   const body = await c.req.json().catch(() => ({}));
   const { name, workspace, brand_brief } = body as { name?: string; workspace?: string; brand_brief?: string };
@@ -120,7 +112,7 @@ app.post('/brands', async (c) => {
   let wsAbs: string;
   try {
     wsAbs = workspace && workspace.trim()
-      ? ensureWorkspaceInsideRepo(workspace.trim())
+      ? ensureInsideRepo(workspace.trim(), REPO_ROOT)
       : deriveWorkspace(name.trim());
   } catch (e) {
     return c.json({ error: (e as Error).message }, 400);
@@ -158,7 +150,7 @@ app.patch('/brands/:id', async (c) => {
   let workspaceAbs: string | undefined;
   if (body.workspace !== undefined) {
     try {
-      workspaceAbs = ensureWorkspaceInsideRepo(body.workspace);
+      workspaceAbs = ensureInsideRepo(body.workspace, REPO_ROOT);
     } catch (e) {
       return c.json({ error: (e as Error).message }, 400);
     }
