@@ -123,7 +123,6 @@ export interface IntegrationStatus {
   docs_url?: string;
   priority: IntegrationPriority;
   connected: boolean;
-  detected_env_vars: string[];
 }
 
 export interface IntegrationsResponse {

@@ -145,15 +145,11 @@ function IntegrationCard({ item }: { item: IntegrationStatus }) {
         <div className="integration-env">
           <div className="integration-env-label">环境变量</div>
           <div className="integration-env-vars">
-            {item.env_vars.map((k) => {
-              const isSet = item.detected_env_vars.includes(k);
-              return (
-                <code key={k} className={`integration-env-var ${isSet ? 'set' : 'missing'}`}>
-                  {k}
-                  <span className="integration-env-state">{isSet ? '✓' : '·'}</span>
-                </code>
-              );
-            })}
+            {item.env_vars.map((k) => (
+              <code key={k} className={`integration-env-var ${item.connected ? 'set' : 'missing'}`}>
+                {k}
+              </code>
+            ))}
           </div>
         </div>
       )}
