@@ -233,6 +233,9 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
               : null,
             attachments_json: null,
             created_at: new Date().toISOString(),
+            prompt_tokens: p.usage?.prompt_tokens ?? null,
+            completion_tokens: p.usage?.completion_tokens ?? null,
+            total_tokens: p.usage?.total_tokens ?? null,
           };
           setMessages((curr) => (curr.some((x) => x.id === m.id) ? curr : [...curr, m]));
           break;
@@ -422,7 +425,7 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
           {conv?.title ?? (hydrated ? '对话不存在或已归档' : '加载中…')}
         </div>
         <div className="main-meta">
-          {hydrated ? `${messages.filter((m) => m.role !== 'system').length} messages` : ''}
+          {hydrated ? renderMeta(messages) : ''}
         </div>
       </div>
 
@@ -561,7 +564,18 @@ function MessageBubble({
     <div className={`msg msg-${role}`}>
       <div className="msg-avatar">{avatar}</div>
       <div className="msg-body">
-        <div className="msg-role">{role}</div>
+        <div className="msg-role">
+          {role}
+          {role === 'assistant' && message.total_tokens != null && (
+            <span
+              className="msg-tokens"
+              title={`prompt ${message.prompt_tokens ?? 0} · completion ${message.completion_tokens ?? 0}`}
+              style={{ marginLeft: 8, color: 'var(--fg-faint)', fontWeight: 400, fontSize: 11 }}
+            >
+              {formatTokens(message.total_tokens)} tok
+            </span>
+          )}
+        </div>
         {message.content && <div className="msg-content">{message.content}</div>}
         {attIds.length > 0 && (
           <div className="msg-attachments">
@@ -669,6 +683,24 @@ function summarizeRunEvent(ev: RunEvent): string {
 function truncate(s: string, n: number): string {
   if (!s) return '';
   return s.length > n ? `${s.slice(0, n)}…` : s;
+}
+
+function formatTokens(n: number): string {
+  if (n < 1000) return String(n);
+  if (n < 100_000) return `${(n / 1000).toFixed(1)}k`;
+  return `${Math.round(n / 1000)}k`;
+}
+
+function renderMeta(messages: Message[]): string {
+  const visible = messages.filter((m) => m.role !== 'system');
+  let total = 0;
+  for (const m of messages) {
+    if (m.role === 'assistant' && typeof m.total_tokens === 'number') {
+      total += m.total_tokens;
+    }
+  }
+  const count = `${visible.length} messages`;
+  return total > 0 ? `${count} · ${formatTokens(total)} tok` : count;
 }
 
 function prettifyJSON(s: string): string {

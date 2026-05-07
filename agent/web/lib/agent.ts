@@ -74,7 +74,17 @@ export interface Message {
   tool_call_id: string | null;
   tool_calls_json: string | null;
   attachments_json: string | null;
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
   created_at: string;
+}
+
+export interface ConversationUsage {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  assistant_turns: number;
 }
 
 export interface AttachmentMeta {
@@ -163,6 +173,7 @@ export type ChatEvent =
         id: string;
         content: string;
         tool_calls?: Array<{ id: string; name: string; arguments: string }>;
+        usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
       };
     }
   | { type: 'tool_call'; payload: { id: string; name: string; arguments: string } }
@@ -397,6 +408,9 @@ export const fetchMessages = (
   conversationId: string,
 ): Promise<{ messages: Message[]; attachments: AttachmentMeta[] }> =>
   getJSON(`/conversations/${conversationId}/messages`);
+
+export const fetchConversationUsage = (conversationId: string): Promise<ConversationUsage> =>
+  getJSON(`/conversations/${conversationId}/usage`);
 
 // attachments
 export const uploadAttachment = (
