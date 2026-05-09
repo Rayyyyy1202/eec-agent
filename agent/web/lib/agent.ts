@@ -152,6 +152,7 @@ export interface AwaitingApprovalPayload {
   full_name: string;
   output_path: string;
   summary: string;
+  data?: unknown;
 }
 
 // ─── Chat SSE events (orchestrator stream) ──────────────────────────────
