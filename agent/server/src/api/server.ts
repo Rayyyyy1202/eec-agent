@@ -5,7 +5,7 @@ import { streamSSE } from 'hono/streaming';
 import { serve } from '@hono/node-server';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
 import { SkillRegistry, type SkillNode } from '../skills/registry.ts';
 import { Workspace } from '../workspace/path.ts';
 import { Validator } from '../tools/validate.ts';
@@ -187,9 +187,45 @@ app.get('/brands/:id/skills/:skill/output', (c) => {
   if (!existsSync(out)) return c.json({ error: 'output.json not found', path: out }, 404);
   try {
     const data = JSON.parse(readFileSync(out, 'utf-8'));
-    return c.json({ skill_id: s.id, path: out, data });
+    const stat = statSync(out);
+    return c.json({ skill_id: s.id, path: out, data, mtime: stat.mtime.toISOString() });
   } catch (e) {
     return c.json({ error: 'parse failed', message: (e as Error).message }, 500);
+  }
+});
+
+app.put('/brands/:id/skills/:skill/output', async (c) => {
+  const ws = workspaceForBrand(c.req.param('id'));
+  if (!ws) return c.json({ error: 'unknown brand' }, 404);
+  const s = registry.get(c.req.param('skill'));
+  if (!s) return c.json({ error: 'unknown skill' }, 404);
+
+  let body: unknown;
+  try {
+    body = await c.req.json();
+  } catch (e) {
+    return c.json({ error: 'invalid JSON', message: (e as Error).message }, 400);
+  }
+  if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+    return c.json({ error: 'output must be a JSON object (not array or scalar)' }, 400);
+  }
+
+  if (s.schemaPath) {
+    const r = validator.validate(s.schemaPath, body);
+    if (!r.ok) {
+      return c.json({ error: 'schema validation failed', errors: r.errors.slice(0, 50) }, 400);
+    }
+  }
+
+  const out = ws.outputJsonPath(s);
+  try {
+    mkdirSync(dirname(out), { recursive: true });
+    const text = JSON.stringify(body, null, 2);
+    writeFileSync(out, text, 'utf-8');
+    const stat = statSync(out);
+    return c.json({ ok: true, path: out, bytes: text.length, mtime: stat.mtime.toISOString() });
+  } catch (e) {
+    return c.json({ error: 'write failed', message: (e as Error).message }, 500);
   }
 });
 
@@ -265,9 +301,45 @@ app.get('/skills/:id/output', (c) => {
   if (!existsSync(out)) return c.json({ error: 'output.json not found', path: out }, 404);
   try {
     const data = JSON.parse(readFileSync(out, 'utf-8'));
-    return c.json({ skill_id: s.id, path: out, data });
+    const stat = statSync(out);
+    return c.json({ skill_id: s.id, path: out, data, mtime: stat.mtime.toISOString() });
   } catch (e) {
     return c.json({ error: 'parse failed', message: (e as Error).message }, 500);
+  }
+});
+
+app.put('/skills/:id/output', async (c) => {
+  const ws = workspaceFromHeaderOrDefault(c);
+  if (!ws) return c.json({ error: 'no default brand configured' }, 503);
+  const s = registry.get(c.req.param('id'));
+  if (!s) return c.json({ error: 'unknown skill' }, 404);
+
+  let body: unknown;
+  try {
+    body = await c.req.json();
+  } catch (e) {
+    return c.json({ error: 'invalid JSON', message: (e as Error).message }, 400);
+  }
+  if (body === null || typeof body !== 'object' || Array.isArray(body)) {
+    return c.json({ error: 'output must be a JSON object (not array or scalar)' }, 400);
+  }
+
+  if (s.schemaPath) {
+    const r = validator.validate(s.schemaPath, body);
+    if (!r.ok) {
+      return c.json({ error: 'schema validation failed', errors: r.errors.slice(0, 50) }, 400);
+    }
+  }
+
+  const out = ws.outputJsonPath(s);
+  try {
+    mkdirSync(dirname(out), { recursive: true });
+    const text = JSON.stringify(body, null, 2);
+    writeFileSync(out, text, 'utf-8');
+    const stat = statSync(out);
+    return c.json({ ok: true, path: out, bytes: text.length, mtime: stat.mtime.toISOString() });
+  } catch (e) {
+    return c.json({ error: 'write failed', message: (e as Error).message }, 500);
   }
 });
 
