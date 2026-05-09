@@ -23,6 +23,7 @@ export type RunEvent =
   | { type: 'turn'; payload: { index: number; text: string; finish: string | null } }
   | { type: 'tool_call'; payload: { id: string; name: string; arguments: string } }
   | { type: 'tool_result'; payload: { id: string; ok: boolean; summary: string } }
+  | { type: 'partial_output'; payload: { skillId: string; data: unknown; bytes: number } }
   | { type: 'validate'; payload: { ok: boolean; errors: Array<{ path: string; message: string }> } }
   | { type: 'needs_input'; payload: { message: string } }
   | { type: 'done'; payload: { ok: boolean; outputPath: string | null; reason: string } }
@@ -425,7 +426,7 @@ export async function runSkill(
 
     for (const tc of resp.toolCalls) {
       emit({ type: 'tool_call', payload: { id: tc.id, name: tc.name, arguments: tc.arguments } });
-      const result = await dispatch(tc.name, tc.arguments, { fs, shell, validator, registry, imageGen, workspaceRoot: workspace.root });
+      const result = await dispatch(tc.name, tc.arguments, { fs, shell, validator, registry, imageGen, workspaceRoot: workspace.root, skillId, emit });
       const { ok: okFlag, summary } = summarizeToolResult(tc.name, result);
       emit({ type: 'tool_result', payload: { id: tc.id, ok: okFlag, summary } });
       messages.push(toolMessage(tc.id, result));
@@ -472,7 +473,7 @@ export async function runSkill(
       messages.push(resp.message);
       for (const tc of resp.toolCalls) {
         emit({ type: 'tool_call', payload: { id: tc.id, name: tc.name, arguments: tc.arguments } });
-        const result = await dispatch(tc.name, tc.arguments, { fs, shell, validator, registry, imageGen, workspaceRoot: workspace.root });
+        const result = await dispatch(tc.name, tc.arguments, { fs, shell, validator, registry, imageGen, workspaceRoot: workspace.root, skillId, emit });
         const { ok: okFlag, summary } = summarizeToolResult(tc.name, result);
         emit({ type: 'tool_result', payload: { id: tc.id, ok: okFlag, summary } });
         messages.push(toolMessage(tc.id, result));
@@ -521,6 +522,8 @@ interface DispatchCtx {
   registry: SkillRegistry;
   imageGen: ImageGenerator;
   workspaceRoot: string;
+  skillId: string;
+  emit?: EventEmitter;
 }
 
 async function dispatch(
@@ -532,8 +535,24 @@ async function dispatch(
   switch (name) {
     case 'read_file':
       return ctx.fs.readFile(String(args.path ?? ''));
-    case 'write_file':
-      return ctx.fs.writeFile(String(args.path ?? ''), String(args.content ?? ''));
+    case 'write_file': {
+      const path = String(args.path ?? '');
+      const content = String(args.content ?? '');
+      const r = ctx.fs.writeFile(path, content);
+      const ok = (r as { ok?: boolean }).ok === true;
+      if (ok && /\/output\.json$/.test(path)) {
+        try {
+          const data = JSON.parse(content);
+          ctx.emit?.({
+            type: 'partial_output',
+            payload: { skillId: ctx.skillId, data, bytes: content.length },
+          });
+        } catch {
+          /* not valid JSON yet — skill is mid-write, ignore */
+        }
+      }
+      return r;
+    }
     case 'list_dir':
       return ctx.fs.listDir(String(args.path ?? ''));
     case 'validate_schema': {
