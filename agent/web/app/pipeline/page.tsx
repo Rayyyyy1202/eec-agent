@@ -7,13 +7,17 @@ import {
   fetchSkills,
   fetchWorkspaceState,
   fetchPreflight,
+  fetchSkillOutput,
   streamRun,
+  updateSkillOutput,
   type SkillSummary,
   type SkillState,
   type PreflightReport,
   type RunEvent,
+  type SkillOutput,
 } from '@/lib/agent';
 import { skillDisplayName } from '@/lib/skill-names';
+import { OutputPreview } from '@/components/OutputPreview';
 
 function displayName(skill: SkillSummary): string {
   return skillDisplayName(skill.id, skill.slug);
@@ -233,16 +237,22 @@ function SkillDrawer({
   const [running, setRunning] = useState(false);
   const [pf, setPf] = useState<PreflightReport | null>(null);
   const [events, setEvents] = useState<Array<{ type: string; payload: unknown }>>([]);
+  const [liveOutput, setLiveOutput] = useState<unknown>(null);
+  const [savedOutput, setSavedOutput] = useState<SkillOutput | null>(null);
 
   useEffect(() => {
     setEvents([]);
     setPf(null);
+    setLiveOutput(null);
+    setSavedOutput(null);
     void fetchPreflight(skill.id).then(setPf);
+    void fetchSkillOutput(skill.id).then((o) => setSavedOutput(o));
   }, [skill.id]);
 
   const onRun = async () => {
     setRunning(true);
     setEvents([]);
+    setLiveOutput(null);
     onStart();
     try {
       await streamRun(
@@ -250,6 +260,9 @@ function SkillDrawer({
         { brand_brief: brief || undefined, auto_stub_upstream: autoStub },
         (e: RunEvent) => {
           setEvents((prev) => [...prev, { type: e.type, payload: e.payload }]);
+          if (e.type === 'partial_output') {
+            setLiveOutput((e.payload as { data: unknown }).data);
+          }
         },
       );
     } catch (e) {
@@ -257,8 +270,13 @@ function SkillDrawer({
     } finally {
       setRunning(false);
       onFinish();
+      const fresh = await fetchSkillOutput(skill.id).catch(() => null);
+      setSavedOutput(fresh);
     }
   };
+
+  const previewData = liveOutput ?? savedOutput?.data ?? null;
+  const hasAnyOutput = previewData !== null && previewData !== undefined;
 
   return (
     <div className="drawer">
@@ -305,6 +323,27 @@ function SkillDrawer({
           Current output: {state.exists ? '✓' : '—'}
           {state.synthetic && ' · synthetic'} · last run {state.mtime?.replace('T', ' ').slice(0, 16)}
         </div>
+      )}
+
+      {(hasAnyOutput || running) && (
+        <OutputPreview
+          data={previewData}
+          readonly={running}
+          live={running && liveOutput !== null}
+          lastUpdatedAt={!running ? savedOutput?.mtime ?? null : null}
+          onSave={
+            running
+              ? undefined
+              : async (next) => {
+                  const r = await updateSkillOutput(skill.id, next);
+                  if (r.ok) {
+                    const fresh = await fetchSkillOutput(skill.id).catch(() => null);
+                    setSavedOutput(fresh);
+                  }
+                  return r;
+                }
+          }
+        />
       )}
 
       {events.length > 0 && (

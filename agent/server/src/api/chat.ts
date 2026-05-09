@@ -299,6 +299,7 @@ type ChatStreamEvent =
         full_name: string;
         output_path: string;
         summary: string;
+        data: unknown;
       };
     }
   | { type: 'approval_recorded'; payload: { id: string; skill_id: string; decision: string } }
@@ -386,9 +387,11 @@ async function dispatchOrchestratorTool(
       if ((result as { ok?: boolean }).ok && (result as { outputPath?: string }).outputPath) {
         const outputPath = (result as { outputPath: string }).outputPath;
         let summary = (result as { reason?: string }).reason ?? '';
+        let data: unknown = null;
         try {
           const raw = readFileSync(outputPath, 'utf-8');
           const parsed = JSON.parse(raw) as Record<string, unknown>;
+          data = parsed;
           const keys = Object.keys(parsed).slice(0, 6).join(', ');
           summary = `${summary}${summary ? ' — ' : ''}fields: ${keys}`.slice(0, 400);
         } catch {
@@ -401,6 +404,7 @@ async function dispatchOrchestratorTool(
             full_name: node.fullName,
             output_path: outputPath,
             summary,
+            data,
           },
         });
       }
