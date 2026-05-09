@@ -16,9 +16,11 @@ import {
   setStoredModel,
   streamChat,
   streamGreet,
+  updateSkillOutput,
   uploadAttachment,
 } from '../lib/agent';
 import ModelPicker from './ModelPicker';
+import { OutputPreview } from './OutputPreview';
 import { type ToolLogEntry } from './Inspector';
 
 interface ChatPanelProps {
@@ -458,9 +460,10 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
               </div>
             </div>
           )}
-          {pendingApprovals.length > 0 && !streaming && (
+          {pendingApprovals.length > 0 && !streaming && conv && (
             <ApprovalCard
               payload={pendingApprovals[0]}
+              brandId={conv.brand_id}
               queueDepth={pendingApprovals.length}
               note={approvalNote}
               busy={approvalBusy}
@@ -766,6 +769,7 @@ function prettifyJSON(s: string): string {
 
 function ApprovalCard({
   payload,
+  brandId,
   queueDepth,
   note,
   busy,
@@ -775,6 +779,7 @@ function ApprovalCard({
   onDismiss,
 }: {
   payload: AwaitingApprovalPayload;
+  brandId: string;
   queueDepth?: number;
   note: string;
   busy: boolean;
@@ -795,6 +800,13 @@ function ApprovalCard({
       <div className="approval-card-body">
         {payload.summary && <div className="approval-summary">{payload.summary}</div>}
         <div className="approval-path">{payload.output_path}</div>
+        {payload.data != null && (
+          <OutputPreview
+            data={payload.data}
+            readonly={busy}
+            onSave={async (next) => updateSkillOutput(payload.skill_id, next, brandId)}
+          />
+        )}
         {queueDepth && queueDepth > 1 && (
           <div className="approval-queue">队列：还有 {queueDepth - 1} 条待审</div>
         )}
