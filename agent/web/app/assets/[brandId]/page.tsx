@@ -125,11 +125,17 @@ export default function AssetLibraryPage({ params }: { params: Promise<{ brandId
                 className="al-pending-badge"
                 onClick={() => setFilter({ ...DEFAULT_FILTER, pendingOnly: true })}
                 title="筛出 AI 推荐待复核"
+                data-magic="一键筛出 AI 自动打标但还没人工确认的素材；过完要点每条的「确认 AI 标注」"
               >
                 ⚠️ 待复核 {pendingCount}
               </button>
             )}
-            <button className="btn-ghost" onClick={() => setRefreshTick((t) => t + 1)} style={{ marginLeft: 8 }}>
+            <button
+              className="btn-ghost"
+              onClick={() => setRefreshTick((t) => t + 1)}
+              style={{ marginLeft: 8 }}
+              data-magic="重新拉一次素材；agent 跑完 04 后点这个能立刻看到新产出"
+            >
               ↻ 刷新
             </button>
           </div>
@@ -172,7 +178,10 @@ export default function AssetLibraryPage({ params }: { params: Promise<{ brandId
                 value={filter.q}
                 onChange={(e) => setFilter({ ...filter, q: e.target.value })}
               />
-              <label className="al-toggle">
+              <label
+                className="al-toggle"
+                data-magic="只显示 AI 推荐、还没人工确认的素材；适合一次性快速过完所有待复核"
+              >
                 <input
                   type="checkbox"
                   checked={filter.pendingOnly}
@@ -611,7 +620,12 @@ function EmptyOutput({
         style={{ display: 'none' }}
         onChange={(e) => onUpload(e.target.files)}
       />
-      <button className="btn-primary" style={{ marginTop: 12 }} onClick={() => inputRef.current?.click()}>
+      <button
+        className="btn-primary"
+        style={{ marginTop: 12 }}
+        onClick={() => inputRef.current?.click()}
+        data-magic="上传图/视频；之后到对话里跑 04 --existing-dir=... 让 agent 自动打 purpose / channel / sku 标"
+      >
         + 上传素材
       </button>
       {uploadStatus && <div className="al-upload-status">{uploadStatus}</div>}
@@ -857,7 +871,12 @@ function EditDrawer({
         </div>
         <div className="al-drawer-foot">
           {asset.auto_tagged && (
-            <button className="btn-ghost" disabled={busy} onClick={() => submit({ auto_tagged: false })}>
+            <button
+              className="btn-ghost"
+              disabled={busy}
+              onClick={() => submit({ auto_tagged: false })}
+              data-magic="确认这条 AI 推荐标注 OK；标完它就从「待复核」消失，变成正式标注"
+            >
               确认 AI 标注
             </button>
           )}

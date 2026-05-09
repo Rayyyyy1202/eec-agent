@@ -63,7 +63,13 @@ export default function MemoryPage() {
               <option key={b.id} value={b.id}>{b.name}</option>
             ))}
           </select>
-          <button className="btn-primary" onClick={() => setShowAdd(true)}>+ New memory</button>
+          <button
+            className="btn-primary"
+            onClick={() => setShowAdd(true)}
+            data-magic="手动给当前品牌加一条记忆；之后跟 agent 聊天它会自动带上"
+          >
+            + New memory
+          </button>
         </div>
         <div className="main-body" style={{ padding: 24, maxWidth: 820, margin: '0 auto', width: '100%' }}>
           <input
@@ -71,6 +77,7 @@ export default function MemoryPage() {
             placeholder="Search keys or content…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            data-magic="模糊搜 key 或正文；agent 自动归档的记忆按 key（如 brand_brief、tone）分组"
             style={{
               width: '100%',
               padding: 10,
@@ -95,12 +102,24 @@ export default function MemoryPage() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <code style={{ background: 'var(--bg-code)', padding: '2px 6px', borderRadius: 4 }}>{m.key}</code>
+                <code
+                  style={{ background: 'var(--bg-code)', padding: '2px 6px', borderRadius: 4 }}
+                  data-magic="key 是 agent 自己起的标签；相同 key 会被新内容覆盖（最新一次为准）"
+                >
+                  {m.key}
+                </code>
                 <span style={{ flex: 1 }} />
                 <span style={{ fontSize: 11, color: 'var(--fg-muted)' }}>
                   {new Date(m.updated_at).toLocaleString()}
                 </span>
-                <button className="icon-btn" onClick={() => remove(m.id)} title="Delete">×</button>
+                <button
+                  className="icon-btn"
+                  onClick={() => remove(m.id)}
+                  title="Delete"
+                  data-magic="删掉这条记忆；之后聊天 agent 就读不到了"
+                >
+                  ×
+                </button>
               </div>
               <div style={{ marginTop: 8, whiteSpace: 'pre-wrap', fontSize: 13 }}>{m.content}</div>
             </div>

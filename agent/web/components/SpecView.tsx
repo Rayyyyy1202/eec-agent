@@ -45,7 +45,10 @@ export default function SpecView({
   return (
     <div className="spec-view">
       <div className="spec-toolbar">
-        <div className="spec-progress">
+        <div
+          className="spec-progress"
+          data-magic="必填字段填了多少；填满（绿色）才能跑 ▶ Build site"
+        >
           <div className="spec-progress-track">
             <div
               className={`spec-progress-fill ${completeness.ready_to_build ? 'ready' : ''}`}
@@ -58,7 +61,12 @@ export default function SpecView({
           </div>
         </div>
         <div className="spec-toolbar-actions">
-          <button className="btn-ghost" onClick={handleRefresh} disabled={refreshing}>
+          <button
+            className="btn-ghost"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            data-magic="从上游 skill (01/02/03) 重新拉一次数据，覆盖空字段；已手动改过的字段不动"
+          >
             {refreshing ? 'Refreshing…' : '↻ Refresh from sources'}
           </button>
           <button
@@ -66,6 +74,7 @@ export default function SpecView({
             onClick={onBuild}
             disabled={!completeness.ready_to_build || buildBusy}
             title={completeness.ready_to_build ? '' : 'Fill all required fields first'}
+            data-magic="按当前 spec 跑 05 建站；过程会实时显示在右侧 build-log；要先填满所有必填字段"
           >
             {buildBusy ? 'Building…' : '▶ Build site'}
           </button>
