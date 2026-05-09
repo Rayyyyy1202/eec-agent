@@ -8,6 +8,7 @@ import {
   fetchWorkspaceState,
 } from '../lib/agent';
 import { skillDisplayName } from '../lib/skill-names';
+import { INSPECTOR_TAB_BLURBS } from '../lib/magic-blurbs';
 
 interface InspectorProps {
   conversationId?: string;
@@ -66,13 +67,25 @@ export default function Inspector({ conversationId, brandId, refreshSignal, tool
   return (
     <aside className="inspector">
       <div className="inspector-tabs">
-        <button className={`inspector-tab ${tab === 'tasks' ? 'active' : ''}`} onClick={() => setTab('tasks')}>
+        <button
+          className={`inspector-tab ${tab === 'tasks' ? 'active' : ''}`}
+          onClick={() => setTab('tasks')}
+          data-magic={INSPECTOR_TAB_BLURBS.tasks}
+        >
           任务
         </button>
-        <button className={`inspector-tab ${tab === 'tools' ? 'active' : ''}`} onClick={() => setTab('tools')}>
+        <button
+          className={`inspector-tab ${tab === 'tools' ? 'active' : ''}`}
+          onClick={() => setTab('tools')}
+          data-magic={INSPECTOR_TAB_BLURBS.tools}
+        >
           工具调用
         </button>
-        <button className={`inspector-tab ${tab === 'pipeline' ? 'active' : ''}`} onClick={() => setTab('pipeline')}>
+        <button
+          className={`inspector-tab ${tab === 'pipeline' ? 'active' : ''}`}
+          onClick={() => setTab('pipeline')}
+          data-magic={INSPECTOR_TAB_BLURBS.pipeline}
+        >
           流程
         </button>
       </div>

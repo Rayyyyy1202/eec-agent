@@ -18,6 +18,7 @@ import {
 } from '@/lib/agent';
 import { skillDisplayName } from '@/lib/skill-names';
 import { OutputPreview } from '@/components/OutputPreview';
+import { STATUS_BLURBS, skillNodeBlurb } from '@/lib/magic-blurbs';
 
 function displayName(skill: SkillSummary): string {
   return skillDisplayName(skill.id, skill.slug);
@@ -60,6 +61,7 @@ function PipelineNode({
     <div
       onClick={onClick}
       className={pending ? 'pipeline-node pipeline-node-pending' : 'pipeline-node'}
+      data-magic={skillNodeBlurb(skill.id, status)}
       style={{
         background: bg,
         color: '#0b0d10',
@@ -196,11 +198,11 @@ export default function PipelinePage() {
       </ReactFlow>
 
       <div className="legend">
-        <div><span className="dot pulse" style={{ background: STATUS_COLOR.pending }} /> 进行中</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.valid }} /> 完成</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.synthetic }} /> stub</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.invalid }} /> 校验失败</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.missing }} /> 未运行</div>
+        <div data-magic={STATUS_BLURBS.pending}><span className="dot pulse" style={{ background: STATUS_COLOR.pending }} /> 进行中</div>
+        <div data-magic={STATUS_BLURBS.valid}><span className="dot" style={{ background: STATUS_COLOR.valid }} /> 完成</div>
+        <div data-magic={STATUS_BLURBS.synthetic}><span className="dot" style={{ background: STATUS_COLOR.synthetic }} /> stub</div>
+        <div data-magic={STATUS_BLURBS.invalid}><span className="dot" style={{ background: STATUS_COLOR.invalid }} /> 校验失败</div>
+        <div data-magic={STATUS_BLURBS.missing}><span className="dot" style={{ background: STATUS_COLOR.missing }} /> 未运行</div>
       </div>
 
       {selectedSkill && (
@@ -309,12 +311,19 @@ function SkillDrawer({
       <label>Brand brief (optional)</label>
       <textarea value={brief} onChange={(e) => setBrief(e.target.value)} placeholder="e.g. designer dog collars sized for every dog" />
 
-      <div className="row">
+      <div
+        className="row"
+        data-magic="如果上游 skill 还没跑，自动塞占位假数据继续跑这一步；用于单独验证某一步，不会污染最终产物"
+      >
         <input type="checkbox" id="autoStub" checked={autoStub} onChange={(e) => setAutoStub(e.target.checked)} />
         <label htmlFor="autoStub" style={{ margin: 0 }}>Auto-stub missing upstream</label>
       </div>
 
-      <button disabled={running} onClick={onRun}>
+      <button
+        disabled={running}
+        onClick={onRun}
+        data-magic="跑这一步 skill：实时把进度推到下方 events 里，跑完产出 output.json"
+      >
         {running ? 'Running…' : `Run ${skill.full_name}`}
       </button>
 

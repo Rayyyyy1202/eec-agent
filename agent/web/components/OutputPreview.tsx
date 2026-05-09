@@ -101,7 +101,14 @@ export function OutputPreview({
       <div className="output-preview-head">
         <div className="output-preview-title">
           <span className="output-preview-label">output.json</span>
-          {live && <span className="output-preview-badge live">live</span>}
+          {live && (
+            <span
+              className="output-preview-badge live"
+              data-magic="agent 正在写这个文件，每写一次就会刷新；等它跑完再点 Edit"
+            >
+              live
+            </span>
+          )}
           {!live && lastUpdatedAt && (
             <span className="output-preview-meta">saved {timeAgo(lastUpdatedAt)}</span>
           )}
@@ -111,7 +118,12 @@ export function OutputPreview({
         </div>
         <div className="output-preview-actions">
           {mode === 'view' && onSave && !readonly && !empty && (
-            <button type="button" className="btn-ghost" onClick={startEdit}>
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={startEdit}
+              data-magic="直接改这一步的产出 JSON（如改 audience、加 SKU），保存后下游的 skill 会按新版本跑"
+            >
               Edit
             </button>
           )}

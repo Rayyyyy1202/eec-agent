@@ -511,12 +511,14 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
               placeholder="Send a message, or paste an image…  (Enter to send, Shift+Enter for newline)"
               rows={1}
               disabled={streaming}
+              data-magic="输入消息：回车发送，Shift+回车换行；可以直接粘贴图片，agent 会一起看"
             />
             <div className="composer-bar">
               <button
                 className="btn-ghost"
                 onClick={() => fileInputRef.current?.click()}
                 title="Attach files / images"
+                data-magic="上传图片或文件给 agent；图片会作为视觉输入，文件以 base64 编码"
               >
                 + Attach
               </button>
@@ -530,7 +532,9 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
                   e.target.value = '';
                 }}
               />
-              <ModelPicker value={model} onChange={handleModelChange} disabled={streaming} compact />
+              <span data-magic="选用的 LLM 模型，影响速度、质量和成本；可以随时换，下一条消息生效">
+                <ModelPicker value={model} onChange={handleModelChange} disabled={streaming} compact />
+              </span>
               <span className="hint">images sent as base64</span>
               <span className="spacer" />
               <button
@@ -575,6 +579,7 @@ function MessageBubble({
             <span
               className="msg-tokens"
               title={`prompt ${message.prompt_tokens ?? 0} · completion ${message.completion_tokens ?? 0}`}
+              data-magic={`这条消息消耗的 token 数（输入+输出）。鼠标悬停看 prompt/completion 拆分。token ≈ 钱，越长越贵`}
             >
               {formatTokens(message.total_tokens!)} tok
             </span>
@@ -817,16 +822,33 @@ function ApprovalCard({
           placeholder="（可选）写下修改建议，点 提建议重跑 让 agent 用新要求重新运行该步骤"
           rows={2}
           disabled={busy}
+          data-magic="不满意时在这里写改进建议（如：audience 加一个银发族），下面点 提建议重跑"
         />
         <div className="approval-actions">
-          <button className="btn-primary" onClick={onApprove} disabled={busy}>
+          <button
+            className="btn-primary"
+            onClick={onApprove}
+            disabled={busy}
+            data-magic="这一步的产出 OK，让 agent 继续做下一步；同时会自动刷新品牌长期记忆 (brand profile)"
+          >
             {busy ? '处理中…' : '批准 → 下一步'}
           </button>
-          <button className="btn-ghost" onClick={onModifyRerun} disabled={busy || !note.trim()}>
+          <button
+            className="btn-ghost"
+            onClick={onModifyRerun}
+            disabled={busy || !note.trim()}
+            data-magic="按上面写的备注重新跑这一步；要先填备注才能点"
+          >
             提建议重跑
           </button>
           <span className="spacer" />
-          <button className="btn-ghost" onClick={onDismiss} disabled={busy} title="忽略 (不记录)">
+          <button
+            className="btn-ghost"
+            onClick={onDismiss}
+            disabled={busy}
+            title="忽略 (不记录)"
+            data-magic="先放着不审批；下次还能再回来"
+          >
             忽略
           </button>
         </div>

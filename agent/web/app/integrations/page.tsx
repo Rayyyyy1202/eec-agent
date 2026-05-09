@@ -122,7 +122,16 @@ function IntegrationCard({ item }: { item: IntegrationStatus }) {
           <span className={`integration-dot ${item.connected ? 'on' : 'off'}`} />
           <span>{item.name}</span>
         </div>
-        <span className={`integration-priority p-${item.priority}`}>
+        <span
+          className={`integration-priority p-${item.priority}`}
+          data-magic={
+            item.priority === 'required'
+              ? '必填：不接这个就没法用整套流程'
+              : item.priority === 'recommended'
+                ? '推荐：接了体验完整不少'
+                : '可选：按需接，不影响主流程'
+          }
+        >
           {PRIORITY_LABEL[item.priority]}
         </span>
       </div>

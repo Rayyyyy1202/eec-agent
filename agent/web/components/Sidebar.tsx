@@ -111,6 +111,7 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
             title="New brand"
             onClick={() => setShowBrandModal(true)}
             aria-label="New brand"
+            data-magic="新建品牌：会建一个独立的 workspace 文件夹，存这个品牌所有的对话、调研、产物"
           >
             +
           </button>
@@ -138,6 +139,7 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
                   else if (choice === 'd') handleArchiveBrand(b);
                 }}
                 title="Right-click for actions"
+                data-magic="一个品牌的所有对话和产物都收在这里。点击展开，右键改名 / 归档"
               >
                 <span className="brand-avatar">{b.name.slice(0, 1).toUpperCase()}</span>
                 <span className="brand-name">{b.name}</span>
@@ -155,6 +157,7 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
                       className={`conv-row ${c.id === activeConversationId ? 'active' : ''}`}
                       onClick={() => router.push(`/chat/${c.id}`)}
                       title={c.title}
+                      data-magic="一次跟 agent 的连续聊天。所有消息会持久保存，可以随时回来继续"
                     >
                       <span className="conv-title">{c.title}</span>
                       <span className="conv-actions" onClick={(e) => e.stopPropagation()}>
@@ -191,7 +194,12 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
       </div>
 
       <div className="sidebar-footer">
-        <Link href="/pipeline" className="footer-link" style={{ color: 'inherit' }}>
+        <Link
+          href="/pipeline"
+          className="footer-link"
+          style={{ color: 'inherit' }}
+          data-magic="Pipeline：9 个 skill 的流程总览图，看每一步当前状态、点开能单独跑"
+        >
           <span className="icon">▦</span>
           <span>Pipeline</span>
         </Link>
@@ -202,6 +210,7 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
             if (target) router.push(`/build-plan/${target}`);
           }}
           title={activeBrandId ?? defaultBrandId ? 'Open build plan' : 'No brand selected'}
+          data-magic="Build Plan：站点结构 + 文案的可视化编辑器，最终会生成站点代码"
         >
           <span className="icon">▤</span>
           <span>Build Plan</span>
@@ -213,6 +222,7 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
             if (target) router.push(`/assets/${target}`);
           }}
           title={activeBrandId ?? defaultBrandId ? 'Open asset library' : 'No brand selected'}
+          data-magic="素材库：当前品牌产生的图片 / banner / 产品图，可按用途/渠道筛"
         >
           <span className="icon">◇</span>
           <span>素材库</span>
@@ -220,11 +230,17 @@ export default function Sidebar({ activeConversationId, activeBrandId, onActiveB
         <div
           className="footer-link"
           onClick={() => router.push('/memory')}
+          data-magic="Memory：品牌长期记忆库（key-value 笔记），所有对话都能查到"
         >
           <span className="icon">◆</span>
           <span>Memory</span>
         </div>
-        <Link href="/integrations" className="footer-link" style={{ color: 'inherit' }}>
+        <Link
+          href="/integrations"
+          className="footer-link"
+          style={{ color: 'inherit' }}
+          data-magic="API 接口：列出所有外部服务（GA / Meta Ads / Shopify…）的接入状态"
+        >
           <span className="icon">⌬</span>
           <span>API 接口</span>
         </Link>

@@ -1433,3 +1433,56 @@ code, pre {
 }
 .build-log-body div { padding: 2px 0; border-bottom: 1px dashed var(--border); }
 .build-log-empty { color: var(--fg-muted); font-style: italic; }
+
+/* ─── Magic Mouse — hover-to-explain mode ──────────────────────── */
+.magic-mouse-toggle {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9998;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  color: var(--fg-secondary);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 80ms ease, background 120ms ease, color 120ms ease;
+}
+.magic-mouse-toggle:hover { transform: scale(1.06); }
+.magic-mouse-toggle.on {
+  background: var(--status-warn);
+  color: #ffffff;
+  border-color: var(--status-warn);
+}
+.magic-mouse-tip {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  max-width: 300px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: #111827;
+  color: #f9fafb;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: var(--shadow-lg);
+  white-space: pre-wrap;
+}
+body.magic-on [data-magic] {
+  outline: 2px dashed var(--status-warn);
+  outline-offset: 2px;
+  border-radius: 4px;
+  transition: outline-color 120ms ease;
+}
+body.magic-on [data-magic]:hover {
+  outline-color: #b45309;
+  outline-style: solid;
+}
