@@ -299,6 +299,7 @@ type ChatStreamEvent =
         full_name: string;
         output_path: string;
         summary: string;
+        data: unknown;
       };
     }
   | { type: 'approval_recorded'; payload: { id: string; skill_id: string; decision: string } }
@@ -386,9 +387,11 @@ async function dispatchOrchestratorTool(
       if ((result as { ok?: boolean }).ok && (result as { outputPath?: string }).outputPath) {
         const outputPath = (result as { outputPath: string }).outputPath;
         let summary = (result as { reason?: string }).reason ?? '';
+        let data: unknown = null;
         try {
           const raw = readFileSync(outputPath, 'utf-8');
           const parsed = JSON.parse(raw) as Record<string, unknown>;
+          data = parsed;
           const keys = Object.keys(parsed).slice(0, 6).join(', ');
           summary = `${summary}${summary ? ' — ' : ''}fields: ${keys}`.slice(0, 400);
         } catch {
@@ -401,6 +404,7 @@ async function dispatchOrchestratorTool(
             full_name: node.fullName,
             output_path: outputPath,
             summary,
+            data,
           },
         });
       }
@@ -527,6 +531,12 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
       messages,
       attachments: attachments.map(({ data_base64: _omit, ...a }) => a),
     });
+  });
+
+  app.get('/conversations/:id/usage', (c) => {
+    const conv = deps.repo.getConversation(c.req.param('id'));
+    if (!conv) return c.json({ error: 'not found' }, 404);
+    return c.json(deps.repo.getConversationUsage(conv.id));
   });
 
   // attachments — upload before sending message; client passes attachment ids in /message body
@@ -751,6 +761,7 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                     function: { name: tc.name, arguments: tc.arguments },
                   }))
                 : undefined,
+            usage: resp.usage,
           });
           await send({
             type: 'assistant_message',
@@ -763,6 +774,13 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                   name: tc.name,
                   arguments: tc.arguments,
                 })),
+              }),
+              ...(resp.usage && {
+                usage: {
+                  prompt_tokens: resp.usage.prompt_tokens,
+                  completion_tokens: resp.usage.completion_tokens,
+                  total_tokens: resp.usage.total_tokens,
+                },
               }),
             },
           });
@@ -886,6 +904,7 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                     function: { name: tc.name, arguments: tc.arguments },
                   }))
                 : undefined,
+            usage: resp.usage,
           });
           await send({
             type: 'assistant_message',
@@ -898,6 +917,13 @@ export function mountChatRoutes(app: Hono, deps: ChatDeps): void {
                   name: tc.name,
                   arguments: tc.arguments,
                 })),
+              }),
+              ...(resp.usage && {
+                usage: {
+                  prompt_tokens: resp.usage.prompt_tokens,
+                  completion_tokens: resp.usage.completion_tokens,
+                  total_tokens: resp.usage.total_tokens,
+                },
               }),
             },
           });

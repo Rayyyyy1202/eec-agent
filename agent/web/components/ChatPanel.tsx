@@ -16,9 +16,11 @@ import {
   setStoredModel,
   streamChat,
   streamGreet,
+  updateSkillOutput,
   uploadAttachment,
 } from '../lib/agent';
 import ModelPicker from './ModelPicker';
+import { OutputPreview } from './OutputPreview';
 import { type ToolLogEntry } from './Inspector';
 
 interface ChatPanelProps {
@@ -233,6 +235,9 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
               : null,
             attachments_json: null,
             created_at: new Date().toISOString(),
+            prompt_tokens: p.usage?.prompt_tokens ?? null,
+            completion_tokens: p.usage?.completion_tokens ?? null,
+            total_tokens: p.usage?.total_tokens ?? null,
           };
           setMessages((curr) => (curr.some((x) => x.id === m.id) ? curr : [...curr, m]));
           break;
@@ -422,34 +427,43 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
           {conv?.title ?? (hydrated ? '对话不存在或已归档' : '加载中…')}
         </div>
         <div className="main-meta">
-          {hydrated ? `${messages.filter((m) => m.role !== 'system').length} messages` : ''}
+          {hydrated ? renderMeta(messages) : ''}
         </div>
       </div>
 
       <div className="main-body">
         <div className="chat-stream" ref={streamRef} onScroll={onStreamScroll}>
-          {messages.filter((m) => m.role !== 'system').map((m) => (
-            <MessageBubble
-              key={m.id}
-              message={m}
-              attachmentMeta={attachmentMeta}
-              nestedRuns={nestedRuns}
-            />
-          ))}
+          {(() => {
+            const toolResultsByCallId: Record<string, string> = {};
+            for (const m of messages) {
+              if (m.role === 'tool' && m.tool_call_id) toolResultsByCallId[m.tool_call_id] = m.content;
+            }
+            return messages
+              .filter((m) => m.role !== 'system' && m.role !== 'tool')
+              .map((m) => (
+                <MessageBubble
+                  key={m.id}
+                  message={m}
+                  attachmentMeta={attachmentMeta}
+                  nestedRuns={nestedRuns}
+                  toolResultsByCallId={toolResultsByCallId}
+                />
+              ));
+          })()}
           {streaming && (
             <div className="msg msg-assistant">
               <div className="msg-avatar">A</div>
               <div className="msg-body">
-                <div className="msg-role">Assistant</div>
                 <div className="msg-content" style={{ color: 'var(--fg-muted)' }}>
                   <span className="typing">●●●</span>
                 </div>
               </div>
             </div>
           )}
-          {pendingApprovals.length > 0 && !streaming && (
+          {pendingApprovals.length > 0 && !streaming && conv && (
             <ApprovalCard
               payload={pendingApprovals[0]}
+              brandId={conv.brand_id}
               queueDepth={pendingApprovals.length}
               note={approvalNote}
               busy={approvalBusy}
@@ -463,15 +477,7 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
             />
           )}
           {lastApproved && (
-            <div style={{
-              borderRadius: 6,
-              border: '1px solid #6ee7b7',
-              background: 'rgba(16,185,129,0.08)',
-              color: '#065f46',
-              padding: '8px 12px',
-              fontSize: 13,
-              marginTop: 8,
-            }}>
+            <div className="approved-banner">
               ✓ 已批准 {lastApproved}，正在触发下一步…
             </div>
           )}
@@ -505,12 +511,14 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
               placeholder="Send a message, or paste an image…  (Enter to send, Shift+Enter for newline)"
               rows={1}
               disabled={streaming}
+              data-magic="输入消息：回车发送，Shift+回车换行；可以直接粘贴图片，agent 会一起看"
             />
             <div className="composer-bar">
               <button
                 className="btn-ghost"
                 onClick={() => fileInputRef.current?.click()}
                 title="Attach files / images"
+                data-magic="上传图片或文件给 agent；图片会作为视觉输入，文件以 base64 编码"
               >
                 + Attach
               </button>
@@ -524,7 +532,9 @@ export default function ChatPanel({ conversationId, seedPrompt, onConversationRe
                   e.target.value = '';
                 }}
               />
-              <ModelPicker value={model} onChange={handleModelChange} disabled={streaming} compact />
+              <span data-magic="选用的 LLM 模型，影响速度、质量和成本；可以随时换，下一条消息生效">
+                <ModelPicker value={model} onChange={handleModelChange} disabled={streaming} compact />
+              </span>
               <span className="hint">images sent as base64</span>
               <span className="spacer" />
               <button
@@ -546,22 +556,35 @@ function MessageBubble({
   message,
   attachmentMeta,
   nestedRuns,
+  toolResultsByCallId,
 }: {
   message: Message;
   attachmentMeta: Record<string, AttachmentMeta>;
   nestedRuns: Record<string, NestedRunState>;
+  toolResultsByCallId: Record<string, string>;
 }) {
   const role = message.role;
   const avatar = role === 'user' ? 'U' : role === 'assistant' ? 'A' : role === 'tool' ? 'T' : 'S';
   const attIds: string[] = message.attachments_json ? JSON.parse(message.attachments_json) : [];
   const toolCalls: Array<{ id: string; type: string; function: { name: string; arguments: string } }> =
     message.tool_calls_json ? JSON.parse(message.tool_calls_json) : [];
+  const showTokens = role === 'assistant' && message.total_tokens != null;
 
   return (
     <div className={`msg msg-${role}`}>
       <div className="msg-avatar">{avatar}</div>
       <div className="msg-body">
-        <div className="msg-role">{role}</div>
+        {showTokens && (
+          <div className="msg-role">
+            <span
+              className="msg-tokens"
+              title={`prompt ${message.prompt_tokens ?? 0} · completion ${message.completion_tokens ?? 0}`}
+              data-magic={`这条消息消耗的 token 数（输入+输出）。鼠标悬停看 prompt/completion 拆分。token ≈ 钱，越长越贵`}
+            >
+              {formatTokens(message.total_tokens!)} tok
+            </span>
+          </div>
+        )}
         {message.content && <div className="msg-content">{message.content}</div>}
         {attIds.length > 0 && (
           <div className="msg-attachments">
@@ -579,17 +602,13 @@ function MessageBubble({
           </div>
         )}
         {toolCalls.map((tc) => (
-          <ToolCallCard key={tc.id} call={tc} nestedRun={nestedRuns[tc.id]} />
+          <ToolCallCard
+            key={tc.id}
+            call={tc}
+            result={toolResultsByCallId[tc.id]}
+            nestedRun={nestedRuns[tc.id]}
+          />
         ))}
-        {role === 'tool' && message.tool_call_id && (
-          <div className="tool-card">
-            <div className="tool-card-head">
-              <span className="tag">tool</span>
-              <span>result</span>
-            </div>
-            <div className="tool-card-body muted">{truncate(message.content, 800)}</div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -597,11 +616,15 @@ function MessageBubble({
 
 function ToolCallCard({
   call,
+  result,
   nestedRun,
 }: {
   call: { id: string; function: { name: string; arguments: string } };
+  result?: string;
   nestedRun?: NestedRunState;
 }) {
+  const args = call.function.arguments;
+  const hasArgs = args && args !== '{}';
   return (
     <div>
       <div className="tool-card">
@@ -609,25 +632,77 @@ function ToolCallCard({
           <span className="tag">call</span>
           <span>{call.function.name}</span>
         </div>
-        {call.function.arguments && call.function.arguments !== '{}' && (
-          <div className="tool-card-body muted">{prettifyJSON(call.function.arguments)}</div>
+        {hasArgs && (
+          <>
+            <div className="collapsible-section-label">args</div>
+            <CollapsibleBlock body={prettifyJSON(args)} />
+          </>
+        )}
+        {result !== undefined && result !== '' && (
+          <>
+            <div className="collapsible-section-label">result</div>
+            <CollapsibleBlock body={result} />
+          </>
         )}
       </div>
-      {nestedRun && nestedRun.events.length > 0 && (
-        <div className="nested-run">
-          <div className="nested-run-head">
-            <span className="skill-id">run_skill</span>
-            <span>{nestedRunHead(nestedRun)}</span>
+      {nestedRun && nestedRun.events.length > 0 && <NestedRunPanel run={nestedRun} />}
+    </div>
+  );
+}
+
+function CollapsibleBlock({
+  body,
+  maxPreviewLines = 8,
+}: {
+  body: string;
+  maxPreviewLines?: number;
+}) {
+  const lineCount = body.split('\n').length;
+  const longByLine = lineCount > maxPreviewLines;
+  const longByChar = body.length > 800;
+  const collapsibleNeeded = longByLine || longByChar;
+  const [open, setOpen] = useState(false);
+  if (!collapsibleNeeded) {
+    return <div className="collapsible-body">{body}</div>;
+  }
+  const label = longByLine
+    ? `${lineCount} lines`
+    : `${body.length.toLocaleString()} chars`;
+  return (
+    <div className="collapsible">
+      <div className={`collapsible-body${open ? '' : ' is-collapsed'}`}>{body}</div>
+      <button type="button" className="collapsible-toggle" onClick={() => setOpen((v) => !v)}>
+        {open ? `▲ Collapse (${label})` : `▼ Show all (${label})`}
+      </button>
+    </div>
+  );
+}
+
+function NestedRunPanel({ run }: { run: NestedRunState }) {
+  const bodyRef = useRef<HTMLDivElement | null>(null);
+  const [overflowing, setOverflowing] = useState(false);
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    setOverflowing(el.scrollHeight > el.clientHeight + 4);
+  }, [run.events.length]);
+
+  return (
+    <div className="nested-run">
+      <div className="nested-run-head">
+        <span className="skill-id">run_skill</span>
+        <span>{nestedRunHead(run)}</span>
+        <span className="ev-count">
+          {run.events.length} ev{overflowing ? ' ↓' : ''}
+        </span>
+      </div>
+      <div ref={bodyRef} className={`nested-run-body${overflowing ? ' is-overflowing' : ''}`}>
+        {run.events.map((ev, i) => (
+          <div className="ev" key={i}>
+            <span className="t">{ev.type}</span> · {summarizeRunEvent(ev)}
           </div>
-          <div className="nested-run-body">
-            {nestedRun.events.map((ev, i) => (
-              <div className="ev" key={i}>
-                <span className="t">{ev.type}</span> · {summarizeRunEvent(ev)}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 }
@@ -671,6 +746,24 @@ function truncate(s: string, n: number): string {
   return s.length > n ? `${s.slice(0, n)}…` : s;
 }
 
+function formatTokens(n: number): string {
+  if (n < 1000) return String(n);
+  if (n < 100_000) return `${(n / 1000).toFixed(1)}k`;
+  return `${Math.round(n / 1000)}k`;
+}
+
+function renderMeta(messages: Message[]): string {
+  const visible = messages.filter((m) => m.role !== 'system');
+  let total = 0;
+  for (const m of messages) {
+    if (m.role === 'assistant' && typeof m.total_tokens === 'number') {
+      total += m.total_tokens;
+    }
+  }
+  const count = `${visible.length} messages`;
+  return total > 0 ? `${count} · ${formatTokens(total)} tok` : count;
+}
+
 function prettifyJSON(s: string): string {
   try {
     return JSON.stringify(JSON.parse(s), null, 2);
@@ -681,6 +774,7 @@ function prettifyJSON(s: string): string {
 
 function ApprovalCard({
   payload,
+  brandId,
   queueDepth,
   note,
   busy,
@@ -690,6 +784,7 @@ function ApprovalCard({
   onDismiss,
 }: {
   payload: AwaitingApprovalPayload;
+  brandId: string;
   queueDepth?: number;
   note: string;
   busy: boolean;
@@ -699,61 +794,64 @@ function ApprovalCard({
   onDismiss: () => void;
 }) {
   return (
-    <div className="approval-card" style={{
-      border: '1px solid var(--border, #444)',
-      borderRadius: 8,
-      padding: 12,
-      marginTop: 8,
-      background: 'var(--bg-elevated, rgba(255,255,255,0.03))',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-        <span className="tag" style={{ background: 'var(--accent, #4a8)', color: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>
-          approval
+    <div className="approval-card">
+      <div className="approval-card-head">
+        <span className="approval-tag">approval</span>
+        <span className="approval-skill">
+          {payload.skill_id} · {payload.full_name}
         </span>
-        <span style={{ fontWeight: 600 }}>{payload.skill_id} · {payload.full_name}</span>
-        <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--fg-muted)' }}>等待审批</span>
+        <span className="approval-status">等待审批</span>
       </div>
-      {payload.summary && (
-        <div style={{ fontSize: 13, color: 'var(--fg-muted)', marginBottom: 6 }}>
-          {payload.summary}
+      <div className="approval-card-body">
+        {payload.summary && <div className="approval-summary">{payload.summary}</div>}
+        <div className="approval-path">{payload.output_path}</div>
+        {payload.data != null && (
+          <OutputPreview
+            data={payload.data}
+            readonly={busy}
+            onSave={async (next) => updateSkillOutput(payload.skill_id, next, brandId)}
+          />
+        )}
+        {queueDepth && queueDepth > 1 && (
+          <div className="approval-queue">队列：还有 {queueDepth - 1} 条待审</div>
+        )}
+        <textarea
+          className="approval-textarea"
+          value={note}
+          onChange={(e) => onChangeNote(e.target.value)}
+          placeholder="（可选）写下修改建议，点 提建议重跑 让 agent 用新要求重新运行该步骤"
+          rows={2}
+          disabled={busy}
+          data-magic="不满意时在这里写改进建议（如：audience 加一个银发族），下面点 提建议重跑"
+        />
+        <div className="approval-actions">
+          <button
+            className="btn-primary"
+            onClick={onApprove}
+            disabled={busy}
+            data-magic="这一步的产出 OK，让 agent 继续做下一步；同时会自动刷新品牌长期记忆 (brand profile)"
+          >
+            {busy ? '处理中…' : '批准 → 下一步'}
+          </button>
+          <button
+            className="btn-ghost"
+            onClick={onModifyRerun}
+            disabled={busy || !note.trim()}
+            data-magic="按上面写的备注重新跑这一步；要先填备注才能点"
+          >
+            提建议重跑
+          </button>
+          <span className="spacer" />
+          <button
+            className="btn-ghost"
+            onClick={onDismiss}
+            disabled={busy}
+            title="忽略 (不记录)"
+            data-magic="先放着不审批；下次还能再回来"
+          >
+            忽略
+          </button>
         </div>
-      )}
-      <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginBottom: 8, fontFamily: 'monospace' }}>
-        {payload.output_path}
-      </div>
-      {queueDepth && queueDepth > 1 && (
-        <div style={{ fontSize: 11, color: 'var(--fg-muted)', marginBottom: 6 }}>
-          队列：还有 {queueDepth - 1} 条待审
-        </div>
-      )}
-      <textarea
-        value={note}
-        onChange={(e) => onChangeNote(e.target.value)}
-        placeholder="（可选）写下修改建议，点 提建议重跑 让 agent 用新要求重新运行该步骤"
-        rows={2}
-        disabled={busy}
-        style={{
-          width: '100%',
-          fontSize: 13,
-          padding: 6,
-          borderRadius: 4,
-          border: '1px solid var(--border, #444)',
-          background: 'transparent',
-          color: 'inherit',
-          resize: 'vertical',
-        }}
-      />
-      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-        <button className="btn-primary" onClick={onApprove} disabled={busy}>
-          {busy ? '处理中…' : '批准 → 下一步'}
-        </button>
-        <button className="btn-ghost" onClick={onModifyRerun} disabled={busy || !note.trim()}>
-          提建议重跑
-        </button>
-        <span className="spacer" style={{ flex: 1 }} />
-        <button className="btn-ghost" onClick={onDismiss} disabled={busy} title="忽略 (不记录)">
-          忽略
-        </button>
       </div>
     </div>
   );

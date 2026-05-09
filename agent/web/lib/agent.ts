@@ -39,6 +39,7 @@ export type RunEvent =
   | { type: 'turn'; payload: { index: number; text: string; finish: string | null } }
   | { type: 'tool_call'; payload: { id: string; name: string; arguments: string } }
   | { type: 'tool_result'; payload: { id: string; ok: boolean; summary: string } }
+  | { type: 'partial_output'; payload: { skillId: string; data: unknown; bytes: number } }
   | { type: 'validate'; payload: { ok: boolean; errors: Array<{ path: string; message: string }> } }
   | { type: 'done'; payload: { ok: boolean; outputPath: string | null; reason: string } }
   | { type: 'result'; payload: { ok: boolean; outputPath: string | null; reason: string; turns: number } }
@@ -74,7 +75,17 @@ export interface Message {
   tool_call_id: string | null;
   tool_calls_json: string | null;
   attachments_json: string | null;
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
   created_at: string;
+}
+
+export interface ConversationUsage {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  assistant_turns: number;
 }
 
 export interface AttachmentMeta {
@@ -151,6 +162,7 @@ export interface AwaitingApprovalPayload {
   full_name: string;
   output_path: string;
   summary: string;
+  data?: unknown;
 }
 
 // ─── Chat SSE events (orchestrator stream) ──────────────────────────────
@@ -163,6 +175,7 @@ export type ChatEvent =
         id: string;
         content: string;
         tool_calls?: Array<{ id: string; name: string; arguments: string }>;
+        usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
       };
     }
   | { type: 'tool_call'; payload: { id: string; name: string; arguments: string } }
@@ -344,6 +357,46 @@ export const fetchPreflight = (id: string, brandId?: string): Promise<PreflightR
   return getJSON<PreflightReport>(url);
 };
 
+export interface SkillOutput {
+  skill_id: string;
+  path: string;
+  data: unknown;
+  mtime?: string;
+}
+
+export const fetchSkillOutput = (skillId: string, brandId?: string): Promise<SkillOutput | null> => {
+  const url = brandId ? `/brands/${brandId}/skills/${skillId}/output` : `/skills/${skillId}/output`;
+  return fetch(`${PROXY}${url}`, { cache: 'no-store' }).then(async (r) => {
+    if (r.status === 404) return null;
+    if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+    return (await r.json()) as SkillOutput;
+  });
+};
+
+export interface SkillOutputUpdateResult {
+  ok: boolean;
+  path?: string;
+  bytes?: number;
+  mtime?: string;
+  error?: string;
+  errors?: Array<{ path: string; message: string }>;
+}
+
+export const updateSkillOutput = async (
+  skillId: string,
+  data: unknown,
+  brandId?: string,
+): Promise<SkillOutputUpdateResult> => {
+  const url = brandId ? `/brands/${brandId}/skills/${skillId}/output` : `/skills/${skillId}/output`;
+  const r = await fetch(`${PROXY}${url}`, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  const j = (await r.json().catch(() => ({}))) as SkillOutputUpdateResult;
+  return { ...j, ok: r.ok && j.ok !== false };
+};
+
 // brands
 export const fetchBrands = (): Promise<{ brands: Brand[]; default_brand_id: string | null }> =>
   getJSON(`/brands`);
@@ -397,6 +450,9 @@ export const fetchMessages = (
   conversationId: string,
 ): Promise<{ messages: Message[]; attachments: AttachmentMeta[] }> =>
   getJSON(`/conversations/${conversationId}/messages`);
+
+export const fetchConversationUsage = (conversationId: string): Promise<ConversationUsage> =>
+  getJSON(`/conversations/${conversationId}/usage`);
 
 // attachments
 export const uploadAttachment = (

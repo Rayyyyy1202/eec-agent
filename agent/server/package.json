@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "tsx watch --env-file-if-exists=.env.local src/api/server.ts",
     "start": "tsx --env-file-if-exists=.env.local src/api/server.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "test:output": "node --test tests/output-endpoint.test.mjs"
   },
   "dependencies": {
     "@hono/node-server": "1.13.7",

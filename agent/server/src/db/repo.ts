@@ -29,6 +29,9 @@ export interface Message {
   tool_call_id: string | null;
   tool_calls_json: string | null;
   attachments_json: string | null;
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
   created_at: string;
 }
 
@@ -173,12 +176,13 @@ export class Repo {
     tool_call_id?: string;
     tool_calls?: unknown;
     attachments?: string[];
+    usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
   }): Message {
     const id = randomUUID();
     this.db
       .prepare(
-        `INSERT INTO messages (id, conversation_id, role, content, tool_call_id, tool_calls_json, attachments_json)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO messages (id, conversation_id, role, content, tool_call_id, tool_calls_json, attachments_json, prompt_tokens, completion_tokens, total_tokens)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         id,
@@ -188,6 +192,9 @@ export class Repo {
         m.tool_call_id ?? null,
         m.tool_calls ? JSON.stringify(m.tool_calls) : null,
         m.attachments && m.attachments.length ? JSON.stringify(m.attachments) : null,
+        m.usage ? m.usage.prompt_tokens : null,
+        m.usage ? m.usage.completion_tokens : null,
+        m.usage ? m.usage.total_tokens : null,
       );
     this.touchConversation(m.conversation_id);
     return this.getMessage(id)!;
@@ -203,6 +210,31 @@ export class Repo {
         `SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at ASC, rowid ASC LIMIT ?`,
       )
       .all(conversation_id, limit) as Message[];
+  }
+
+  getConversationUsage(conversation_id: string): {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    assistant_turns: number;
+  } {
+    const row = this.db
+      .prepare(
+        `SELECT
+           COALESCE(SUM(prompt_tokens), 0)     AS prompt_tokens,
+           COALESCE(SUM(completion_tokens), 0) AS completion_tokens,
+           COALESCE(SUM(total_tokens), 0)      AS total_tokens,
+           COUNT(total_tokens)                 AS assistant_turns
+         FROM messages
+         WHERE conversation_id = ? AND role = 'assistant' AND total_tokens IS NOT NULL`,
+      )
+      .get(conversation_id) as {
+      prompt_tokens: number;
+      completion_tokens: number;
+      total_tokens: number;
+      assistant_turns: number;
+    };
+    return row;
   }
 
   // ─── attachments ─────────────────────────────────────────────────────────

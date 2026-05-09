@@ -7,13 +7,18 @@ import {
   fetchSkills,
   fetchWorkspaceState,
   fetchPreflight,
+  fetchSkillOutput,
   streamRun,
+  updateSkillOutput,
   type SkillSummary,
   type SkillState,
   type PreflightReport,
   type RunEvent,
+  type SkillOutput,
 } from '@/lib/agent';
 import { skillDisplayName } from '@/lib/skill-names';
+import { OutputPreview } from '@/components/OutputPreview';
+import { STATUS_BLURBS, skillNodeBlurb } from '@/lib/magic-blurbs';
 
 function displayName(skill: SkillSummary): string {
   return skillDisplayName(skill.id, skill.slug);
@@ -56,6 +61,7 @@ function PipelineNode({
     <div
       onClick={onClick}
       className={pending ? 'pipeline-node pipeline-node-pending' : 'pipeline-node'}
+      data-magic={skillNodeBlurb(skill.id, status)}
       style={{
         background: bg,
         color: '#0b0d10',
@@ -192,11 +198,11 @@ export default function PipelinePage() {
       </ReactFlow>
 
       <div className="legend">
-        <div><span className="dot pulse" style={{ background: STATUS_COLOR.pending }} /> 进行中</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.valid }} /> 完成</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.synthetic }} /> stub</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.invalid }} /> 校验失败</div>
-        <div><span className="dot" style={{ background: STATUS_COLOR.missing }} /> 未运行</div>
+        <div data-magic={STATUS_BLURBS.pending}><span className="dot pulse" style={{ background: STATUS_COLOR.pending }} /> 进行中</div>
+        <div data-magic={STATUS_BLURBS.valid}><span className="dot" style={{ background: STATUS_COLOR.valid }} /> 完成</div>
+        <div data-magic={STATUS_BLURBS.synthetic}><span className="dot" style={{ background: STATUS_COLOR.synthetic }} /> stub</div>
+        <div data-magic={STATUS_BLURBS.invalid}><span className="dot" style={{ background: STATUS_COLOR.invalid }} /> 校验失败</div>
+        <div data-magic={STATUS_BLURBS.missing}><span className="dot" style={{ background: STATUS_COLOR.missing }} /> 未运行</div>
       </div>
 
       {selectedSkill && (
@@ -233,16 +239,22 @@ function SkillDrawer({
   const [running, setRunning] = useState(false);
   const [pf, setPf] = useState<PreflightReport | null>(null);
   const [events, setEvents] = useState<Array<{ type: string; payload: unknown }>>([]);
+  const [liveOutput, setLiveOutput] = useState<unknown>(null);
+  const [savedOutput, setSavedOutput] = useState<SkillOutput | null>(null);
 
   useEffect(() => {
     setEvents([]);
     setPf(null);
+    setLiveOutput(null);
+    setSavedOutput(null);
     void fetchPreflight(skill.id).then(setPf);
+    void fetchSkillOutput(skill.id).then((o) => setSavedOutput(o));
   }, [skill.id]);
 
   const onRun = async () => {
     setRunning(true);
     setEvents([]);
+    setLiveOutput(null);
     onStart();
     try {
       await streamRun(
@@ -250,6 +262,9 @@ function SkillDrawer({
         { brand_brief: brief || undefined, auto_stub_upstream: autoStub },
         (e: RunEvent) => {
           setEvents((prev) => [...prev, { type: e.type, payload: e.payload }]);
+          if (e.type === 'partial_output') {
+            setLiveOutput((e.payload as { data: unknown }).data);
+          }
         },
       );
     } catch (e) {
@@ -257,8 +272,13 @@ function SkillDrawer({
     } finally {
       setRunning(false);
       onFinish();
+      const fresh = await fetchSkillOutput(skill.id).catch(() => null);
+      setSavedOutput(fresh);
     }
   };
+
+  const previewData = liveOutput ?? savedOutput?.data ?? null;
+  const hasAnyOutput = previewData !== null && previewData !== undefined;
 
   return (
     <div className="drawer">
@@ -291,12 +311,19 @@ function SkillDrawer({
       <label>Brand brief (optional)</label>
       <textarea value={brief} onChange={(e) => setBrief(e.target.value)} placeholder="e.g. designer dog collars sized for every dog" />
 
-      <div className="row">
+      <div
+        className="row"
+        data-magic="如果上游 skill 还没跑，自动塞占位假数据继续跑这一步；用于单独验证某一步，不会污染最终产物"
+      >
         <input type="checkbox" id="autoStub" checked={autoStub} onChange={(e) => setAutoStub(e.target.checked)} />
         <label htmlFor="autoStub" style={{ margin: 0 }}>Auto-stub missing upstream</label>
       </div>
 
-      <button disabled={running} onClick={onRun}>
+      <button
+        disabled={running}
+        onClick={onRun}
+        data-magic="跑这一步 skill：实时把进度推到下方 events 里，跑完产出 output.json"
+      >
         {running ? 'Running…' : `Run ${skill.full_name}`}
       </button>
 
@@ -305,6 +332,27 @@ function SkillDrawer({
           Current output: {state.exists ? '✓' : '—'}
           {state.synthetic && ' · synthetic'} · last run {state.mtime?.replace('T', ' ').slice(0, 16)}
         </div>
+      )}
+
+      {(hasAnyOutput || running) && (
+        <OutputPreview
+          data={previewData}
+          readonly={running}
+          live={running && liveOutput !== null}
+          lastUpdatedAt={!running ? savedOutput?.mtime ?? null : null}
+          onSave={
+            running
+              ? undefined
+              : async (next) => {
+                  const r = await updateSkillOutput(skill.id, next);
+                  if (r.ok) {
+                    const fresh = await fetchSkillOutput(skill.id).catch(() => null);
+                    setSavedOutput(fresh);
+                  }
+                  return r;
+                }
+          }
+        />
       )}
 
       {events.length > 0 && (

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import './globals.css';
+import MagicMouse from '../components/MagicMouse';
 
 export const metadata = {
   title: 'EEC Agent',
@@ -17,7 +18,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <MagicMouse />
+      </body>
     </html>
   );
 }

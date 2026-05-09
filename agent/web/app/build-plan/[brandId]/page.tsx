@@ -171,7 +171,10 @@ export default function BuildPlanPage({ params }: BuildPlanPageProps) {
             buildBusy={buildBusy}
           />
           {showBuildPanel && (
-            <div className="build-log">
+            <div
+              className="build-log"
+              data-magic="agent 跑 05 建站时的实时日志：每个 turn / tool_call / validate 都会出现一行"
+            >
               <div className="build-log-head">
                 <span>Skill 05 — site build</span>
                 <button className="icon-btn" onClick={() => setShowBuildPanel(false)} title="Hide">
